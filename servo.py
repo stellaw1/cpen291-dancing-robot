@@ -5,7 +5,7 @@ import pulseio
 from adafruit_motor import servo
  
 # create a PWMOut object on Pin A2.
-pwm = pulseio.PWMOut(board.A2, duty_cycle=2 ** 15, frequency=50)
+pwm = pulseio.PWMOut(board.A5, duty_cycle=2 ** 15, frequency=50)
  
 # Create a servo object, my_servo.
 my_servo = servo.Servo(pwm)
@@ -27,7 +27,7 @@ import pulseio
 from adafruit_motor import servo
  
 # create a PWMOut object on Pin A2.
-pwm = pulseio.PWMOut(board.A2, frequency=50)
+pwm = pulseio.PWMOut(board.A5, frequency=50)
  
 # Create a servo object, my_servo.
 my_servo = servo.ContinuousServo(pwm)
@@ -44,4 +44,30 @@ while True:
     time.sleep(2.0)
     print("stop")
     my_servo.throttle = 0.0
+    time.sleep(4.0)
+#Working code use A1
+#Continuous Servo Code
+import time
+import board
+import pulseio
+from adafruit_motor import servo
+ 
+# create a PWMOut object on Pin A2.
+pwm = pulseio.PWMOut(board.A1, frequency=50)
+ 
+# Create a servo object, my_servo.
+my_servo = servo.ContinuousServo(pwm)
+ 
+while True:
+    print("forward")
+    my_servo.throttle = 1.0
+    time.sleep(2.0)
+    print("stop")
+    my_servo.throttle = 0.1
+    time.sleep(2.0)
+    print("reverse")
+    my_servo.throttle = -1.0
+    time.sleep(2.0)
+    print("stop")
+    my_servo.throttle = 0.1
     time.sleep(4.0)
