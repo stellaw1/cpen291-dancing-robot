@@ -71,3 +71,41 @@ while True:
     print("stop")
     my_servo.throttle = 0.1
     time.sleep(4.0)
+
+    ########################################################################################
+    
+import time
+import board
+import pulseio
+from adafruit_motor import servo
+ 
+pwm1 = pulseio.PWMOut(board.A1, frequency=50)
+my_servo1 = servo.ContinuousServo(pwm1)
+
+pwm2 = pulseio.PWMOut(board.A3, frequency=50)
+my_servo2 = servo.ContinuousServo(pwm2)
+
+pwm3 = pulseio.PWMOut(board.A4, frequency=50)
+my_servo3 = servo.ContinuousServo(pwm3)
+
+pwm4 = pulseio.PWMOut(board.A5, frequency=50)
+my_servo4 = servo.ContinuousServo(pwm4)
+ 
+while True:
+    my_servo1.throttle = 1.0
+    my_servo2.throttle = 1.0
+    time.sleep(1.0)
+    my_servo3.throttle = 0.1
+    my_servo1.throttle = 0.1
+    my_servo2.throttle = 0.1
+    my_servo3.throttle = 0.3
+    time.sleep(1.0)
+    my_servo4.throttle = 0.1
+    my_servo1.throttle = 0.1
+    my_servo2.throttle = 0.0
+    my_servo4.throttle = 0.3
+    my_servo1.throttle = -1.0
+    my_servo2.throttle = -1.0
+    time.sleep(1.0)
+    my_servo1.throttle = 0.1
+    time.sleep(3.0)
