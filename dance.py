@@ -16,7 +16,14 @@ pwm4 = pulseio.PWMOut(board.A5, frequency=50)
 my_servo4 = servo.ContinuousServo(pwm4)
  
 # define basic functions 
-def shuffle():
+def rightShuffle():
+    print("shuffling")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def leftShuffle():
     print("shuffling")
     for i in range(3):
         for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
@@ -37,7 +44,28 @@ def leftKick():
             my_servo.angle = angle
             time.sleep(0.05)
 
-def leftKick():
+def rightStep():
+    print("right kick")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def leftStep():
+    print("right kick")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def tiltLeft():
+    print("right kick")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def tiltright():
     print("right kick")
     for i in range(3):
         for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
@@ -45,4 +73,16 @@ def leftKick():
             time.sleep(0.05)
 
 # define dance moves as sequences of basic moves
-def dance1():
+def walk():
+    for i in range(6):
+        tiltLeft()
+        time.sleep(0.05)
+        tiltRight()
+        time.sleep(0.05)
+
+def shuffle():
+    for i in range(6):
+        shuffleLeft()
+        time.sleep(0.05)
+        shuffleRight()
+        time.sleep(0.05)
