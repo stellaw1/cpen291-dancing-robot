@@ -15,6 +15,34 @@ my_servo3 = servo.ContinuousServo(pwm3)
 pwm4 = pulseio.PWMOut(board.A5, frequency=50)
 my_servo4 = servo.ContinuousServo(pwm4)
  
-
+# define basic functions 
 def shuffle():
-    
+    print("shuffling")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def rightKick():
+    print("right kick")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def leftKick():
+    print("right kick")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+def leftKick():
+    print("right kick")
+    for i in range(3):
+        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
+            my_servo.angle = angle
+            time.sleep(0.05)
+
+# define dance moves as sequences of basic moves
+def dance1():
