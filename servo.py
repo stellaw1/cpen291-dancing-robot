@@ -64,4 +64,28 @@ while True:
     servo2.duty_cycle = servo_duty_cycle(1.0)
     servo3.duty_cycle = servo_duty_cycle(2.0)
     servo4.duty_cycle = servo_duty_cycle(1.0)
-   
+ 
+########################
+    
+import time
+import board
+import pulseio
+import servo
+ 
+#pwm1 = pulseio.PWMOut(board.D10, frequency=50) #RIGHT LEG
+#my_servo1 = servo.ContinuousServo(pwm1)
+
+#pwm2 = pulseio.PWMOut(board.D11, frequency=50)  #LEFT LEG
+#my_servo2 = servo.ContinuousServo(pwm2)
+
+#pwm3 = pulseio.PWMOut(board.D12, frequency=50) #rigHT FOOT
+#my_servo3 = servo.ContinuousServo(pwm3)
+
+#pwm4 = pulseio.PWMOut(board.D13, frequency=50) #left foot
+#my_servo4 = servo.ContinuousServo(pwm4)
+ 
+while True:
+    my_servo3.throttle = 1.0
+    time.sleep(1.0)
+    my_servo3.throttle = -1.0
+    time.sleep(1.0)
