@@ -7,6 +7,7 @@ Components:
 4)Ultrasonic sensor
 5)Buzzer
 6)Keypad
+7)RGB module/Shifter with LEDS
 
 Steps:
 1)Power up: Welcome Menu that requests password
