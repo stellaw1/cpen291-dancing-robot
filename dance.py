@@ -1,62 +1,156 @@
 import time
 import board
 import pulseio
-from adafruit_motor import servo
- 
-pwm1 = pulseio.PWMOut(board.A1, frequency=50) #leg1
-my_servo1 = servo.ContinuousServo(pwm1)
+import servo
 
-pwm2 = pulseio.PWMOut(board.A3, frequency=50) #leg2
-my_servo2 = servo.ContinuousServo(pwm2)
+pwm1 = pulseio.PWMOut(board.D10, frequency=50) #leg1
+legL = servo.ContinuousServo(pwm1)
 
-pwm3 = pulseio.PWMOut(board.A4, frequency=50)
-my_servo3 = servo.ContinuousServo(pwm3)
+pwm2 = pulseio.PWMOut(board.D11, frequency=50) #leg2
+legR = servo.ContinuousServo(pwm2)
 
-pwm4 = pulseio.PWMOut(board.A5, frequency=50)
-my_servo4 = servo.ContinuousServo(pwm4)
- 
-# define basic functions 
+pwm3 = pulseio.PWMOut(board.D12, frequency=50)
+footL = servo.ContinuousServo(pwm3)
+
+pwm4 = pulseio.PWMOut(board.D13, frequency=50)
+footR = servo.ContinuousServo(pwm4)
+
+###################################
+# define basic dance move functions 
+
+# rotates right foot outwards and back in
 def rightShuffle():
-    print("shuffling")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
+    footR.throttle = 0.0
+    
+    angle = -0.5
+    while angle < 0.5:  # 0 - 180 degrees, 5 degrees at a time.
+        legR.throttle = angle
+        time.sleep(0.05)
+        angle = angle + 0.1
+    while angle >= -0.5:  # 0 - 180 degrees, 5 degrees at a time.
+        legR.throttle = angle
+        time.sleep(0.05)
+        angle = angle - 0.1
+    
+    footR.throttle = 0.0
+    
 
+# rotates left foot outwards and back in
 def leftShuffle():
-    print("shuffling")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
+    footL.throttle = 0.1
+    
+    angle = -0.3
+    while angle < 0.8:  # 0 - 180 degrees, 5 degrees at a time.
+        legL.throttle = angle
+        time.sleep(0.05)
+        angle = angle + 0.1
+    while angle >= -0.3:  # 0 - 180 degrees, 5 degrees at a time.
+        legL.throttle = angle
+        time.sleep(0.05)
+        angle = angle - 0.1
+    
+    footL.throttle = 0.1
 
+
+# lift upwards by pointing both feet
+def jump():
+    legR.throttle = 0.1
+    legL.throttle = 0.1
+    footR.throttle = 0.1
+    footL.throttle = 0.1
+    time.sleep(2)
+    
+    angle = 0.1
+    while angle < 0.4:  # 0 - 180 degrees, 5 degrees at a time.
+        footL.throttle = angle
+        footR.throttle = 0.1  - angle
+        time.sleep(0.1)
+        angle = angle + 0.05
+    time.sleep(1)
+    while angle >= 0.1:  # 0 - 180 degrees, 5 degrees at a time.
+        footL.throttle = angle
+        footR.throttle = 0.1 - angle
+        time.sleep(0.1)
+        angle = angle - 0.05
+
+
+# moves right leg forward and back down
 def rightKick():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
+    legR.throttle = -0.8
+    
+    angle = 0.0
+    while angle < 0.7:  # 0 - 180 degrees, 5 degrees at a time.
+        footR.throttle = angle
+        time.sleep(0.05)
+        angle = angle + 0.1
+    while angle >= -0.1:  # 0 - 180 degrees, 5 degrees at a time.
+        footR.throttle = angle
+        time.sleep(0.05)
+        angle = angle - 0.1
+    
+    legR.throttle = -0.8
 
+
+# moves left leg forward and back down
 def leftKick():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
+    legL.throttle = 0.9
+    
+    angle = 0.3
+    while angle > -0.7:  # 0 - 180 degrees, 5 degrees at a time.
+        footL.throttle = angle
+        time.sleep(0.05)
+        angle = angle - 0.1
+    while angle <= 0.3:  # 0 - 180 degrees, 5 degrees at a time.
+        footL.throttle = angle
+        time.sleep(0.05)
+        angle = angle + 0.1
+    
+    legL.throttle = 0.9
 
+
+# takes a step forward by lifting right foot
 def rightStep():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
+    footL.throttle = 0.1
+    legL.throttle = 0.0
+    
+    footR.throttle = 0.1
+    legR.throttle = 0.1
+    time.sleep(3)
+    
+    angleL = 0.1
+    while angleL >= -0.2:  # 0 - 180 degrees, 5 degrees at a time.
+        footR.throttle = angleL
+        time.sleep(0.05)
+        angleL = angleL - 0.05
+        
+    angleF = 0.1
+    while angleF >= -0.4:  # 0 - 180 degrees, 5 degrees at a time.
+        legR.throttle = angleF
+        time.sleep(0.05)
+        angleF = angleF - 0.1
 
+
+# takes a step forward by lifting left foot
 def leftStep():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
+    footL.throttle = 0.1
+    legL.throttle = 0.0
+    
+    footR.throttle = 0.1
+    legR.throttle = 0.1
+    time.sleep(3)
+    
+    angleL = 0.1
+    while angleL <= 0.3:  # 0 - 180 degrees, 5 degrees at a time.
+        footL.throttle = angleL
+        time.sleep(0.05)
+        angleL = angleL - 0.05
+        
+    angleF = 0.1
+    while angleF >= -0.4:  # 0 - 180 degrees, 5 degrees at a time.
+        legL.throttle = angleF
+        time.sleep(0.05)
+        angleF = angleF - 0.1
+
 
 def tiltLeft():
     print("right kick")
@@ -72,6 +166,8 @@ def tiltright():
             my_servo.angle = angle
             time.sleep(0.05)
 
+
+##############################################
 # define dance moves as sequences of basic moves
 def walk():
     for i in range(6):
