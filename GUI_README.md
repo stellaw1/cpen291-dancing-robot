@@ -22,3 +22,4 @@ More ideas: (Plz feel free to add more ideas)
 3)Menu tune separate
 4)about button
 5)Stop dance move by entering a code
+6)Progress bar for each dance move 
