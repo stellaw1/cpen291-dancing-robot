@@ -24,3 +24,11 @@ More ideas: (Plz feel free to add more ideas)
 4)about button
 5)Stop dance move by entering a code
 6)Progress bar for each dance move 
+
+TODO
+Dance moves: 
+6 songs: Rain
+ldc gui: 
+sensor: Arnold
+RGB : 
+Keypad: 
