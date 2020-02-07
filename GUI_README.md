@@ -21,3 +21,4 @@ More ideas: (Plz feel free to add more ideas)
 2)6 different songs 
 3)Menu tune separate
 4)about button
+5)Stop dance move by entering a code
