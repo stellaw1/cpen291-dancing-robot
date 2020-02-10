@@ -67,22 +67,20 @@ keys = ((1, 2, 3),
 keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
 
 def keypadDecode():
-    time.sleep(.1)
-    out1.value = True
-    out2.value = False
-    key = keypadHelper(1)
-    if key != 0:
-        return key
-    time.sleep(.1)
-    out1.value = False
-    out2.value = True
-    key = keypadHelper(2)
-    if key != 0:
-        return key
-    time.sleep(.1)
-    out1.value = True
-    out2.value = True
-    key = keypadHelper(3)
+    for i in range(1,4):
+        time.sleep(.1)
+        if i == 1:
+            out1.value = True
+            out2.value = False
+        if i == 2:
+            out1.value = False
+            out2.value = True
+        if i == 3:
+            out1.value = True
+            out2.value = True
+        key = keypadHelper(i)
+        if key != 0:
+            return key
     return key
 
 def keypadHelper(col):
