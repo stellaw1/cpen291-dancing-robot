@@ -1,54 +1,77 @@
-"""
-This test will initialize the display using displayio and draw a solid green
-background, a smaller purple rectangle, and some yellow text.
-"""
- 
+import time
 import board
 import displayio
 import terminalio
-from adafruit_display_text import label
+import label
 from adafruit_st7735r import ST7735R
- 
+
 # Release any resources currently in use for the displays
 displayio.release_displays()
- 
-#setting default parameters 
-spi = board.SPI()
-tft_cs = board.D9
-tft_dc = board.D10
- 
-display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D9)
- 
-display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
-#till here terminal will run
- 
 
-# Make the display context
-splash = displayio.Group(max_size=10)
-display.show(splash)
- 
-color_bitmap = displayio.Bitmap(128, 128, 1)
-color_palette = displayio.Palette(1)
-color_palette[0] = 0x00FF00 # Bright Green
- 
-bg_sprite = displayio.TileGrid(color_bitmap,
-                               pixel_shader=color_palette,
-                               x=0, y=0)
-splash.append(bg_sprite)
- 
-# Draw a smaller inner rectangle
-inner_bitmap = displayio.Bitmap(108, 108, 1)
-inner_palette = displayio.Palette(1)
-inner_palette[0] = 0xAA0088 # Purple
-inner_sprite = displayio.TileGrid(inner_bitmap,
-                                  pixel_shader=inner_palette,
-                                  x=10, y=10)
-splash.append(inner_sprite)
- 
+# board & pin setup
+spi = board.SPI()
+tft_cs = board.D5
+tft_dc = board.D9
+
+display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
+display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
+
 # Draw a label
-text = "Dancing Robot"
-text_area = label.Label(terminalio.FONT, text=text, color=0xFFFF00, x=30, y=64)
-splash.append(text_area)
- 
+text = "PARSA has MS"
+text_area = label.Label(terminalio.FONT, text=text, color=0xfff200)
+# Set the location
+text_area.x = 25
+text_area.y = 64
+#show text
+display.show(text_area)
+
+# show for 2 seconds
+for i in range(2):
+    pass
+    time.sleep(1)
+
+
+# erase current text and reset board & pins
+displayio.release_displays()
+spi = board.SPI()
+tft_cs = board.D5
+tft_dc = board.D9
+display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
+display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
+
+# Draw new text label 
+text = "Hello, \nI am Wilson \nthe dancing robot!"
+text_area = label.Label(terminalio.FONT, text=text, color=0xfff200)
+# Set the location
+text_area.x = 10
+text_area.y = 55
+# show new text label
+display.show(text_area)
+
+# show for 5 seconds
+for i in range(5):
+    pass
+    time.sleep(1)
+
+
+# erase current text 
+displayio.release_displays()
+spi = board.SPI()
+tft_cs = board.D5
+tft_dc = board.D9
+display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
+display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
+
+# Draw new text label
+text = "Press a key: \n 1: shuffle \n 2: kick \n 3: moonwalk \n 4: wobble \n 5: squat \n 6: spin"
+text_area = label.Label(terminalio.FONT, text=text, color=0xfff200)
+# Set the location
+text_area.x = 10
+text_area.y = 60
+#show new text
+display.show(text_area)
+
+# show this text for the rest of time 
 while True:
     pass
+    #TODO rest of servo, dance, buzzer, etc code goes in this while loop ... 
