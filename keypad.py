@@ -49,12 +49,12 @@ out2.value = False;
 # col2.direction = digitalio.Direction.OUTPUT
 # col2.value = False;
 
-col0 = (out1 && !out2)
-col0 = (out2 && !out1)
-col0 = (out1 && out2)
+# col0 = (out1 && !out2)
+# col1 = (out2 && !out1)
+# col2 = (out1 && out2)
 
 # Membrane 3x4 matrix keypad 
-cols = [digitalio.DigitalInOut(x) for x in (col0, col1, col2)]
+# cols = [digitalio.DigitalInOut(x) for x in (col0, col1, col2)]
 rows = [digitalio.DigitalInOut(x) for x in (board.A4, board.A5)]
  
 # define key values using a tuple
@@ -64,17 +64,18 @@ keys = ((1, 2, 3),
         # ('*', 0, '#')
         )
  
-keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
+# keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
 
-def keypadDecode():
+def kypadDecode():
+    key = 0
     for i in range(1,4):
         time.sleep(.1)
         if i == 1:
             out1.value = True
             out2.value = False
         if i == 2:
-            out1.value = False
             out2.value = True
+            out1.value = False
         if i == 3:
             out1.value = True
             out2.value = True
@@ -103,8 +104,8 @@ def key2Func():
 # prints input to console
 def printPressed():
     while True:
-        keys = keypad.pressed_keys
-
+        # keys = keypad.pressed_keys
+        keys = keypadDecode()
         if keys:
             print("Pressed: ", keys)
         time.sleep(0.1)
@@ -116,7 +117,8 @@ def checkPass():
     i = 0
 
     while True: 
-        keys = keypad.pressed_keys
+        # keys = keypad.pressed_keys
+        keys = keypadDecode()
         if keys: 
             seq.append(keys)
             i = i + 1
@@ -137,8 +139,8 @@ def checkPass():
 def main():
     checkPass()
     while True: 
-        keys = keypad.pressed_keys
-
+        # keys = keypad.pressed_keys
+        keys = keypadDecode()
         if keys: 
             if keys == [1]: 
                 key1Func()

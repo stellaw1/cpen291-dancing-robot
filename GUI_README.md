@@ -4,7 +4,7 @@ Components:
 1)Itsy Bitsy
 2)TFT LCD
 3)Servos
-4)Ultrasonic sensor
+4)Ultrasonic sensor * 2
 5)Buzzer
 6)Keypad
 7)RGB module/Shifter with LEDS
