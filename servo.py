@@ -1,4 +1,5 @@
     
+# PWM pins A1, D13, D12,D9, D10, D7, D11
 import time
 import board
 import pulseio
