@@ -3,6 +3,9 @@ import board
 import pulseio
 import servo
 
+import adafruit_hcsr04
+
+
 ###########################################
 # pin assignments and initial setup
 
@@ -22,7 +25,12 @@ footL = servo.ContinuousServo(pwm3)
 pwm4 = pulseio.PWMOut(board.D13, frequency=50)
 footR = servo.ContinuousServo(pwm4)
 
+###################################
+# ultrasonic sensor pin initialization
+sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
 
+# value for distance that we do not want to go past
+THRESHOLD = 0.3
 
 ###################################
 # define buzzer song functions
@@ -267,6 +275,8 @@ def leftStep():
 
 #Dance 1: walk forward
 def walk():
+    if (not check_distance):
+        return
     USSR_anthem()
 
     for i in range(6):
@@ -277,6 +287,8 @@ def walk():
 
 #Dance 2: kick feet outwards one at a time
 def shuffle():
+    if (not check_distance):
+        return
     mario_theme()
 
     for i in range(4):
@@ -287,6 +299,8 @@ def shuffle():
 
 # Dance 3: kick both feet outwards at the same time then tippy toe
 def ballerina():
+    if (not check_distance):
+        return
     canon()
 
     butterfly()
@@ -296,6 +310,8 @@ def ballerina():
 
 #Dance 4: line dancing move
 def pigeon():
+    if (not check_distance):
+        return
     leftShuffle()
     time.sleep(0.05)
     leftKick()
@@ -306,7 +322,9 @@ def pigeon():
     time.sleep(1)
 
 #Dance 5: up and down
-def excite(): 
+def excite():
+    if (not check_distance):
+        return
     crimson()
 
     for i in range(4):
@@ -314,10 +332,23 @@ def excite():
         time.sleep(0.1)
 
 #Dance 6: left karate kick
-def karate(): 
+def karate():
+    if (not check_distance):
+        return
     leftShuffle()
     time.sleep(0.1)
     jump()
     time.sleep(0.1)
     leftKick()
     time.sleep(0.5)
+
+# function for checking if robot is close to an object
+def check_distance():
+    try:
+        if sonar.distance < THRESHOLD:
+            return 0
+    except RuntimeError:
+        return 0
+    return 1
+
+def turn_around():
