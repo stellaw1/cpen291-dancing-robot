@@ -52,6 +52,27 @@ def leftShuffle():
     footL.throttle = 0.1
 
 
+# rotate both feet outwards at the same time (simultaneous leftShuffle and rightShuffle)
+def butterfly(): 
+    footR.throttle = 0.0
+    footL.throttle = 0.1
+
+    angle = -0.5
+    while angle < 0.5:  # 0 - 180 degrees, 5 degrees at a time.
+        legR.throttle = angle
+        legL.throttle = angle + 0.2
+        time.sleep(0.05)
+        angle = angle + 0.1
+    while angle >= -0.5:  # 0 - 180 degrees, 5 degrees at a time.
+        legR.throttle = angle
+        legL.throttle = angle + 0.2
+        time.sleep(0.05)
+        angle = angle - 0.1
+    
+    footR.throttle = 0.0
+    footL.throttle = 0.1
+
+
 # lift upwards by pointing both feet
 def jump():
     legR.throttle = 0.1
@@ -130,6 +151,7 @@ def rightStep():
         angleF = angleF - 0.1
 
 
+#TODO debug/ test this move
 # takes a step forward by lifting left foot
 def leftStep():
     footL.throttle = 0.1
@@ -152,33 +174,55 @@ def leftStep():
         angleF = angleF - 0.1
 
 
-def tiltLeft():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
-
-def tiltright():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            my_servo.angle = angle
-            time.sleep(0.05)
-
 
 ##############################################
 # define dance moves as sequences of basic moves
+
+#Dance 1: walk forward
 def walk():
     for i in range(6):
-        tiltLeft()
+        leftStep()
+        time.sleep(0.5)
+        rightStep()
+        time.sleep(0.5)
+
+#Dance 2: kick feet outwards one at a time
+def shuffle():
+    for i in range(4):
+        leftShuffle()
         time.sleep(0.05)
-        tiltRight()
+        rightShuffle()
         time.sleep(0.05)
 
-def shuffle():
-    for i in range(6):
-        shuffleLeft()
-        time.sleep(0.05)
-        shuffleRight()
-        time.sleep(0.05)
+# Dance 3: kick both feet outwards at the same time then tippy toe
+def ballerina():
+    butterfly()
+    time.sleep(0.05)
+    jump()
+    time.sleep(0.05)
+
+#Dance 4: line dancing move
+def pigeon():
+    leftShuffle()
+    time.sleep(0.05)
+    leftKick()
+    time.sleep(0.2)
+    rightShuffle()
+    time.sleep(0.05)
+    rightKick()
+    time.sleep(1)
+
+#Dance 5: up and down
+def excite(): 
+    for i in range(4):
+        jump()
+        time.sleep(0.1)
+
+#Dance 6: left karate kick
+def karate(): 
+    leftShuffle()
+    time.sleep(0.1)
+    jump()
+    time.sleep(0.1)
+    leftKick()
+    time.sleep(0.5)
