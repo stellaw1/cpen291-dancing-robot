@@ -46,7 +46,8 @@ def crimson():
 # pachebel Canon in C
 def canon():
     while True:
-        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):
+        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
+                131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
