@@ -17,7 +17,7 @@ display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=
 display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
 
 # Draw a label
-text = "PARSA has MS"
+text = "It's Party Time!"
 text_area = label.Label(terminalio.FONT, text=text, color=0xfff200)
 # Set the location
 text_area.x = 25
