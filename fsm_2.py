@@ -7,31 +7,31 @@
 #------------------------------------------------------------------------------------------------------#    
 import time
 import board
-#import displayio
-#import terminalio
+import displayio
+import terminalio
 import label
 from adafruit_st7735r import ST7735R
 import digitalio
-#import adafruit_matrixkeypad
+import adafruit_matrixkeypad
 from enum import Enum, auto
-#import pulseio
-#import servo
-#import adafruit_hcsr04
+import pulseio
+import servo
+import adafruit_hcsr04
 
 #------------------------------------------------------------------------------------------------------#
 # 
 # display code  
 #    
 #------------------------------------------------------------------------------------------------------#    
-class states(Enum):
-    LOADING = auto()
-    PASSCODE = auto()
-    HOME = auto()
-    DANCE = auto()
-    MUSIC = auto()
-    ABOUT = auto()
-    EXIT = auto()
-    REQUEST = auto()
+
+LOADING = 0
+PASSCODE = 1
+HOME = 2
+DANCE = 3
+MUSIC = 4
+ABOUT = 5
+EXIT = 6
+REQUEST = 7
 
 def reset():
     displayio.release_displays()
@@ -185,10 +185,10 @@ def checkPass():
 #     
 #------------------------------------------------------------------------------------------------------#    
 
-state = states.PASSCODE
+state = PASSCODE
 while True:
 
-    if state == states.LOADING:
+    if state ==  LOADING:
         splash = displayio.Group(max_size=10)
         reset()
         time.sleep(0.5)
@@ -201,20 +201,20 @@ while True:
         textshow("CPEN 291", 0x000000, 30, 64, 3)
         reset()
         time.sleep(0.5)
-        state = states.PASSCODE
+        state =  PASSCODE
 
-    if state == states.PASSCODE:
-        textshow("enter the passcode", 0x000000, 10, 60,3)
+    if state ==  PASSCODE:
+        textshow("enter the passcode", 0x000000, 10, 60, 3)
         boolean = False
         boolean = checkPass()
         if boolean:
             boolean = False
-            state = states.HOME
+            state =  HOME
             reset()
         else:
-            state = state.PASSCODE
+            state = PASSCODE
         
-    elif state == states.HOME:
+    elif state ==  HOME:
         textshow("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60, 3)
 
         keys = 0
@@ -222,20 +222,20 @@ while True:
             keys = keypadDecode()
 
         if keys == [1]:
-            state = states.DANCE
+            state =  DANCE
             reset()
         elif keys == [2]:
-            state = states.MUSIC
+            state =  MUSIC
             reset()
         elif keys == [3]:
-            state = states.EXIT
+            state =  EXIT
             reset()
         elif keys == [4]:
-            state = states.ABOUT
+            state =  ABOUT
         else
-            state = states.HOME
+            state =  HOME
         
-    elif state == states.DANCE:
+    elif state ==  DANCE:
         textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 5) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
 
         keys =0
@@ -244,32 +244,32 @@ while True:
 
         if keys == [1]:
             dance1()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [2]:
             dance2()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [3]:
             dance3()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [4]:
             dance4()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [5]:
             dance5()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [6]:
             dance6()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         else:
-            state = states.DANCE
+            state =  DANCE
 
-    elif state == states.ABOUT:
+    elif state ==  ABOUT:
         textout("About: \n Dancing Robot GUI \n Components: \n 1)Itsy Bitsy \n 2)TFT LCD \n 3)Servos \n 4)Ultrasonic sensor \n 5)Buzzer \n6)Keypad \n 7)RGB module/Shifter with LEDS \n Steps:\n 1)Power up: Welcome Menu that requests password\n 2)If password accepted a new window opens with a menu that has 6 dance moves to choose from If declined request for password again \n3)Press one of the first six buttons to do a dance (with particular music) move for a certain amount of time \n4)Come back to main menu\n 5)Might be able to display temperature as well (default lib / DHT11)", 0x000000, 10, 10)
         time.sleep(5)
         textshow("press any button to return", 0x000000, 10, 60, 3)
@@ -279,51 +279,51 @@ while True:
             keys = keypadDecode()
 
         if keys == [1]:
-            state = states.HOME
+            state =  HOME
             reset()
             textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
             time.sleep(1)
             reset()
         elif keys == [2]:
-            state = states.HOME
+            state =  HOME
             reset()
             textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
             time.sleep(1)
             reset()
         elif keys == [3]:
-            state = states.HOME
+            state =  HOME
             reset()
             textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
             time.sleep(1)
             reset()
         elif keys == [4]:
-            state = states.HOME
+            state =  HOME
             reset()
             textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
             time.sleep(1)
             reset()
         elif keys == [5]:
-            state = states.HOME
+            state =  HOME
             reset()
             textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
             time.sleep(1)
             reset()
         elif keys == [6]:
-            state = states.HOME
+            state =  HOME
             reset()
             textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
             time.sleep(1)
             reset()
         else:
-            state = states.ABOUT
+            state =  ABOUT
 
-    elif state == states.EXIT:
+    elif state ==  EXIT:
         textshow("Exiting.....", 0x000000, 30, 64, 3)
         time.sleep(0.5)
-        state = states.PASSCODE
+        state =  PASSCODE
         reset()
 
-    elif state == states.REQUEST:
+    elif state ==  REQUEST:
         textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 10, 60)
         
         keys = 0
@@ -331,18 +331,18 @@ while True:
             keys = keypadDecode()
 
         if keys == [1]:
-            state = states.DANCE
+            state =  DANCE
             reset()
         elif keys == [2]:
-            state = states.MUSIC
+            state =  MUSIC
             reset()
         elif keys == [3]:
-            state = states.HOME
+            state =  HOME
             reset()
         else:
-            state = states.REQUEST
+            state =  REQUEST
 
-    elif state == states.MUSIC:
+    elif state ==  MUSIC:
         textout("Press a key: \n 1) song1 \n 2) song2 \n 3) song3 \n 5) song4 \n 5) song5 \n 6) song6", 0x000000, 10, 60)
 
         keys = 0
@@ -351,30 +351,30 @@ while True:
 
         if keys == [1]:
             song1()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [2]:
             song2()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [3]:
             song3()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [4]:
             song4()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [5]:
             song5()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         elif keys == [6]:
             song6()
-            state = states.REQUEST
+            state =  REQUEST
             reset()
         else:
-            state = states.MUSIC
+            state =  MUSIC
 
 #------------------------------------------------------------------------------------------------------#
 #
