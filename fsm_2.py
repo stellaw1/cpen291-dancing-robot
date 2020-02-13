@@ -16,6 +16,8 @@ import digitalio
 import adafruit_matrixkeypad
 import pulseio
 import servo
+from analogio import AnalogIn
+import adafruit_hcsr04
 
 #------------------------------------------------------------------------------------------------------#
 #
@@ -157,7 +159,30 @@ def textout(textin, bgcolor, xc, yc):
     text_area.x = xc
     text_area.y = yc
     splash.append(text_area)
+
+#------------------------------------------------------------------------------------------------------#
+# 
+# sonar code   
+#  
+#------------------------------------------------------------------------------------------------------#    
  
+sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
+threshold = 0.3
+
+def sonar():
+    try:
+        print((sonar.distance,))
+        if sonar.distance < threshold:
+            print("Detected")
+            return False
+        else:
+            return True
+    except RuntimeError:
+        print("Retrying!")
+    return True
+    # time.sleep(0.1)
+    
+
 #------------------------------------------------------------------------------------------------------#
 # 
 # dance code
@@ -671,7 +696,3 @@ while True:
             reset()
         else:
             state =  MUSIC
-
-
-
-
