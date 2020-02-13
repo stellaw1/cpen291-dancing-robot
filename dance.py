@@ -337,30 +337,32 @@ def ballerina():
     if (not check_distance):
         return
 
-    butterfly()
-    play_note(CRIMSON[i * 2])
-    time.sleep(0.05)
-    jump()
-    play_note(CRIMSON[i * 2 + 1])
-    time.sleep(0.05)
+    for i in range(4):
+        butterfly()
+        play_note(CRIMSON[i * 2])
+        time.sleep(0.05)
+        jump()
+        play_note(CRIMSON[i * 2 + 1])
+        time.sleep(0.05)
 
 #Dance 4: line dancing move
 def pigeon():
     if (not check_distance):
         return
-
-    leftShuffle()
-    play_note(TETRIS[i * 4])
-    time.sleep(0.05)
-    leftKick()
-    play_note(TETRIS[i * 4 + 1])
-    time.sleep(0.2)
-    rightShuffle()
-    play_note(TETRIS[i * 4 + 2])
-    time.sleep(0.05)
-    rightKick()
-    play_note(TETRIS[i * 4 + 3])
-    time.sleep(1)
+        
+    for i in range(4):
+        leftShuffle()
+        play_note(TETRIS[i * 4])
+        time.sleep(0.05)
+        leftKick()
+        play_note(TETRIS[i * 4 + 1])
+        time.sleep(0.2)
+        rightShuffle()
+        play_note(TETRIS[i * 4 + 2])
+        time.sleep(0.05)
+        rightKick()
+        play_note(TETRIS[i * 4 + 3])
+        time.sleep(1)
 
 #Dance 5: up and down
 def excite():
@@ -376,15 +378,16 @@ def excite():
 def karate():
     if (not check_distance):
         return
-    leftShuffle()
-    play_note(MARIO[i * 3])
-    time.sleep(0.1)
-    jump()
-    play_note(MARIO[i * 3 + 1])
-    time.sleep(0.1)
-    leftKick()
-    play_note(MARIO[i * 3 + 2])
-    time.sleep(0.5)
+    for i in range(4):
+        leftShuffle()
+        play_note(MARIO[i * 3])
+        time.sleep(0.1)
+        jump()
+        play_note(MARIO[i * 3 + 1])
+        time.sleep(0.1)
+        leftKick()
+        play_note(MARIO[i * 3 + 2])
+        time.sleep(0.5)
 
 # function for checking if robot is close to an object
 def check_distance():
@@ -395,4 +398,16 @@ def check_distance():
         return 0
     return 1
 
-def turn_around():
+shuffle()
+time.sleep(0.5)
+butterfly()
+time.sleep(0.5)
+jump()
+time.sleep(0.5)
+karate()
+time.sleep(0.5)
+ballerina()
+time.sleep(0.5)
+pigeon()
+time.sleep(0.5)
+walk()
