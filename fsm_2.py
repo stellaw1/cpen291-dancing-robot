@@ -13,25 +13,14 @@ import label
 from adafruit_st7735r import ST7735R
 import digitalio
 import adafruit_matrixkeypad
-from enum import Enum, auto
 import pulseio
 import servo
-import adafruit_hcsr04
 
 #------------------------------------------------------------------------------------------------------#
 # 
 # display code  
 #    
 #------------------------------------------------------------------------------------------------------#    
-
-LOADING = 0
-PASSCODE = 1
-HOME = 2
-DANCE = 3
-MUSIC = 4
-ABOUT = 5
-EXIT = 6
-REQUEST = 7
 
 def reset():
     displayio.release_displays()
@@ -62,8 +51,6 @@ def textout(textin, bgcolor, xc, yc):
     text_area.x = xc
     text_area.y = yc
     splash.append(text_area)
-    while True:
-        pass
 
 
 #------------------------------------------------------------------------------------------------------#
@@ -90,11 +77,11 @@ row1.pull = digitalio.Pull.UP
 # row3.direction = digitalio.Direction.INPUT
 # row3.pull = digitalio.Pull.UP
 
-out1 = digitalio.DigitalInOut(board.D9)
+out1 = digitalio.DigitalInOut(board.A2)
 out1.direction = digitalio.Direction.OUTPUT
 out1.value = False
 
-out2 = digitalio.DigitalInOut(board.D9)
+out2 = digitalio.DigitalInOut(board.A3)
 out2.direction = digitalio.Direction.OUTPUT
 out2.value = False
 
@@ -118,7 +105,7 @@ out2.value = False
 
 # Membrane 3x4 matrix keypad 
 # cols = [digitalio.DigitalInOut(x) for x in (col0, col1, col2)]
-rows = [digitalio.DigitalInOut(x) for x in (board.A4, board.A5)]
+#rows = [digitalio.DigitalInOut(x) for x in (board.A4, board.A5)]
  
 # define key values using a tuple
 keys = ((1, 2, 3),
@@ -129,16 +116,16 @@ keys = ((1, 2, 3),
  
 # keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
 
-def kypadDecode():
+def keypadDecode():
     key = 0
     for i in range(1,4):
         time.sleep(.1)
         if i == 1:
-            out1.value = True
-            out2.value = False
-        if i == 2:
             out2.value = True
             out1.value = False
+        if i == 2:
+            out1.value = True
+            out2.value = False
         if i == 3:
             out1.value = True
             out2.value = True
@@ -148,16 +135,15 @@ def kypadDecode():
     return key
 
 def keypadHelper(col):
-    count = 0
-    for x in (rows):
-        if not x.value:
-            return col + count
-        count += 3
+    if not row0.value:
+        return col
+    if not row1.value:
+        return col+3
     return 0
 
 def checkPass():
     seq = []
-    pwd = [1, 3, 5, '*']
+    pwd = [3, 3, 3, 3]
     i = 0
 
     while True: 
@@ -184,27 +170,31 @@ def checkPass():
 # gui code
 #     
 #------------------------------------------------------------------------------------------------------#    
+LOADING = 0
+PASSCODE = 1
+HOME = 2
+DANCE = 3
+MUSIC = 4
+ABOUT = 5
+EXIT = 6
+REQUEST = 7
 
-state = PASSCODE
+state = LOADING
 while True:
 
     if state ==  LOADING:
         splash = displayio.Group(max_size=10)
         reset()
-        time.sleep(0.5)
-        textshow("Loading.....", 0x000000, 30, 64, 3)
+        textshow("Loading.....", 0x000000, 30, 64, 1)
         reset()
-        time.sleep(0.3)
-        textshow("Welcome", 0x000000, 30, 64, 3)
+        textshow("Welcome", 0x000000, 30, 64, 1)
         reset()
-        time.sleep(0.5)
-        textshow("CPEN 291", 0x000000, 30, 64, 3)
+        textshow("CPEN 291", 0x000000, 30, 64, 1)
         reset()
-        time.sleep(0.5)
         state =  PASSCODE
 
     if state ==  PASSCODE:
-        textshow("enter the passcode", 0x000000, 10, 60, 3)
+        textout("enter the passcode", 0x000000, 10, 60)
         boolean = False
         boolean = checkPass()
         if boolean:
@@ -212,11 +202,14 @@ while True:
             state =  HOME
             reset()
         else:
+            reset()
+            textout("wrong passcode", 0x000000, 10, 60)
+            #time.sleep(1)
             state = PASSCODE
+            reset()
         
     elif state ==  HOME:
-        textshow("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60, 3)
-
+        textout("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60)
         keys = 0
         while keys == 0:
             keys = keypadDecode()
@@ -232,12 +225,11 @@ while True:
             reset()
         elif keys == [4]:
             state =  ABOUT
-        else
+        else:
             state =  HOME
         
     elif state ==  DANCE:
         textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 5) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
-
         keys =0
         while keys == 0:
             keys = keypadDecode()
@@ -270,9 +262,8 @@ while True:
             state =  DANCE
 
     elif state ==  ABOUT:
-        textout("About: \n Dancing Robot GUI \n Components: \n 1)Itsy Bitsy \n 2)TFT LCD \n 3)Servos \n 4)Ultrasonic sensor \n 5)Buzzer \n6)Keypad \n 7)RGB module/Shifter with LEDS \n Steps:\n 1)Power up: Welcome Menu that requests password\n 2)If password accepted a new window opens with a menu that has 6 dance moves to choose from If declined request for password again \n3)Press one of the first six buttons to do a dance (with particular music) move for a certain amount of time \n4)Come back to main menu\n 5)Might be able to display temperature as well (default lib / DHT11)", 0x000000, 10, 10)
-        time.sleep(5)
-        textshow("press any button to return", 0x000000, 10, 60, 3)
+        textshow("About: \n Dancing Robot GUI", 0x000000, 10, 10, 5)
+        textshow("press any button to return", 0x000000, 10, 60, 5)
        
         keys =0
         while keys == 0:
@@ -281,37 +272,37 @@ while True:
         if keys == [1]:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
             time.sleep(1)
             reset()
         elif keys == [2]:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
             time.sleep(1)
             reset()
         elif keys == [3]:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
             time.sleep(1)
             reset()
         elif keys == [4]:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
             time.sleep(1)
             reset()
         elif keys == [5]:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
             time.sleep(1)
             reset()
         elif keys == [6]:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 3)
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
             time.sleep(1)
             reset()
         else:
@@ -381,6 +372,7 @@ while True:
 # songs code 
 #     
 #------------------------------------------------------------------------------------------------------#    
+piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
 
 def song1():
 
@@ -656,14 +648,14 @@ def walk():
     for i in range(6):
         tiltLeft()
         time.sleep(0.05)
-        tiltRight()
+        tiltright()
         time.sleep(0.05)
 
 def shuffle():
     for i in range(6):
-        shuffleLeft()
+        leftShuffle()
         time.sleep(0.05)
-        shuffleRight()
+        rightShuffle()
         time.sleep(0.05)
 
 def dance1():
@@ -678,22 +670,3 @@ def dance5():
     pass
 def dance6():
     pass
-
-#------------------------------------------------------------------------------------------------------#
-#
-# ultrasonic sensor code
-#      
-#------------------------------------------------------------------------------------------------------#    
-
-sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
-threshold = 0.3
-
-
-while True:
-    try:
-        print((sonar.distance,))
-        if sonar.distance < threshold:
-            print("Detected")
-    except RuntimeError:
-        print("Retrying!")
-    time.sleep(0.1)
