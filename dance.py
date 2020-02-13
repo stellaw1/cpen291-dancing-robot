@@ -375,15 +375,17 @@ def excite():
 def karate():
     if (not check_distance):
         return
-    leftShuffle()
-    play_note(MARIO[i * 3])
-    time.sleep(0.1)
-    jump()
-    play_note(MARIO[i * 3 + 1])
-    time.sleep(0.1)
-    leftKick()
-    play_note(MARIO[i * 3 + 2])
-    time.sleep(0.5)
+        
+    for i in range(4):
+        leftShuffle()
+        play_note(MARIO[i * 3])
+        time.sleep(0.1)
+        jump()
+        play_note(MARIO[i * 3 + 1])
+        time.sleep(0.1)
+        leftKick()
+        play_note(MARIO[i * 3 + 2])
+        time.sleep(0.5)
 
 # function for checking if robot is close to an object
 def check_distance():
