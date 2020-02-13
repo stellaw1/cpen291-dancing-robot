@@ -65,9 +65,9 @@ threshold = 0.3
 
 def sonar():
     try:
-        print((sonar.distance,))
+        print("Distance: " + str(sonar.distance))
         if sonar.distance < threshold:
-            print("Detected")
+            print("Detected!")
             return False
         else:
             return True
