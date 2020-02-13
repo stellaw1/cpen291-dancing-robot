@@ -6,6 +6,7 @@
 # Date: 10/02/2020    
 #------------------------------------------------------------------------------------------------------#    
 import time
+import sys
 import board
 import displayio
 import terminalio
@@ -15,357 +16,6 @@ import digitalio
 import adafruit_matrixkeypad
 import pulseio
 import servo
-
-#------------------------------------------------------------------------------------------------------#
-# 
-# display code  
-#    
-#------------------------------------------------------------------------------------------------------#    
-
-def reset():
-    displayio.release_displays()
-    spi = board.SPI()
-    tft_cs = board.D5
-    tft_dc = board.D9
-    display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
-    display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
-    global splash
-    display.show(splash)
-    color_bitmap = displayio.Bitmap(128, 128, 1)
-    color_palette = displayio.Palette(1)
-    color_palette[0] = 0xFFFFFF # White
-    bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
-    splash.append(bg_white)
-
-def textshow(textin, bgcolor, xc, yc, timein):
-    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
-    text_area.x = xc
-    text_area.y = yc
-    splash.append(text_area)
-    for i in range(timein):
-        pass
-        time.sleep(1)
-
-def textout(textin, bgcolor, xc, yc):
-    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
-    text_area.x = xc
-    text_area.y = yc
-    splash.append(text_area)
-
-
-#------------------------------------------------------------------------------------------------------#
-# 
-# keypad code   
-#  
-#------------------------------------------------------------------------------------------------------#    
-
-# Setting up input pins
-# Board D13 to keypad pin 1
-row0 = digitalio.DigitalInOut(board.A4)
-row0.direction = digitalio.Direction.INPUT
-row0.pull = digitalio.Pull.UP
-#Board D12 to keypad pin 2a
-row1 = digitalio.DigitalInOut(board.A5)
-row1.direction = digitalio.Direction.INPUT
-row1.pull = digitalio.Pull.UP
-#Board D11 to keypad pin 3
-# row2 = digitalio.DigitalInOut(board.D11)
-# row2.direction = digitalio.Direction.INPUT
-# row2.pull = digitalio.Pull.UP
-# #Board D10 to keypad pin 4
-# row3 = digitalio.DigitalInOut(board.D10)
-# row3.direction = digitalio.Direction.INPUT
-# row3.pull = digitalio.Pull.UP
-
-out1 = digitalio.DigitalInOut(board.A2)
-out1.direction = digitalio.Direction.OUTPUT
-out1.value = False
-
-out2 = digitalio.DigitalInOut(board.A3)
-out2.direction = digitalio.Direction.OUTPUT
-out2.value = False
-
-# #Board D9 to keypad pin 5
-# col0 = digitalio.DigitalInOut(board.D9)
-# col0.direction = digitalio.Direction.OUTPUT
-# col0.value = False;
-# #Board D6 to keypad pin 6
-# col1 = digitalio.DigitalInOut(board.D6)
-# col1.direction = digitalio.Direction.OUTPUT
-# # col1.pull = digitalio.Pull.UP
-# col1.value = False;
-# #Board D5 to keypad pin 7
-# col2 = digitalio.DigitalInOut(board.D5)
-# col2.direction = digitalio.Direction.OUTPUT
-# col2.value = False;
-
-# col0 = (out1 && !out2)
-# col1 = (out2 && !out1)
-# col2 = (out1 && out2)
-
-# Membrane 3x4 matrix keypad 
-# cols = [digitalio.DigitalInOut(x) for x in (col0, col1, col2)]
-#rows = [digitalio.DigitalInOut(x) for x in (board.A4, board.A5)]
- 
-# define key values using a tuple
-keys = ((1, 2, 3),
-        (4, 5, 6)#,
-        # (7, 8, 9),
-        # ('*', 0, '#')
-        )
- 
-# keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
-
-def keypadDecode():
-    key = 0
-    for i in range(1,4):
-        time.sleep(.1)
-        if i == 1:
-            out2.value = True
-            out1.value = False
-        if i == 2:
-            out1.value = True
-            out2.value = False
-        if i == 3:
-            out1.value = True
-            out2.value = True
-        key = keypadHelper(i)
-        if key != 0:
-            return key
-    return key
-
-def keypadHelper(col):
-    if not row0.value:
-        return col
-    if not row1.value:
-        return col+3
-    return 0
-
-def checkPass():
-    seq = []
-    pwd = [3, 3, 3, 3]
-    i = 0
-
-    while True: 
-        # keys = keypad.pressed_keys
-        keys = keypadDecode()
-        if keys: 
-            seq.append(keys)
-            i = i + 1
-            time.sleep(0.4)
-
-        if i >= 4: 
-            if seq == pwd: 
-                seq = []
-                i = 0
-                return True
-            else: 
-                seq = []
-                return False
-
-        time.sleep(0.1)
-               
-#------------------------------------------------------------------------------------------------------#
-# 
-# gui code
-#     
-#------------------------------------------------------------------------------------------------------#    
-LOADING = 0
-PASSCODE = 1
-HOME = 2
-DANCE = 3
-MUSIC = 4
-ABOUT = 5
-EXIT = 6
-REQUEST = 7
-
-state = LOADING
-while True:
-
-    if state ==  LOADING:
-        splash = displayio.Group(max_size=10)
-        reset()
-        textshow("Loading.....", 0x000000, 30, 64, 1)
-        reset()
-        textshow("Welcome", 0x000000, 30, 64, 1)
-        reset()
-        textshow("CPEN 291", 0x000000, 30, 64, 1)
-        reset()
-        state =  PASSCODE
-
-    if state ==  PASSCODE:
-        textout("enter the passcode", 0x000000, 10, 60)
-        boolean = False
-        boolean = checkPass()
-        if boolean:
-            boolean = False
-            state =  HOME
-            reset()
-        else:
-            reset()
-            textout("wrong passcode", 0x000000, 10, 60)
-            #time.sleep(1)
-            state = PASSCODE
-            reset()
-        
-    elif state ==  HOME:
-        textout("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60)
-        keys = 0
-        while keys == 0:
-            keys = keypadDecode()
-
-        if keys == [1]:
-            state =  DANCE
-            reset()
-        elif keys == [2]:
-            state =  MUSIC
-            reset()
-        elif keys == [3]:
-            state =  EXIT
-            reset()
-        elif keys == [4]:
-            state =  ABOUT
-        else:
-            state =  HOME
-        
-    elif state ==  DANCE:
-        textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 5) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
-        keys =0
-        while keys == 0:
-            keys = keypadDecode()
-
-        if keys == [1]:
-            dance1()
-            state =  REQUEST
-            reset()
-        elif keys == [2]:
-            dance2()
-            state =  REQUEST
-            reset()
-        elif keys == [3]:
-            dance3()
-            state =  REQUEST
-            reset()
-        elif keys == [4]:
-            dance4()
-            state =  REQUEST
-            reset()
-        elif keys == [5]:
-            dance5()
-            state =  REQUEST
-            reset()
-        elif keys == [6]:
-            dance6()
-            state =  REQUEST
-            reset()
-        else:
-            state =  DANCE
-
-    elif state ==  ABOUT:
-        textshow("About: \n Dancing Robot GUI", 0x000000, 10, 10, 5)
-        textshow("press any button to return", 0x000000, 10, 60, 5)
-       
-        keys =0
-        while keys == 0:
-            keys = keypadDecode()
-
-        if keys == [1]:
-            state =  HOME
-            reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
-        elif keys == [2]:
-            state =  HOME
-            reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
-        elif keys == [3]:
-            state =  HOME
-            reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
-        elif keys == [4]:
-            state =  HOME
-            reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
-        elif keys == [5]:
-            state =  HOME
-            reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
-        elif keys == [6]:
-            state =  HOME
-            reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
-        else:
-            state =  ABOUT
-
-    elif state ==  EXIT:
-        textshow("Exiting.....", 0x000000, 30, 64, 3)
-        time.sleep(0.5)
-        state =  PASSCODE
-        reset()
-
-    elif state ==  REQUEST:
-        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 10, 60)
-        
-        keys = 0
-        while keys == 0:
-            keys = keypadDecode()
-
-        if keys == [1]:
-            state =  DANCE
-            reset()
-        elif keys == [2]:
-            state =  MUSIC
-            reset()
-        elif keys == [3]:
-            state =  HOME
-            reset()
-        else:
-            state =  REQUEST
-
-    elif state ==  MUSIC:
-        textout("Press a key: \n 1) song1 \n 2) song2 \n 3) song3 \n 5) song4 \n 5) song5 \n 6) song6", 0x000000, 10, 60)
-
-        keys = 0
-        while keys == 0:
-            keys = keypadDecode()
-
-        if keys == [1]:
-            song1()
-            state =  REQUEST
-            reset()
-        elif keys == [2]:
-            song2()
-            state =  REQUEST
-            reset()
-        elif keys == [3]:
-            song3()
-            state =  REQUEST
-            reset()
-        elif keys == [4]:
-            song4()
-            state =  REQUEST
-            reset()
-        elif keys == [5]:
-            song5()
-            state =  REQUEST
-            reset()
-        elif keys == [6]:
-            song6()
-            state =  REQUEST
-            reset()
-        else:
-            state =  MUSIC
 
 #------------------------------------------------------------------------------------------------------#
 #
@@ -471,7 +121,43 @@ def song6():
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5)    
+        
 
+#------------------------------------------------------------------------------------------------------#
+# 
+# display code  
+#    
+#------------------------------------------------------------------------------------------------------# 
+def reset():
+    displayio.release_displays()
+    spi = board.SPI()
+    tft_cs = board.D5
+    tft_dc = board.D9
+    display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
+    display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
+    global splash
+    display.show(splash)
+    color_bitmap = displayio.Bitmap(128, 128, 1)
+    color_palette = displayio.Palette(1)
+    color_palette[0] = 0xFFFFFF # White
+    bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
+    splash.append(bg_white)
+
+def textshow(textin, bgcolor, xc, yc, timein):
+    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
+    text_area.x = xc
+    text_area.y = yc
+    splash.append(text_area)
+    for i in range(timein):
+        pass
+        time.sleep(1)
+
+def textout(textin, bgcolor, xc, yc):
+    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
+    text_area.x = xc
+    text_area.y = yc
+    splash.append(text_area)
+ 
 #------------------------------------------------------------------------------------------------------#
 # 
 # dance code
@@ -670,3 +356,322 @@ def dance5():
     pass
 def dance6():
     pass
+    
+#------------------------------------------------------------------------------------------------------#
+# 
+# keypad code   
+#  
+#------------------------------------------------------------------------------------------------------#    
+
+# Setting up input pins
+# Board D13 to keypad pin 1
+row0 = digitalio.DigitalInOut(board.A4)
+row0.direction = digitalio.Direction.INPUT
+row0.pull = digitalio.Pull.UP
+#Board D12 to keypad pin 2a
+row1 = digitalio.DigitalInOut(board.A5)
+row1.direction = digitalio.Direction.INPUT
+row1.pull = digitalio.Pull.UP
+#Board D11 to keypad pin 3
+# row2 = digitalio.DigitalInOut(board.D11)
+# row2.direction = digitalio.Direction.INPUT
+# row2.pull = digitalio.Pull.UP
+# #Board D10 to keypad pin 4
+# row3 = digitalio.DigitalInOut(board.D10)
+# row3.direction = digitalio.Direction.INPUT
+# row3.pull = digitalio.Pull.UP
+
+out1 = digitalio.DigitalInOut(board.A2)
+out1.direction = digitalio.Direction.OUTPUT
+out1.value = False
+
+out2 = digitalio.DigitalInOut(board.A3)
+out2.direction = digitalio.Direction.OUTPUT
+out2.value = False
+
+# #Board D9 to keypad pin 5
+# col0 = digitalio.DigitalInOut(board.D9)
+# col0.direction = digitalio.Direction.OUTPUT
+# col0.value = False;
+# #Board D6 to keypad pin 6
+# col1 = digitalio.DigitalInOut(board.D6)
+# col1.direction = digitalio.Direction.OUTPUT
+# # col1.pull = digitalio.Pull.UP
+# col1.value = False;
+# #Board D5 to keypad pin 7
+# col2 = digitalio.DigitalInOut(board.D5)
+# col2.direction = digitalio.Direction.OUTPUT
+# col2.value = False;
+
+# col0 = (out1 && !out2)
+# col1 = (out2 && !out1)
+# col2 = (out1 && out2)
+
+# Membrane 3x4 matrix keypad 
+# cols = [digitalio.DigitalInOut(x) for x in (col0, col1, col2)]
+#rows = [digitalio.DigitalInOut(x) for x in (board.A4, board.A5)]
+ 
+# define key values using a tuple
+keys = ((1, 2, 3),
+        (4, 5, 6)#,
+        # (7, 8, 9),
+        # ('*', 0, '#')
+        )
+ 
+# keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
+
+def keypadDecode():
+    key = 0
+    for i in range(1,4):
+        time.sleep(.1)
+        if i == 1:
+            out2.value = True
+            out1.value = False
+        if i == 2:
+            out1.value = True
+            out2.value = False
+        if i == 3:
+            out1.value = True
+            out2.value = True
+        key = keypadHelper(i)
+        if key != 0:
+            return key
+    return key
+
+def keypadHelper(col):
+    if not row0.value:
+        return col
+    if not row1.value:
+        return col+3
+    return 0
+
+def checkPass():
+    seq = []
+    pwd = [1, 1, 1, 1]
+    i = 0
+
+    while True: 
+        # keys = keypad.pressed_keys
+        keys = keypadDecode()
+        if keys: 
+            seq.append(keys)
+            i = i + 1
+            time.sleep(0.4)
+
+        if i >= 4: 
+            if seq == pwd: 
+                seq = []
+                i = 0
+                return True
+            else: 
+                seq = []
+                return False
+
+        time.sleep(0.1)
+               
+#------------------------------------------------------------------------------------------------------#
+# 
+# gui code
+#     
+#------------------------------------------------------------------------------------------------------#    
+LOADING = 0
+PASSCODE = 1
+HOME = 2
+DANCE = 3
+MUSIC = 4
+ABOUT = 5
+EXIT = 6
+REQUEST = 7
+
+state = LOADING
+while True:
+
+    if state ==  LOADING:
+        splash = displayio.Group(max_size=100)
+        reset()
+        textshow("Loading.....", 0x000000, 30, 64, 1)
+        reset()
+        textshow("Welcome", 0x000000, 30, 64, 1)
+        reset()
+        textshow("CPEN 291", 0x000000, 30, 64, 1)
+        reset()
+        state =  PASSCODE
+
+    if state ==  PASSCODE:
+        textout("enter the passcode", 0x000000, 10, 60)
+        boolean = False
+        boolean = checkPass()
+        if boolean:
+            boolean = False
+            state =  HOME
+            reset()
+        else:
+            reset()
+            textshow("wrong passcode", 0x000000, 10, 60, 2)
+            #time.sleep(1)
+            state = PASSCODE
+            reset()
+        
+    elif state ==  HOME:
+        textout("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60)
+        keys = 0
+        while keys == 0:
+            keys = keypadDecode()
+
+        if keys == 1:
+            state =  DANCE
+            reset()
+        elif keys == 2:
+            state =  MUSIC
+            reset()
+        elif keys == 3:
+            state =  EXIT
+            reset()
+        elif keys == 4:
+            state =  ABOUT
+        else:
+            state =  HOME
+        
+    elif state ==  DANCE:
+        textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 5) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
+        keys = 0
+        while keys == 0:
+            keys = keypadDecode()
+
+        if keys == 1:
+            dance1()
+            state =  REQUEST
+            reset()
+        elif keys == 2:
+            dance2()
+            state =  REQUEST
+            reset()
+        elif keys == 3:
+            dance3()
+            state =  REQUEST
+            reset()
+        elif keys == 4:
+            dance4()
+            state =  REQUEST
+            reset()
+        elif keys == 5:
+            dance5()
+            state =  REQUEST
+            reset()
+        elif keys == 6:
+            dance6()
+            state =  REQUEST
+            reset()
+        else:
+            state =  DANCE
+
+    elif state ==  ABOUT:
+        textshow("About: \n Dancing Robot GUI", 0x000000, 10, 10, 5)
+        textshow("press any button to return", 0x000000, 10, 60, 5)
+       
+        keys =0
+        while keys == 0:
+            keys = keypadDecode()
+
+        if keys == 1:
+            state =  HOME
+            reset()
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
+            time.sleep(1)
+            reset()
+        elif keys == 2:
+            state =  HOME
+            reset()
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
+            time.sleep(1)
+            reset()
+        elif keys == 3:
+            state =  HOME
+            reset()
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
+            time.sleep(1)
+            reset()
+        elif keys == 4:
+            state =  HOME
+            reset()
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
+            time.sleep(1)
+            reset()
+        elif keys == 5:
+            state =  HOME
+            reset()
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
+            time.sleep(1)
+            reset()
+        elif keys == 6:
+            state =  HOME
+            reset()
+            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
+            time.sleep(1)
+            reset()
+        else:
+            state =  ABOUT
+
+    elif state ==  EXIT:
+        textshow("Exiting.....", 0x000000, 30, 64, 3)
+        time.sleep(0.5)
+        #state =  PASSCODE
+        sys.exit()
+        #reset()
+
+    elif state ==  REQUEST:
+        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 10, 60)
+        
+        keys = 0
+        while keys == 0:
+            keys = keypadDecode()
+
+        if keys == 1:
+            state =  DANCE
+            reset()
+        elif keys == 2:
+            state =  MUSIC
+            reset()
+        elif keys == 3:
+            state =  HOME
+            reset()
+        else:
+            state =  REQUEST
+
+    elif state ==  MUSIC:
+        textout("Press a key: \n 1) song1 \n 2) song2 \n 3) song3 \n 5) song4 \n 5) song5 \n 6) song6", 0x000000, 10, 60)
+
+        keys = 0
+        while keys == 0:
+            keys = keypadDecode()
+
+        if keys == 1:
+            song1()
+            state =  REQUEST
+            reset()
+        elif keys == 2:
+            song2()
+            state =  REQUEST
+            reset()
+        elif keys == 3:
+            song3()
+            state =  REQUEST
+            reset()
+        elif keys == 4:
+            song4()
+            state =  REQUEST
+            reset()
+        elif keys == 5:
+            song5()
+            state =  REQUEST
+            reset()
+        elif keys == 6:
+            song6()
+            state =  REQUEST
+            reset()
+        else:
+            state =  MUSIC
+
+
+
+
