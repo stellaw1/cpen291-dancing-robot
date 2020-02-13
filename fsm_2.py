@@ -171,17 +171,18 @@ threshold = 0.3
 
 def sonar():
     try:
-        print("Distance: " + str(sonar.distance))
-        if sonar.distance < threshold:
-            print("Detected!")
-            return False
-        else:
-            return True
+        # reads value 4 times as to guarentee no false readings
+        num_detected = 0
+        for x in range(0, 3):
+            print("Distance: " + str(sonar.distance))
+            if sonar.distance < threshold:
+                print("Detected!")
+                num_detected += 1
+            time.sleep(0.01)
+        return num_detected < 3
     except RuntimeError:
         print("Retrying!")
-    return True
-    # time.sleep(0.1)
-    
+    return False
 
 #------------------------------------------------------------------------------------------------------#
 # 
@@ -357,15 +358,23 @@ def tiltright():
 # define dance moves as sequences of basic moves
 def walk():
     for i in range(6):
+        if not sonar():
+            break
         tiltLeft()
         time.sleep(0.05)
+        if not sonar():
+            break
         tiltright()
         time.sleep(0.05)
 
 def shuffle():
     for i in range(6):
+        if not sonar():
+            break
         leftShuffle()
         time.sleep(0.05)
+        if not sonar():
+            break
         rightShuffle()
         time.sleep(0.05)
 
