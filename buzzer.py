@@ -20,11 +20,9 @@ def USSR_anthem():
 #Source: https://www.princetronics.com/supermariothemesong/
 def mario_theme():
     while True:
-            for f in (2637, 2637, 0, 2637, 0, 2093, 2637, 0, 3136, 0, 0,  0, 1568, 0, 0, 0,
-                    2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
-                    1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0,
-                    2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
-                    1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0):
+            for f in (330, 330, 0, 330, 0, 262, 330, 0, 392, 0, 0,  0, 196, 0, 0, 0,
+                    262, 0, 0, 196, 0, 0, 165, 0, 0, 220, 0, 247, 0, 233, 220, 0,
+                    196, 330, 392, 440, 0, 349, 392, 0, 330, 0, 262, 294, 247, 0, 0):
                 piezo.frequency = f
                 piezo.duty_cycle = 65536 // 2  # On 50%
                 time.sleep(0.25)  # On for 1/4 second
@@ -33,6 +31,7 @@ def mario_theme():
             time.sleep(0.5)
 
 # all i want for christmas intro
+# Source: https://www.musicnotes.com/sheetmusic/mtd.asp?ppn=MN0109830
 def crimson():
     while True:
         for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):

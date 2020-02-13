@@ -136,7 +136,7 @@ def default():
     for f in range (0, len(freq)):
         piezo.frequency = freq[f]
         piezo.duty_cycle = 65536 // 2  # On 50%
-        time.sleep(delay[f])  # On
+        time.sleep(delay[f] / 1000)  # On
         piezo.duty_cycle = 0  # Off
         time.sleep(0.05)  # Pause between notes
 
