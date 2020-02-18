@@ -498,7 +498,13 @@ while True:
     if state ==  LOADING:
         splash = displayio.Group(max_size=100)
         reset()
-        textshow("Loading.....", 0x000000, 30, 64, 0.1)
+        string = "Loading..."
+        i = 0
+        x = 30
+        while(i<10):
+            textshow(string[i], 0x000000, x, 64, 0.0001)
+            i+=1
+            x+=6
         reset()
         textshow("Welcome", 0x000000, 30, 64, 0.1)
         reset()
