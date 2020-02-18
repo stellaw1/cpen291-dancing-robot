@@ -161,7 +161,7 @@ def dance1():
 
 #2: line dance to the MARIO THEME song
 def dance2():
-    for i in range(0, len(MARIO), 4):
+    for i in range(0, len(MARIO) - 4, 4):
         play_note(MARIO[i])
         leftFootOut()
         play_note(MARIO[i+1])
@@ -174,7 +174,7 @@ def dance2():
 
 #3: karate kick to the USSR ANTHEM
 def dance3():
-    for i in range(0, len(ANTHEM), 6):
+    for i in range(0, len(ANTHEM) - 6, 6):
         play_note(ANTHEM[i])
         leftFootOut()
         play_note(ANTHEM[i+1])
@@ -191,7 +191,7 @@ def dance3():
 
 #4: tap feet to the beat of Tetris background music
 def dance4():
-    for i in range(0, len(TETRIS), 12):
+    for i in range(0, len(TETRIS) - 12, 12):
         for j in range(0, 3, 1):
             play_note(TETRIS[i + j])
             tapLeftFoot()
@@ -204,7 +204,7 @@ def dance4():
 
 #5: walk to Pachebel Canon in C
 def dance5():
-    for i in range(0, len(CANON), 2):
+    for i in range(0, len(CANON) - 2, 2):
         play_note(CANON[i])
         leftKick()
         play_note(CANON[i + 1])
@@ -212,6 +212,7 @@ def dance5():
 
 #6: wiggle to the fortnite default song
 def dance6():
-    for i in range(0, len(DEFAULT), 2):
+    for i in range(0, len(DEFAULT) - 2, 2):
         play_note(DEFAULT[i])
         shuffle()
+
