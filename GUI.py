@@ -28,6 +28,7 @@ piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequenc
 
 # define 6 songs
 
+# USSR anthem
 def song1():
 
     timeout = time.time() + 30 
@@ -37,8 +38,8 @@ def song1():
             break
 
         for f in (196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
-                262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
-                247, 220, 207, 207, 207):
+            262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
+            247, 220, 207, 207, 207):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -46,6 +47,8 @@ def song1():
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5) 
 
+
+# mario theme song
 def song2():
     
     timeout = time.time() + 30 
@@ -54,11 +57,8 @@ def song2():
         if time.time() > timeout:
             break
 
-        for f in (2637, 2637, 0, 2637, 0, 2093, 2637, 0, 3136, 0, 0,  0, 1568, 0, 0, 0,
-                2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
-                1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0,
-                2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
-                1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0):
+        for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
+            262, 294, 247):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -66,6 +66,7 @@ def song2():
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5) 
 
+# crimson
 def song3():
 
     timeout = time.time() + 30 
@@ -74,7 +75,7 @@ def song3():
         if time.time() > timeout:
             break
 
-        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294): #enter the song frequency here):
+        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294): 
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -82,6 +83,7 @@ def song3():
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5) 
 
+# canon
 def song4():
 
     timeout = time.time() + 30 
@@ -91,7 +93,7 @@ def song4():
             break
 
         for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
-                131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110): #enter the song frequency here):
+            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110): 
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -99,6 +101,7 @@ def song4():
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5)  
 
+# tetris
 def song5():
 
     timeout = time.time() + 30 
@@ -108,10 +111,10 @@ def song5():
             break
 
         for f in (659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 523,
-                494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587, 
-                523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 
-                659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
-                659, 587, 523, 587, 659, 523, 440, 440): #enter the song frequency here):
+            494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587, 
+            523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 
+            659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
+            659, 587, 523, 587, 659, 523, 440, 440):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -119,6 +122,7 @@ def song5():
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5)  
 
+# fortnite
 def song6():
 
     timeout = time.time() + 30 
@@ -127,7 +131,7 @@ def song6():
         if time.time() > timeout:
             break
 
-        for f in (149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931): #enter the song frequency here):
+        for f in (149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
