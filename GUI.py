@@ -5,6 +5,7 @@
 # 
 # Date: 10/02/2020    
 #------------------------------------------------------------------------------------------------------#    
+
 import time
 import sys
 import board
@@ -161,6 +162,19 @@ def reset():
     color_palette[0] = 0xFFFFFF # White
     bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
     splash.append(bg_white)
+
+    #### Draw a smaller inner rectangle
+    #inner_bitmap = displayio.Bitmap(108, 108, 1)
+    #inner_palette = displayio.Palette(1)
+    #inner_palette[0] = 0xAA0088 # Purple
+    #inner_sprite = displayio.TileGrid(inner_bitmap,
+    #                                pixel_shader=inner_palette,
+    #                                x=10, y=10)
+    #splash.append(inner_sprite)
+
+    # my_bitmap = displayio.OnDiskBitmap(open("/my_bitmap.bmp", "rb"))
+    # my_tilegrid = displayio.TileGrid(my_bitmap, pixel_shader=displayio.ColorConverter())
+    # my_display_group.append(my_tilegrid)
 
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
