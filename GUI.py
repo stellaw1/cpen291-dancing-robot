@@ -22,7 +22,11 @@ import servo
 # songs code 
 #     
 #------------------------------------------------------------------------------------------------------#    
+
+# setting up the piezo buzzer
 piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
+
+# define 6 songs
 
 def song1():
 
@@ -137,6 +141,8 @@ def song6():
 # display code  
 #    
 #------------------------------------------------------------------------------------------------------# 
+
+
 def reset():
     displayio.release_displays()
     spi = board.SPI()
@@ -173,198 +179,209 @@ def textout(textin, bgcolor, xc, yc):
 #     
 #------------------------------------------------------------------------------------------------------#        
 
-pwm1 = pulseio.PWMOut(board.D10, frequency=50) #leg1
-legL = servo.ContinuousServo(pwm1)
+# pin assignments and initial setup
+pwm1 = pulseio.PWMOut(board.D10, duty_cycle=2 ** 15, frequency=50)
+legR = servo.Servo(pwm1)
 
-pwm2 = pulseio.PWMOut(board.D11, frequency=50) #leg2
-legR = servo.ContinuousServo(pwm2)
+pwm2 = pulseio.PWMOut(board.D11, duty_cycle=2 ** 15, frequency=50) #leg2
+legL = servo.Servo(pwm2)
 
-pwm3 = pulseio.PWMOut(board.D12, frequency=50)
-footL = servo.ContinuousServo(pwm3)
+pwm3 = pulseio.PWMOut(board.D12, duty_cycle=2 ** 15, frequency=50)
+footL = servo.Servo(pwm3)
 
-pwm4 = pulseio.PWMOut(board.D13, frequency=50)
-footR = servo.ContinuousServo(pwm4)
+pwm4 = pulseio.PWMOut(board.D13, duty_cycle=2 ** 15, frequency=50)
+footR = servo.Servo(pwm4)
 
-###################################
-# define basic dance move functions 
+#buzzer setup
+piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
 
-# rotates right foot outwards and back in
-def rightShuffle():
-    footR.throttle = 0.0
+
+# define basic functions
+def reset(): 
+    legR.angle = 94
+    legL.angle = 90
+    footR.angle = 90
+    footL.angle = 91
+
+def rotate(limb, min, max, step):
+    for x in range(min, max, step):
+        limb.angle = x
+
+# define single dance move functions 
+def leftFootOut():
+    rotate(legL, 90, 180, 5)
+    rotate(legL, 180, 90, -5)
+
+def rightFootOut():
+    rotate(legR, 90, 10, -5)
+    rotate(legR, 10, 90, 5)
     
-    angle = -0.5
-    while angle < 0.5:  # 0 - 180 degrees, 5 degrees at a time.
-        legR.throttle = angle
-        time.sleep(0.05)
-        angle = angle + 0.1
-    while angle >= -0.5:  # 0 - 180 degrees, 5 degrees at a time.
-        legR.throttle = angle
-        time.sleep(0.05)
-        angle = angle - 0.1
-    
-    footR.throttle = 0.0
-    
+def leftFootIn():
+    rotate(legL, 90, 20, -5)
+    rotate(legL, 20, 90, 5)
 
-# rotates left foot outwards and back in
-def leftShuffle():
-    footL.throttle = 0.1
-    
-    angle = -0.3
-    while angle < 0.8:  # 0 - 180 degrees, 5 degrees at a time.
-        legL.throttle = angle
-        time.sleep(0.05)
-        angle = angle + 0.1
-    while angle >= -0.3:  # 0 - 180 degrees, 5 degrees at a time.
-        legL.throttle = angle
-        time.sleep(0.05)
-        angle = angle - 0.1
-    
-    footL.throttle = 0.1
+def rightFootIn():
+    rotate(legR, 90, 160, 5)
+    rotate(legR, 160, 90, -5)
 
-
-# lift upwards by pointing both feet
 def jump():
-    legR.throttle = 0.1
-    legL.throttle = 0.1
-    footR.throttle = 0.1
-    footL.throttle = 0.1
-    time.sleep(2)
-    
-    angle = 0.1
-    while angle < 0.4:  # 0 - 180 degrees, 5 degrees at a time.
-        footL.throttle = angle
-        footR.throttle = 0.1  - angle
-        time.sleep(0.1)
-        angle = angle + 0.05
-    time.sleep(1)
-    while angle >= 0.1:  # 0 - 180 degrees, 5 degrees at a time.
-        footL.throttle = angle
-        footR.throttle = 0.1 - angle
-        time.sleep(0.1)
-        angle = angle - 0.05
+    reset()
+    for angle in range(90, 130, 5):  # 0 - 180 degrees, 5 degrees at a time.
+        footL.angle = angle
+        footR.angle = 90 - (angle - 90)
+    for angle in range(130, 90, -5): # 180 - 0 degrees, 5 degrees at a time.
+        footL.angle = angle
+        footR.angle = 90 - (angle - 90)
+    reset()
 
-
-# moves right leg forward and back down
 def rightKick():
-    legR.throttle = -0.8
-    
-    angle = 0.0
-    while angle < 0.7:  # 0 - 180 degrees, 5 degrees at a time.
-        footR.throttle = angle
-        time.sleep(0.05)
-        angle = angle + 0.1
-    while angle >= -0.1:  # 0 - 180 degrees, 5 degrees at a time.
-        footR.throttle = angle
-        time.sleep(0.05)
-        angle = angle - 0.1
-    
-    legR.throttle = -0.8
+    legR.angle = 20
+    rotate(footR, 90, 130, 4)
+    rotate(footR, 130, 90, -4)
+    reset()
 
-
-# moves left leg forward and back down
 def leftKick():
-    legL.throttle = 0.9
-    
-    angle = 0.3
-    while angle > -0.7:  # 0 - 180 degrees, 5 degrees at a time.
-        footL.throttle = angle
-        time.sleep(0.05)
-        angle = angle - 0.1
-    while angle <= 0.3:  # 0 - 180 degrees, 5 degrees at a time.
-        footL.throttle = angle
-        time.sleep(0.05)
-        angle = angle + 0.1
-    
-    legL.throttle = 0.9
-
-
-# takes a step forward by lifting right foot
-def rightStep():
-    footL.throttle = 0.1
-    legL.throttle = 0.0
-    
-    footR.throttle = 0.1
-    legR.throttle = 0.1
-    time.sleep(3)
-    
-    angleL = 0.1
-    while angleL >= -0.2:  # 0 - 180 degrees, 5 degrees at a time.
-        footR.throttle = angleL
-        time.sleep(0.05)
-        angleL = angleL - 0.05
-        
-    angleF = 0.1
-    while angleF >= -0.4:  # 0 - 180 degrees, 5 degrees at a time.
-        legR.throttle = angleF
-        time.sleep(0.05)
-        angleF = angleF - 0.1
-
-
-# takes a step forward by lifting left foot
-def leftStep():
-    footL.throttle = 0.1
-    legL.throttle = 0.0
-    
-    footR.throttle = 0.1
-    legR.throttle = 0.1
-    time.sleep(3)
-    
-    angleL = 0.1
-    while angleL <= 0.3:  # 0 - 180 degrees, 5 degrees at a time.
-        footL.throttle = angleL
-        time.sleep(0.05)
-        angleL = angleL - 0.05
-        
-    angleF = 0.1
-    while angleF >= -0.4:  # 0 - 180 degrees, 5 degrees at a time.
-        legL.throttle = angleF
-        time.sleep(0.05)
-        angleF = angleF - 0.1
-
-
-def tiltLeft():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            legL.angle = angle
-            time.sleep(0.05)
-
-def tiltright():
-    print("right kick")
-    for i in range(3):
-        for angle in range(0, 180, 5):  # 0 - 180 degrees, 5 degrees at a time.
-            legR.angle = angle
-            time.sleep(0.05)
-
-
-##############################################
-# define dance moves as sequences of basic moves
-def walk():
-    for i in range(6):
-        tiltLeft()
-        time.sleep(0.05)
-        tiltright()
-        time.sleep(0.05)
+    legL.angle = 160
+    rotate(footL, 90, 60, -3)
+    rotate(footL, 60, 90, 3)
+    reset()
 
 def shuffle():
-    for i in range(6):
-        leftShuffle()
-        time.sleep(0.05)
-        rightShuffle()
-        time.sleep(0.05)
+    for angle in range(90, 60, -5):  # 0 - 180 degrees, 5 degrees at a time.
+        legL.angle = angle
+        legR.angle = 90 + (angle - 60)
+    for angle in range(60, 90, 5): # 180 - 0 degrees, 5 degrees at a time.
+        legL.angle = angle
+        legR.angle = 90 + (angle - 60)
+    reset()    
 
+def wiggle():
+    rotate(footL, 90, 130, 5)
+    rotate(footR, 90, 60, -5)
+    rotate(footL, 130, 90, -5)
+    rotate(footR, 60, 90, 5)
+
+
+def tapLeftFoot():
+    reset()
+    rotate(footL, 90, 60, -3)
+    rotate(footL, 60, 90, 3)
+    reset()
+    
+def tapRightFoot():
+    reset()
+    rotate(footR, 90, 120, 3)
+    rotate(footR, 120, 90, -3)
+    reset()
+ 
+def tapBothFeet():
+    reset()
+    for angle in range(90, 130, 8):  # 0 - 180 degrees, 5 degrees at a time.
+        footL.angle = 90 - (angle - 90)
+        footR.angle = angle
+    for angle in range(130, 90, -8): # 180 - 0 degrees, 5 degrees at a time.
+        footL.angle = 90 - (angle - 90)
+        footR.angle = angle
+    reset()
+
+
+# song frequency arrays
+ANTHEM = [196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
+            262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
+            247, 220, 207, 207, 207]
+
+MARIO = [330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
+            262, 294, 247]
+
+CRIMSON = [196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294]
+
+CANON = [131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
+            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110]
+
+TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 523,
+            494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587, 
+            523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 
+            659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
+            659, 587, 523, 587, 659, 523, 440, 440]
+
+DEFAULT = [149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931]
+
+
+# define buzzer song functions
+def play_note(freq):
+    piezo.frequency = freq
+    piezo.duty_cycle = 65536 // 2  # On 50%
+    time.sleep(0.3) # On for 1/4 second
+    piezo.duty_cycle = 0 # Off
+
+
+# define 6 main dance moves
+
+#1: slide to intro to All I Want for Christmas is You - Mariah Carey
 def dance1():
-    walk()
+    reset()
+    for i in range(0, 12, 1):
+        play_note(CRIMSON[i])
+        wiggle()
+    reset()
+
+
+#2: line dance to the MARIO THEME song
 def dance2():
-    shuffle()
+    for i in range(0, len(MARIO) - 4, 4):
+        play_note(MARIO[i])
+        leftFootOut()
+        play_note(MARIO[i+1])
+        leftFootIn()
+        play_note(MARIO[i+2])
+        rightFootOut()
+        play_note(MARIO[i+3])
+        rightFootIn()
+
+
+#3: karate kick to the USSR ANTHEM
 def dance3():
-    pass
+    for i in range(0, len(ANTHEM) - 6, 6):
+        play_note(ANTHEM[i])
+        leftFootOut()
+        play_note(ANTHEM[i+1])
+        tapLeftFoot()
+        play_note(ANTHEM[i + 2])
+        leftKick()
+
+        play_note(ANTHEM[i + 3])
+        rightFootOut()
+        play_note(ANTHEM[i + 4])
+        tapRightFoot()
+        play_note(ANTHEM[i + 5])
+        rightKick()
+
+#4: tap feet to the beat of Tetris background music
 def dance4():
-    pass
+    for i in range(0, len(TETRIS) - 12, 12):
+        for j in range(0, 3, 1):
+            play_note(TETRIS[i + j])
+            tapLeftFoot()
+        for j in range(0, 3, 1):  
+            play_note(TETRIS[i + 4 + j])
+            tapRightFoot()
+        for j in range(0, 3, 1):
+            play_note(TETRIS[i + 8 + j])
+            tapBothFeet()
+
+#5: walk to Pachebel Canon in C
 def dance5():
-    pass
+    for i in range(0, len(CANON) - 2, 2):
+        play_note(CANON[i])
+        leftKick()
+        play_note(CANON[i + 1])
+        rightKick()
+
+#6: wiggle to the fortnite default song
 def dance6():
-    pass
+    for i in range(0, len(DEFAULT) - 2, 2):
+        play_note(DEFAULT[i])
+        shuffle()
     
 #------------------------------------------------------------------------------------------------------#
 # 
@@ -377,18 +394,10 @@ def dance6():
 row0 = digitalio.DigitalInOut(board.A4)
 row0.direction = digitalio.Direction.INPUT
 row0.pull = digitalio.Pull.UP
-#Board D12 to keypad pin 2a
+
 row1 = digitalio.DigitalInOut(board.A5)
 row1.direction = digitalio.Direction.INPUT
 row1.pull = digitalio.Pull.UP
-#Board D11 to keypad pin 3
-# row2 = digitalio.DigitalInOut(board.D11)
-# row2.direction = digitalio.Direction.INPUT
-# row2.pull = digitalio.Pull.UP
-# #Board D10 to keypad pin 4
-# row3 = digitalio.DigitalInOut(board.D10)
-# row3.direction = digitalio.Direction.INPUT
-# row3.pull = digitalio.Pull.UP
 
 out1 = digitalio.DigitalInOut(board.A2)
 out1.direction = digitalio.Direction.OUTPUT
@@ -398,36 +407,8 @@ out2 = digitalio.DigitalInOut(board.A3)
 out2.direction = digitalio.Direction.OUTPUT
 out2.value = False
 
-# #Board D9 to keypad pin 5
-# col0 = digitalio.DigitalInOut(board.D9)
-# col0.direction = digitalio.Direction.OUTPUT
-# col0.value = False;
-# #Board D6 to keypad pin 6
-# col1 = digitalio.DigitalInOut(board.D6)
-# col1.direction = digitalio.Direction.OUTPUT
-# # col1.pull = digitalio.Pull.UP
-# col1.value = False;
-# #Board D5 to keypad pin 7
-# col2 = digitalio.DigitalInOut(board.D5)
-# col2.direction = digitalio.Direction.OUTPUT
-# col2.value = False;
-
-# col0 = (out1 && !out2)
-# col1 = (out2 && !out1)
-# col2 = (out1 && out2)
-
-# Membrane 3x4 matrix keypad 
-# cols = [digitalio.DigitalInOut(x) for x in (col0, col1, col2)]
-#rows = [digitalio.DigitalInOut(x) for x in (board.A4, board.A5)]
- 
-# define key values using a tuple
 keys = ((1, 2, 3),
-        (4, 5, 6)#,
-        # (7, 8, 9),
-        # ('*', 0, '#')
-        )
- 
-# keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
+        (4, 5, 6))
 
 def keypadDecode():
     key = 0
@@ -460,7 +441,6 @@ def checkPass():
     i = 0
 
     while True: 
-        # keys = keypad.pressed_keys
         keys = keypadDecode()
         if keys: 
             seq.append(keys)
@@ -483,6 +463,8 @@ def checkPass():
 # gui code
 #     
 #------------------------------------------------------------------------------------------------------#    
+
+# setting up the states of the GUI
 LOADING = 0
 PASSCODE = 1
 HOME = 2
@@ -491,10 +473,14 @@ MUSIC = 4
 ABOUT = 5
 EXIT = 6
 REQUEST = 7
+DEFAULT = 8
 
+# initial default state is loading
 state = LOADING
+
 while True:
 
+    # if state is loading, it goes to passcode
     if state ==  LOADING:
         splash = displayio.Group(max_size=100)
         reset()
@@ -512,6 +498,7 @@ while True:
         reset()
         state =  PASSCODE
 
+    # if state is passcode, checks the passcode, if correct goes to home, else back to passcode
     if state ==  PASSCODE:
         textout("enter the passcode", 0x000000, 10, 60)
         boolean = False
@@ -526,7 +513,8 @@ while True:
             #time.sleep(1)
             state = PASSCODE
             reset()
-        
+
+    # if state is home, checks keypad and goes to coressponding state     
     elif state ==  HOME:
         textout("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60)
         keys = 0
@@ -534,21 +522,25 @@ while True:
             keys = keypadDecode()
 
         if keys == 1:
-            state =  DANCE
+            state = DEFAULT
             reset()
         elif keys == 2:
-            state =  MUSIC
+            state =  DANCE
             reset()
         elif keys == 3:
-            state =  EXIT
+            state =  MUSIC
             reset()
         elif keys == 4:
+            state =  EXIT
+            reset()
+        elif keys == 5:
             state =  ABOUT
             reset()
         else:
             state =  HOME
             reset()
-        
+
+    # if state is dance, plays the dance move coressponding to the keypad number pressed    
     elif state ==  DANCE:
         textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 5) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
         keys = 0
@@ -582,6 +574,7 @@ while True:
         else:
             state =  DANCE
 
+    # if state is about it displays info about robot and returns
     elif state ==  ABOUT:
         textshow("About: \n Dancing Robot GUI", 0x000000, 10, 10, 5)
         textshow("press any button to return", 0x000000, 10, 60, 5)
@@ -630,7 +623,8 @@ while True:
             state = ABOUT
             reset()
         
-
+    
+    # if state is exit it quits the program
     elif state ==  EXIT:
         textshow("Exiting.....", 0x000000, 30, 64, 3)
         time.sleep(0.5)
@@ -638,6 +632,7 @@ while True:
         sys.exit()
         #reset()
 
+    # if the state is request it goes to corresponding state according to keypad number pressed
     elif state ==  REQUEST:
         textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 10, 60)
         
@@ -657,6 +652,7 @@ while True:
         else:
             state =  REQUEST
 
+    # if state is music it goes to the song according to the keypad pressed
     elif state ==  MUSIC:
         textout("Press a key: \n 1) song1 \n 2) song2 \n 3) song3 \n 5) song4 \n 5) song5 \n 6) song6", 0x000000, 10, 60)
 
@@ -690,3 +686,14 @@ while True:
             reset()
         else:
             state =  MUSIC
+    
+    # default state required for the project.
+    elif state == DEFAULT:
+        # display not set but can be change only after each song
+        dance1()
+        dance2()
+        dance3()
+        dance4()
+        dance5()
+        dance6()
+        state = HOME
