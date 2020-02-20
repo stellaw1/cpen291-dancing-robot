@@ -727,7 +727,10 @@ while True:
             reset()
         else:
             state =  MUSIC
+<<<<<<< HEAD
+=======
 
 
 
 
+>>>>>>> fa562d7e378fc819a3176c54d8c78b90128909e2
