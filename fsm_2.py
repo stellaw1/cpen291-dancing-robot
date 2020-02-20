@@ -26,7 +26,7 @@ import adafruit_hcsr04
 #------------------------------------------------------------------------------------------------------#    
 piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
 
-def song1():
+def USSR():
 
     timeout = time.time() + 30 
     while True:
@@ -44,7 +44,7 @@ def song1():
             time.sleep(0.05)  # Pause between notes
         time.sleep(0.5) 
 
-def song2():
+def mario_theme():
     
     timeout = time.time() + 30 
     while True:
@@ -52,15 +52,19 @@ def song2():
         if time.time() > timeout:
             break
 
-        for f in ():
+        for f in (2637, 2637, 0, 2637, 0, 2093, 2637, 0, 3136, 0, 0, 0, 1568, 0, 0, 0,
+                  2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
+                  1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0,
+                  2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
+                  1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
+        time.sleep(0.5)
 
-def song3():
+def crimson():
 
     timeout = time.time() + 30 
     while True:
@@ -68,15 +72,15 @@ def song3():
         if time.time() > timeout:
             break
 
-        for f in (): #enter the song frequency here):
+        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
+        time.sleep(0.5)
 
-def song4():
+def canon():
 
     timeout = time.time() + 30 
     while True:
@@ -84,15 +88,46 @@ def song4():
         if time.time() > timeout:
             break
 
-        for f in (): #enter the song frequency here):
+        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175,
+                  131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5)  
+        time.sleep(0.5)
 
-def song5():
+def tetris():
+
+    timeout = time.time() + 30 
+    while True:
+        
+        if time.time() > timeout:
+            break
+        delay = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
+                 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
+                 222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
+                 222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
+                 222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
+        duration = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
+                    444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
+                    222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
+                    222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
+                    222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
+        freq = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 659,
+                523, 494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659,
+                587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440,
+                523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
+                523, 659, 587, 523, 587, 659, 523, 440, 440]
+        for f in range(0, len(freq)):
+            piezo.frequency = freq[f]
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(duration[f] / 1000)  # On for 1/4 second
+            piezo.duty_cycle = 0  # Off
+            time.sleep(delay[f] / 1000)  # Pause between notes
+        time.sleep(0.5)
+
+def default():
 
     timeout = time.time() + 30 
     while True:
@@ -100,29 +135,16 @@ def song5():
         if time.time() > timeout:
             break
 
-        for f in (): #enter the song frequency here):
-            piezo.frequency = f
+        delay = [149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931]
+        duration = [149, 149, 149, 446, 297, 149, 149, 149, 446, 297, 297, 149, 149, 149, 149, 149, 149, 149]
+        freq = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
+        for f in range(0, len(freq)):
+            piezo.frequency = freq[f]
             piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
+            time.sleep(duration[f] / 1000)  # On
             piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5)  
-
-def song6():
-
-    timeout = time.time() + 30 
-    while True:
-        
-        if time.time() > timeout:
-            break
-
-        for f in (): #enter the song frequency here):
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5)    
+            time.sleep(delay[f] / 1000)  # Pause between notes
+        time.sleep(0.5)
         
 
 #------------------------------------------------------------------------------------------------------#
@@ -673,34 +695,34 @@ while True:
             state =  REQUEST
 
     elif state ==  MUSIC:
-        textout("Press a key: \n 1) song1 \n 2) song2 \n 3) song3 \n 5) song4 \n 5) song5 \n 6) song6", 0x000000, 10, 60)
+        textout("Press a key: \n 1) USSR \n 2) Mario \n 3) Crimson \n 5) Canon \n 5) Tetris \n 6) Default", 0x000000, 10, 60)
 
         keys = 0
         while keys == 0:
             keys = keypadDecode()
 
         if keys == 1:
-            song1()
+            USSR()
             state =  REQUEST
             reset()
         elif keys == 2:
-            song2()
+            mario_theme()
             state =  REQUEST
             reset()
         elif keys == 3:
-            song3()
+            crimson()
             state =  REQUEST
             reset()
         elif keys == 4:
-            song4()
+            canon()
             state =  REQUEST
             reset()
         elif keys == 5:
-            song5()
+            tetris()
             state =  REQUEST
             reset()
         elif keys == 6:
-            song6()
+            default()
             state =  REQUEST
             reset()
         else:
