@@ -21,191 +21,6 @@ from analogio import AnalogIn
 import adafruit_hcsr04
 
 #------------------------------------------------------------------------------------------------------#
-#
-# songs code 
-#     
-#------------------------------------------------------------------------------------------------------#    
-
-# setting up the piezo buzzer
-piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
-
-# define 6 songs
-
-# USSR anthem
-def song1():
-
-    timeout = time.time() + 30 
-    while True:
-
-        if time.time() > timeout:
-            break
-
-        for f in (196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
-            262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
-            247, 220, 207, 207, 207):
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
-
-
-# mario theme song
-def song2():
-    
-    timeout = time.time() + 30 
-    while True:
-        
-        if time.time() > timeout:
-            break
-
-        for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
-            262, 294, 247):
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
-
-# crimson
-def song3():
-
-    timeout = time.time() + 30 
-    while True:
-        
-        if time.time() > timeout:
-            break
-
-        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294): 
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
-
-# canon
-def song4():
-
-    timeout = time.time() + 30 
-    while True:
-        
-        if time.time() > timeout:
-            break
-
-        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
-            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110): 
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5)  
-
-# tetris
-def song5():
-
-    timeout = time.time() + 30 
-    while True:
-        
-        if time.time() > timeout:
-            break
-        delay = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
-                 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
-                 222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
-                 222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
-                 222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
-        duration = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
-                    444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
-                    222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
-                    222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
-                    222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
-        freq = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 659,
-                523, 494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659,
-                587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440,
-                523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
-                523, 659, 587, 523, 587, 659, 523, 440, 440]
-        for f in range(0, len(freq)):
-            piezo.frequency = freq[f]
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(duration[f] / 1000)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(delay[f] / 1000)  # Pause between notes
-        time.sleep(0.5) 
-
-# fortnite
-def song6():
-
-    timeout = time.time() + 30 
-    while True:
-        
-        if time.time() > timeout:
-            break
-
-        delay = [149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931]
-        duration = [149, 149, 149, 446, 297, 149, 149, 149, 446, 297, 297, 149, 149, 149, 149, 149, 149, 149]
-        freq = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
-        for f in range(0, len(freq)):
-            piezo.frequency = freq[f]
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(duration[f] / 1000)  # On
-            piezo.duty_cycle = 0  # Off
-            time.sleep(delay[f] / 1000)  # Pause between notes
-        time.sleep(0.5)
-        
-
-#------------------------------------------------------------------------------------------------------#
-# 
-# display code  
-#    
-#------------------------------------------------------------------------------------------------------# 
-
-
-def reset():
-    displayio.release_displays()
-    spi = board.SPI()
-    tft_cs = board.D5
-    tft_dc = board.D9
-    display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
-    display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
-    global splash
-    display.show(splash)
-    color_bitmap = displayio.Bitmap(128, 128, 1)
-    color_palette = displayio.Palette(1)
-    color_palette[0] = 0xFFFFFF # White
-    bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
-    splash.append(bg_white)
-
-    #### Draw a smaller inner rectangle
-    #inner_bitmap = displayio.Bitmap(108, 108, 1)
-    #inner_palette = displayio.Palette(1)
-    #inner_palette[0] = 0xAA0088 # Purple
-    #inner_sprite = displayio.TileGrid(inner_bitmap,
-    #                                pixel_shader=inner_palette,
-    #                                x=10, y=10)
-    #splash.append(inner_sprite)
-    # my_bitmap = displayio.OnDiskBitmap(open("/my_bitmap.bmp", "rb"))
-    # my_tilegrid = displayio.TileGrid(my_bitmap, pixel_shader=displayio.ColorConverter())
-    # my_display_group.append(my_tilegrid)
-
-def textshow(textin, bgcolor, xc, yc, timein):
-    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
-    text_area.x = xc
-    text_area.y = yc
-    splash.append(text_area)
-    for i in range(timein):
-        pass
-        time.sleep(1)
-
-def textout(textin, bgcolor, xc, yc):
-    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
-    text_area.x = xc
-    text_area.y = yc
-    splash.append(text_area)
- 
-#------------------------------------------------------------------------------------------------------#
 # 
 # dance code
 #     
@@ -414,6 +229,191 @@ def dance6():
     for i in range(0, len(DEFAULT) - 2, 2):
         play_note(DEFAULT[i])
         shuffle()
+
+#------------------------------------------------------------------------------------------------------#
+#
+# songs code 
+#     
+#------------------------------------------------------------------------------------------------------#    
+
+# setting up the piezo buzzer
+#piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
+
+# define 6 songs
+
+# USSR anthem
+def song1():
+
+    timeout = time.time() + 30 
+    while True:
+
+        if time.time() > timeout:
+            break
+
+        for f in (196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
+            262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
+            247, 220, 207, 207, 207):
+            piezo.frequency = f
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(0.25)  # On for 1/4 second
+            piezo.duty_cycle = 0  # Off
+            time.sleep(0.05)  # Pause between notes
+        time.sleep(0.5) 
+
+
+# mario theme song
+def song2():
+    
+    timeout = time.time() + 30 
+    while True:
+        
+        if time.time() > timeout:
+            break
+
+        for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
+            262, 294, 247):
+            piezo.frequency = f
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(0.25)  # On for 1/4 second
+            piezo.duty_cycle = 0  # Off
+            time.sleep(0.05)  # Pause between notes
+        time.sleep(0.5) 
+
+# crimson
+def song3():
+
+    timeout = time.time() + 30 
+    while True:
+        
+        if time.time() > timeout:
+            break
+
+        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294): 
+            piezo.frequency = f
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(0.25)  # On for 1/4 second
+            piezo.duty_cycle = 0  # Off
+            time.sleep(0.05)  # Pause between notes
+        time.sleep(0.5) 
+
+# canon
+def song4():
+
+    timeout = time.time() + 30 
+    while True:
+        
+        if time.time() > timeout:
+            break
+
+        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
+            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110): 
+            piezo.frequency = f
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(0.25)  # On for 1/4 second
+            piezo.duty_cycle = 0  # Off
+            time.sleep(0.05)  # Pause between notes
+        time.sleep(0.5)  
+
+# tetris
+def song5():
+
+    timeout = time.time() + 30 
+    while True:
+        
+        if time.time() > timeout:
+            break
+        delay = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
+                 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
+                 222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
+                 222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
+                 222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
+        duration = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
+                    444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
+                    222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
+                    222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
+                    222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
+        freq = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 659,
+                523, 494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659,
+                587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440,
+                523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
+                523, 659, 587, 523, 587, 659, 523, 440, 440]
+        for f in range(0, len(freq)):
+            piezo.frequency = freq[f]
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(duration[f] / 1000)  # On for 1/4 second
+            piezo.duty_cycle = 0  # Off
+            time.sleep(delay[f] / 1000)  # Pause between notes
+        time.sleep(0.5) 
+
+# fortnite
+def song6():
+
+    timeout = time.time() + 30 
+    while True:
+        
+        if time.time() > timeout:
+            break
+
+        delay = [149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931]
+        duration = [149, 149, 149, 446, 297, 149, 149, 149, 446, 297, 297, 149, 149, 149, 149, 149, 149, 149]
+        freq = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
+        for f in range(0, len(freq)):
+            piezo.frequency = freq[f]
+            piezo.duty_cycle = 65536 // 2  # On 50%
+            time.sleep(duration[f] / 1000)  # On
+            piezo.duty_cycle = 0  # Off
+            time.sleep(delay[f] / 1000)  # Pause between notes
+        time.sleep(0.5)
+        
+
+#------------------------------------------------------------------------------------------------------#
+# 
+# display code  
+#    
+#------------------------------------------------------------------------------------------------------# 
+
+
+def reset():
+    displayio.release_displays()
+    spi = board.SPI()
+    tft_cs = board.D5
+    tft_dc = board.D9
+    display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
+    display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
+    global splash
+    display.show(splash)
+    color_bitmap = displayio.Bitmap(128, 128, 1)
+    color_palette = displayio.Palette(1)
+    color_palette[0] = 0xFFFFFF # White
+    bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
+    splash.append(bg_white)
+
+    #### Draw a smaller inner rectangle
+    #inner_bitmap = displayio.Bitmap(108, 108, 1)
+    #inner_palette = displayio.Palette(1)
+    #inner_palette[0] = 0xAA0088 # Purple
+    #inner_sprite = displayio.TileGrid(inner_bitmap,
+    #                                pixel_shader=inner_palette,
+    #                                x=10, y=10)
+    #splash.append(inner_sprite)
+    # my_bitmap = displayio.OnDiskBitmap(open("/my_bitmap.bmp", "rb"))
+    # my_tilegrid = displayio.TileGrid(my_bitmap, pixel_shader=displayio.ColorConverter())
+    # my_display_group.append(my_tilegrid)
+
+def textshow(textin, bgcolor, xc, yc, timein):
+    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
+    text_area.x = xc
+    text_area.y = yc
+    splash.append(text_area)
+    for i in range(timein):
+        pass
+        time.sleep(1)
+
+def textout(textin, bgcolor, xc, yc):
+    text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
+    text_area.x = xc
+    text_area.y = yc
+    splash.append(text_area)
     
 #------------------------------------------------------------------------------------------------------#
 # 
@@ -516,13 +516,13 @@ while True:
     if state ==  LOADING:
         splash = displayio.Group(max_size=100)
         reset()
-        string = "Loading..."
-        i = 0
-        x = 30
-        while(i<10):
-            textshow(string[i], 0x000000, x, 64, 0.0001)
-            i+=1
-            x+=6
+        #string = "Loading..."
+        #i = 0
+        #x = 30
+        #while(i<10):
+        #    textshow(string[i], 0x000000, x, 64, 0.0001)
+        #    i+=1
+        #    x+=6
         reset()
         textshow("Welcome", 0x000000, 30, 64, 0.1)
         reset()
@@ -548,7 +548,7 @@ while True:
 
     # if state is home, checks keypad and goes to coressponding state     
     elif state ==  HOME:
-        textout("Press a key: \n 1) Dance Menu \n 2) Music \n 3) Exit \n 4) About ", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) Exit \n 5) About ", 0x000000, 10, 60)
         keys = 0
         while keys == 0:
             keys = keypadDecode()
