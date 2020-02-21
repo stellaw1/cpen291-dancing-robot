@@ -244,7 +244,7 @@ def dance6():
 # USSR anthem
 def song1():
 
-    timeout = time.time() + 30 
+    timeout = time.time() + 15 
     while True:
 
         if time.time() > timeout:
@@ -264,7 +264,7 @@ def song1():
 # mario theme song
 def song2():
     
-    timeout = time.time() + 30 
+    timeout = time.time() + 15 
     while True:
         
         if time.time() > timeout:
@@ -282,7 +282,7 @@ def song2():
 # crimson
 def song3():
 
-    timeout = time.time() + 30 
+    timeout = time.time() + 15 
     while True:
         
         if time.time() > timeout:
@@ -299,7 +299,7 @@ def song3():
 # canon
 def song4():
 
-    timeout = time.time() + 30 
+    timeout = time.time() + 15 
     while True:
         
         if time.time() > timeout:
@@ -317,7 +317,7 @@ def song4():
 # tetris
 def song5():
 
-    timeout = time.time() + 30 
+    timeout = time.time() + 15 
     while True:
         
         if time.time() > timeout:
@@ -348,7 +348,7 @@ def song5():
 # fortnite
 def song6():
 
-    timeout = time.time() + 30 
+    timeout = time.time() + 15 
     while True:
         
         if time.time() > timeout:
@@ -379,26 +379,33 @@ def reset():
     tft_cs = board.D5
     tft_dc = board.D9
     display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.D7)
+    global display
     display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
     global splash
+    splash = displayio.Group(max_size=100)
     display.show(splash)
     color_bitmap = displayio.Bitmap(128, 128, 1)
     color_palette = displayio.Palette(1)
     color_palette[0] = 0xFFFFFF # White
     bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
     splash.append(bg_white)
-
-    #### Draw a smaller inner rectangle
-    #inner_bitmap = displayio.Bitmap(108, 108, 1)
-    #inner_palette = displayio.Palette(1)
-    #inner_palette[0] = 0xAA0088 # Purple
-    #inner_sprite = displayio.TileGrid(inner_bitmap,
-    #                                pixel_shader=inner_palette,
-    #                                x=10, y=10)
-    #splash.append(inner_sprite)
-    # my_bitmap = displayio.OnDiskBitmap(open("/my_bitmap.bmp", "rb"))
-    # my_tilegrid = displayio.TileGrid(my_bitmap, pixel_shader=displayio.ColorConverter())
-    # my_display_group.append(my_tilegrid)
+    
+def ShowPic(string, timein):
+    with open(string, "rb") as bitmap_file:
+        # Setup the file as the bitmap data source
+        bitmap = displayio.OnDiskBitmap(bitmap_file)
+        # Create a TileGrid to hold the bitmap
+        tile_grid = displayio.TileGrid(bitmap, pixel_shader=displayio.ColorConverter())
+        # Create a Group to hold the TileGrid
+        group = displayio.Group()
+        # Add the TileGrid to the Group
+        group.append(tile_grid)
+        # Add the Group to the Display
+        display.show(group)
+        # Loop forever so you can enjoy your image
+        for i in range(timein):
+            pass
+            time.sleep(1)        
 
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
@@ -414,7 +421,8 @@ def textout(textin, bgcolor, xc, yc):
     text_area.x = xc
     text_area.y = yc
     splash.append(text_area)
-    
+
+
 #------------------------------------------------------------------------------------------------------#
 # 
 # keypad code   
@@ -516,17 +524,22 @@ while True:
     if state ==  LOADING:
         splash = displayio.Group(max_size=100)
         reset()
-        #string = "Loading..."
-        #i = 0
-        #x = 30
-        #while(i<10):
-        #    textshow(string[i], 0x000000, x, 64, 0.0001)
-        #    i+=1
-        #    x+=6
+        #time.sleep(1)
+        #reset()
+        #textshow("Welcome", 0x000000, 45, 64, 0.1)
+        #reset()
+        string1 = "Loading"
+        textshow(string1, 0x000000, 30, 64, 0.0001)
+        string2 = "..."
+        i = 0
+        x = 72
+        while(i<3):
+            textshow(string2[i], 0x000000, x, 64, 0.0001)
+            i+=1
+            x+=6
+        ShowPic("\logo.bmp", 2)
         reset()
-        textshow("Welcome", 0x000000, 30, 64, 0.1)
-        reset()
-        textshow("CPEN 291", 0x000000, 30, 64, 0.1)
+        textshow("Welcome", 0x000000, 45, 64, 0.1)
         reset()
         state =  PASSCODE
 
@@ -548,7 +561,7 @@ while True:
 
     # if state is home, checks keypad and goes to coressponding state     
     elif state ==  HOME:
-        textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) Exit \n 5) About ", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
         keys = 0
         while keys == 0:
             keys = keypadDecode()
@@ -563,10 +576,10 @@ while True:
             state =  MUSIC
             reset()
         elif keys == 4:
-            state =  EXIT
+            state =  ABOUT
             reset()
         elif keys == 5:
-            state =  ABOUT
+            state =  EXIT
             reset()
         else:
             state =  HOME
@@ -608,8 +621,8 @@ while True:
 
     # if state is about it displays info about robot and returns
     elif state ==  ABOUT:
-        textshow("About: \n Dancing Robot GUI", 0x000000, 10, 10, 5)
-        textshow("press any button to return", 0x000000, 10, 60, 5)
+        textshow("About: \n Dancing Robot GUI", 0x000000, 10, 24, 5)
+        textshow("press any button \n to return", 0x000000, 20, 64, 5)
        
         keys =0
         while keys == 0:
@@ -618,39 +631,27 @@ while True:
         if keys == 1:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
+            
         elif keys == 2:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
+
         elif keys == 3:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
+
         elif keys == 4:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
+   
         elif keys == 5:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
+
         elif keys == 6:
             state =  HOME
             reset()
-            textshow("Created By: \n 1)Manek \n  2)Sanjeev \n 3)Parsa \n 4)Amir \n 5)Stella \n 6)Arnold \n 7)Rain", 0x000000, 10, 60, 1)
-            time.sleep(1)
-            reset()
+            
         else:
             state = ABOUT
             reset()
@@ -686,7 +687,7 @@ while True:
 
     # if state is music it goes to the song according to the keypad pressed
     elif state ==  MUSIC:
-        textout("Press a key: \n 1) song1 \n 2) song2 \n 3) song3 \n 5) song4 \n 5) song5 \n 6) song6", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 5) Canon \n 5) Tetris \n 6) Fortnite", 0x000000, 10, 60)
 
         keys = 0
         while keys == 0:
