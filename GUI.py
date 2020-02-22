@@ -489,6 +489,10 @@ def keypadDecode():
             out2.value = True
         key = keypadHelper(i)
         if key != 0:
+            setColor('white')
+            setColor('blue')
+            setColor('white')
+            setColor('off')
             return key
     return key
 
@@ -586,6 +590,7 @@ while True:
 
     # if state is home, checks keypad and goes to coressponding state     
     elif state ==  HOME:
+        setColor('off')
         textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
         keys = 0
         while keys == 0:
@@ -620,36 +625,49 @@ while True:
         if keys == 1:
             reset()
             textout("Shuffling", 0x000000, 37, 64)
+            setColor('green')
             dance1()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 2:
             reset()
             textout("Kick", 0x000000, 37, 64)
+            setColor('green')
             dance2()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 3:
-            dance3()
+            reset()
             textout("Moonwalk", 0x000000, 37, 64)
+            setColor('green')
+            dance3()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
             textout("Squat", 0x000000, 37, 64)
+            setColor('green')
             dance4()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 5:
             reset()
             textout("Wobble", 0x000000, 37, 64)
+            setColor('green')
             dance5()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 6:
             reset()
             textout("Spin", 0x000000, 37, 64)
+            setColor('green')
             dance6()
+            setColor('off')
             state =  REQUEST
             reset()
         else:
@@ -732,37 +750,49 @@ while True:
         if keys == 1:
             reset()
             textout("Playing Anthem", 0x000000, 27, 64)
+            setColor('cyan')
             song1()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 2:
             reset()
             textout("Playing Mario", 0x000000, 27, 64)
+            setColor('cyan')
             song2()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 3:
             reset()
             textout("Playing Crimson", 0x000000, 27, 64)
+            setColor('cyan')
             song3()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
             textout("Playing Canon", 0x000000, 27, 64)
+            setColor('cyan')
             song4()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 5:
             reset()
             textout("Playing Tetris", 0x000000, 27, 64)
+            setColor('cyan')
             song5()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 6:
             reset()
             textout("Playing Fortnite", 0x000000, 27, 64)
+            setColor('cyan')
             song6()
+            setColor('off')
             state =  REQUEST
             reset()
         else:
@@ -771,10 +801,17 @@ while True:
     # default state required for the project.
     elif state == DEFAULT:
         # display not set but can be change only after each song
+        setColor('green')
         dance1()
+        setColor('cyan')
         dance2()
+        setColor('blue')
         dance3()
+        setColor('purple')
         dance4()
+        setColor('red')
         dance5()
+        setColor('yellow')
         dance6()
+        setColor('white')
         state = HOME
