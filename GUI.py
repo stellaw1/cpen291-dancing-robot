@@ -26,8 +26,8 @@ import adafruit_hcsr04
 # sonar code
 #     
 #------------------------------------------------------------------------------------------------------#    
-# sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
-# threshold = 0.3
+sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
+threshold = 5
 
 # while True:
 #     try:
@@ -37,6 +37,9 @@ import adafruit_hcsr04
 #     except RuntimeError:
 #         print("Retrying!")
 #     time.sleep(0.1)
+
+def checkSonar():
+    return sonar.distance < threshold
 
 #------------------------------------------------------------------------------------------------------#
 #
@@ -119,7 +122,7 @@ def interrupt():
     if keys != 0:
         return True
     else:
-        return False
+        return checkSonar()
                
 
 #------------------------------------------------------------------------------------------------------#
