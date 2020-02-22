@@ -87,6 +87,9 @@ def keypadDecode():
             out2.value = True
         key = keypadHelper(i)
         if key != 0:
+            setColor("white")
+            time.sleep(0.1)
+            setColor("off")
             return key
     return key
 
@@ -125,11 +128,17 @@ def interrupt():
     keys = keypadDecode()
     if keys != 0 or checkSonar():
         setColor("red")
+        time.sleep(0.1)
         setColor("off")
+        time.sleep(0.1)
         setColor("red")
+        time.sleep(0.1)
         setColor("off")
+        time.sleep(0.1)
         setColor("red")
+        time.sleep(0.1)
         setColor("off")
+        time.sleep(0.1)
         return True
     else:
         return False
