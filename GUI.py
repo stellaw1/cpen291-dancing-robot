@@ -701,7 +701,9 @@ while True:
 
         if keys == 1:
             reset()
-            textout("Shuffling", 0x000000, 37, 64)
+            textout("Shuffling", 0x000000, 43, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             setColor('green')
             dance1()
             setColor('off')
@@ -709,7 +711,9 @@ while True:
             reset()
         elif keys == 2:
             reset()
-            textout("Kick", 0x000000, 37, 64)
+            textout("Kick", 0x000000, 45, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             setColor('green')
             dance2()
             setColor('off')
@@ -717,16 +721,19 @@ while True:
             reset()
         elif keys == 3:
             reset()
-            textout("Moonwalk", 0x000000, 45, 64)
+            textout("Moonwalk", 0x000000, 44, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             setColor('green')
             dance3()
             setColor('off')
-            textout("Moonwalk", 0x000000, 45, 64)
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
-            textout("Squat", 0x000000, 45, 64)
+            textout("Wobble", 0x000000, 45, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             setColor('green')
             dance4()
             setColor('off')
@@ -734,7 +741,9 @@ while True:
             reset()
         elif keys == 5:
             reset()
-            textout("Wobble", 0x000000, 45, 64)
+            textout("Squat", 0x000000, 45, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             setColor('green')
             dance5()
             setColor('off')
@@ -742,7 +751,9 @@ while True:
             reset()
         elif keys == 6:
             reset()
-            textout("Spin", 0x000000, 45, 64)
+            textout("Spin", 0x000000, 45, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             setColor('green')
             dance6()
             setColor('off')
