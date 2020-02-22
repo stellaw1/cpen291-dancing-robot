@@ -696,7 +696,7 @@ while True:
     elif state ==  DANCE:
         textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 4) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
         keys = 0
-        while keys == 0:
+        while keys == 0 and not checkSonar():
             keys = keypadDecode()
 
         if keys == 1:
@@ -758,6 +758,9 @@ while True:
             dance6()
             setColor('off')
             state =  REQUEST
+            reset()
+        elif checkSonar():
+            state = HOME
             reset()
         else:
             state =  DANCE
