@@ -123,10 +123,16 @@ def checkPass():
 def interrupt():
     keys = 0
     keys = keypadDecode()
-    if keys != 0:
+    if keys != 0 or checkSonar():
+        setColor("red")
+        setColor("off")
+        setColor("red")
+        setColor("off")
+        setColor("red")
+        setColor("off")
         return True
     else:
-        return checkSonar()
+        return False
                
 
 #------------------------------------------------------------------------------------------------------#
