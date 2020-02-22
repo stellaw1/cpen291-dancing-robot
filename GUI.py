@@ -39,7 +39,11 @@ threshold = 5
 #     time.sleep(0.1)
 
 def checkSonar():
-    return sonar.distance < threshold
+    try:
+        distance = sonar.distance
+        return distance < threshold
+    except RuntimeError:
+        return False
 
 #------------------------------------------------------------------------------------------------------#
 #
@@ -98,19 +102,19 @@ def checkPass():
     pwd = [1, 1, 1, 1]
     i = 0
 
-    while True: 
+    while True:
         keys = keypadDecode()
-        if keys: 
+        if keys:
             seq.append(keys)
             i = i + 1
             time.sleep(0.4)
 
-        if i >= 4: 
-            if seq == pwd: 
+        if i >= 4:
+            if seq == pwd:
                 seq = []
                 i = 0
                 return True
-            else: 
+            else:
                 seq = []
                 return False
 
@@ -354,13 +358,13 @@ def song1():
 
         if time.time() > timeout:
             break
-        
+
         temp = False
-        
+
         for f in (196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
             262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
             247, 220, 207, 207, 207):
-            if interrupt:
+            if interrupt():
                 temp = True
                 break
             piezo.frequency = f
@@ -384,7 +388,7 @@ def song2():
 
         for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
             262, 294, 247):
-            if interrupt:
+            if interrupt():
                 temp = True
                 break
             piezo.frequency = f
@@ -394,7 +398,7 @@ def song2():
             time.sleep(0.05)  # Pause between notes
         if temp != False:
             break
-        time.sleep(0.5) 
+        time.sleep(0.5)
 
 # crimson
 def song3():
@@ -406,9 +410,9 @@ def song3():
             break
 
         for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):
-            if interrupt:
+            if interrupt():
                 temp = True
-                break 
+                break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -416,7 +420,7 @@ def song3():
             time.sleep(0.05)  # Pause between notes
         if temp != False:
             break
-        time.sleep(0.5) 
+        time.sleep(0.5)
 
 # canon
 def song4():
@@ -429,9 +433,9 @@ def song4():
 
         for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
             131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
-            if interrupt:
+            if interrupt():
                 temp = True
-                break 
+                break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
@@ -439,7 +443,7 @@ def song4():
             time.sleep(0.05)  # Pause between notes
         if temp != False:
             break
-        time.sleep(0.5)  
+        time.sleep(0.5)
 
 # tetris
 def song5():
@@ -455,7 +459,7 @@ def song5():
                 523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
                 523, 659, 587, 523, 587, 659, 523, 440, 440]
         for f in range(0, len(freq) - 1):
-            if interrupt:
+            if interrupt():
                 temp = True
                 break
             piezo.frequency = freq[f]
@@ -465,7 +469,7 @@ def song5():
             time.sleep(0.05)  # Pause between notes
         if temp != False:
             break
-        time.sleep(0.5) 
+        time.sleep(0.5)
 
 # fortnite
 def song6():
@@ -480,7 +484,7 @@ def song6():
         duration = [149, 149, 149, 446, 297, 149, 149, 149, 446, 297, 297, 149, 149, 149, 149, 149, 149, 149]
         freq = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
         for f in range(0, len(freq)):
-            if interrupt:
+            if interrupt():
                 temp = True
                 break
             piezo.frequency = freq[f]
@@ -584,7 +588,6 @@ def setColor(color):
     green.pull = dictGreen[color]
     blue.pull = dictBlue[color]
 
-setColor("green")
 #------------------------------------------------------------------------------------------------------#
 # 
 # gui code
@@ -649,6 +652,7 @@ while True:
 
     # if state is home, checks keypad and goes to coressponding state     
     elif state ==  HOME:
+        setColor('off')
         textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
         keys = 0
         while keys == 0:
@@ -683,36 +687,50 @@ while True:
         if keys == 1:
             reset()
             textout("Shuffling", 0x000000, 37, 64)
+            setColor('green')
             dance1()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 2:
             reset()
-            textout("Kick", 0x000000, 45, 64)
+            textout("Kick", 0x000000, 37, 64)
+            setColor('green')
             dance2()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 3:
+            reset()
+            textout("Moonwalk", 0x000000, 45, 64)
+            setColor('green')
             dance3()
+            setColor('off')
             textout("Moonwalk", 0x000000, 45, 64)
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
             textout("Squat", 0x000000, 45, 64)
+            setColor('green')
             dance4()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 5:
             reset()
             textout("Wobble", 0x000000, 45, 64)
+            setColor('green')
             dance5()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 6:
             reset()
             textout("Spin", 0x000000, 45, 64)
+            setColor('green')
             dance6()
+            setColor('off')
             state =  REQUEST
             reset()
         else:
@@ -794,50 +812,62 @@ while True:
 
         if keys == 1:
             reset()
+            setColor('cyan')
             textout("Playing Anthem", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             song1()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 2:
             reset()
+            setColor('cyan')
             textout("Playing Mario", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             song2()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 3:
             reset()
+            setColor('cyan')
             textout("Playing Crimson", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             song3()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
+            setColor('cyan')
             textout("Playing Canon", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             song4()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 5:
             reset()
+            setColor('cyan')
             textout("Playing Tetris", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             song5()
+            setColor('off')
             state =  REQUEST
             reset()
         elif keys == 6:
             reset()
+            setColor('cyan')
             textout("Playing Fornite", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             song6()
+            setColor('off')
             state =  REQUEST
             reset()
         else:
@@ -846,10 +876,17 @@ while True:
     # default state required for the project.
     elif state == DEFAULT:
         # display not set but can be change only after each song
+        setColor('green')
         dance1()
+        setColor('cyan')
         dance2()
+        setColor('blue')
         dance3()
+        setColor('purple')
         dance4()
+        setColor('red')
         dance5()
+        setColor('yellow')
         dance6()
+        setColor('white')
         state = HOME
