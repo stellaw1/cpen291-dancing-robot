@@ -730,6 +730,6 @@ while True:
         dance2()
         dance3()
         dance4()
-        dance5()
+        dance5()  
         dance6()
         state = HOME
