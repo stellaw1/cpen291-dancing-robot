@@ -21,6 +21,90 @@ from analogio import AnalogIn
 import adafruit_hcsr04
 
 #------------------------------------------------------------------------------------------------------#
+#
+# keypad code
+#
+#------------------------------------------------------------------------------------------------------#
+
+# Setting up input pins
+# Board D13 to keypad pin 1
+row0 = digitalio.DigitalInOut(board.A4)
+row0.direction = digitalio.Direction.INPUT
+row0.pull = digitalio.Pull.UP
+
+row1 = digitalio.DigitalInOut(board.A5)
+row1.direction = digitalio.Direction.INPUT
+row1.pull = digitalio.Pull.UP
+
+out1 = digitalio.DigitalInOut(board.A2)
+out1.direction = digitalio.Direction.OUTPUT
+out1.value = False
+
+out2 = digitalio.DigitalInOut(board.A3)
+out2.direction = digitalio.Direction.OUTPUT
+out2.value = False
+
+keys = ((1, 2, 3),
+        (4, 5, 6))
+
+def keypadDecode():
+    key = 0
+    for i in range(1,4):
+        time.sleep(.1)
+        if i == 1:
+            out2.value = True
+            out1.value = False
+        if i == 2:
+            out1.value = True
+            out2.value = False
+        if i == 3:
+            out1.value = True
+            out2.value = True
+        key = keypadHelper(i)
+        if key != 0:
+            return key
+    return key
+
+def keypadHelper(col):
+    if not row0.value:
+        return col
+    if not row1.value:
+        return col+3
+    return 0
+
+def checkPass():
+    seq = []
+    pwd = [1, 1, 1, 1]
+    i = 0
+
+    while True:
+        keys = keypadDecode()
+        if keys:
+            seq.append(keys)
+            i = i + 1
+            time.sleep(0.4)
+
+        if i >= 4:
+            if seq == pwd:
+                seq = []
+                i = 0
+                return True
+            else:
+                seq = []
+                return False
+
+        time.sleep(0.1)
+
+def interrupt():
+    keys = 0
+    keys = keypadDecode()
+    if keys != 0:
+        return True
+    else:
+        return False
+
+
+#------------------------------------------------------------------------------------------------------#
 # 
 # dance code
 #     
@@ -250,15 +334,22 @@ def song1():
         if time.time() > timeout:
             break
 
+        temp = False
+
         for f in (196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
             262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
             247, 220, 207, 207, 207):
+            if interrupt:
+                temp = True
+                break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
+        if temp != False:
+            break
+        time.sleep(0.5)
 
 
 # mario theme song
@@ -272,12 +363,17 @@ def song2():
 
         for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
             262, 294, 247):
+            if interrupt:
+                temp = True
+                break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
+        if temp != False:
+            break
+        time.sleep(0.5)
 
 # crimson
 def song3():
@@ -288,13 +384,18 @@ def song3():
         if time.time() > timeout:
             break
 
-        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294): 
+        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):
+            if interrupt:
+                temp = True
+                break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
+        if temp != False:
+            break
+        time.sleep(0.5)
 
 # canon
 def song4():
@@ -306,13 +407,18 @@ def song4():
             break
 
         for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
-            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110): 
+            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
+            if interrupt:
+                temp = True
+                break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5)  
+        if temp != False:
+            break
+        time.sleep(0.5)
 
 # tetris
 def song5():
@@ -328,12 +434,17 @@ def song5():
                 523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
                 523, 659, 587, 523, 587, 659, 523, 440, 440]
         for f in range(0, len(freq) - 1):
+            if interrupt:
+                temp = True
+                break
             piezo.frequency = freq[f]
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        time.sleep(0.5) 
+        if temp != False:
+            break
+        time.sleep(0.5)
 
 # fortnite
 def song6():
@@ -348,11 +459,16 @@ def song6():
         duration = [149, 149, 149, 446, 297, 149, 149, 149, 446, 297, 297, 149, 149, 149, 149, 149, 149, 149]
         freq = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
         for f in range(0, len(freq)):
+            if interrupt:
+                temp = True
+                break
             piezo.frequency = freq[f]
             piezo.duty_cycle = 65536 // 2  # On 50%
             time.sleep(duration[f] / 1000)  # On
             piezo.duty_cycle = 0  # Off
             time.sleep(delay[f] / 1000)  # Pause between notes
+        if temp != False:
+            break
         time.sleep(0.5)
         
 
@@ -422,24 +538,24 @@ def textout(textin, bgcolor, xc, yc):
 # reverse logic on the rgb pins so that a pull up resistor turns the led off and the pull down turns it on
 red = digitalio.DigitalInOut(board.D2)
 red.direction = digitalio.Direction.INPUT
-red.pull = digitalio.Pull.UP
+red.pull = digitalio.Pull.DOWN
 
 green = digitalio.DigitalInOut(board.D1)
 green.direction = digitalio.Direction.INPUT
-green.pull = digitalio.Pull.UP
+green.pull = digitalio.Pull.DOWN
 
 blue = digitalio.DigitalInOut(board.D0)
 blue.direction = digitalio.Direction.INPUT
-blue.pull = digitalio.Pull.UP
+blue.pull = digitalio.Pull.DOWN
 
 # dictRed = {"red": 0xFF, 'orange': 0xFF, "yellow": 0xFF, "green": 0, 'blue': 0, 'purple': 0xFF, 'white': 0xFF}
 # dictGreen = {"red": 0, 'orange': 0xA5, "yellow": 0xFF, "green": 0xFF, 'blue': 0, 'purple': 0, 'white': 0xFF}
 # dictBlue = {"red": 0, 'orange': 0, "yellow": 0, "green": 0, 'blue': 0xFF, 'purple': 0xFF, 'white': 0xFF}
 
 # set of basic digital colour values to be set on demand in 3 dictionaries, one for each pin
-dictRed = {  "red": digitalio.Pull.DOWN, 'cyan': digitalio.Pull.UP,   "yellow": digitalio.Pull.DOWN, "green": digitalio.Pull.UP,   'blue': digitalio.Pull.UP,   'magenta': digitalio.Pull.DOWN, 'white': digitalio.Pull.DOWN, 'off': digitalio.Pull.UP}
-dictGreen = {"red": digitalio.Pull.UP,   'cyan': digitalio.Pull.DOWN, "yellow": digitalio.Pull.DOWN, "green": digitalio.Pull.DOWN, 'blue': digitalio.Pull.UP,   'magenta': digitalio.Pull.UP,   'white': digitalio.Pull.DOWN, 'off': digitalio.Pull.UP}
-dictBlue = { "red": digitalio.Pull.UP,   'cyan': digitalio.Pull.DOWN, "yellow": digitalio.Pull.UP,   "green": digitalio.Pull.UP,   'blue': digitalio.Pull.DOWN, 'magenta': digitalio.Pull.DOWN, 'white': digitalio.Pull.DOWN, 'off': digitalio.Pull.UP}
+dictRed = {  "red": digitalio.Pull.UP, 'cyan': digitalio.Pull.DOWN,   "yellow": digitalio.Pull.UP, "green": digitalio.Pull.DOWN,   'blue': digitalio.Pull.DOWN,   'magenta': digitalio.Pull.UP, 'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
+dictGreen = {"red": digitalio.Pull.DOWN,   'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.UP, "green": digitalio.Pull.UP, 'blue': digitalio.Pull.DOWN,   'magenta': digitalio.Pull.DOWN,   'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
+dictBlue = { "red": digitalio.Pull.DOWN,   'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.DOWN,   "green": digitalio.Pull.DOWN,   'blue': digitalio.Pull.UP, 'magenta': digitalio.Pull.UP, 'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
 
 # changes the led color to one defined in the dictionary
 def setColor(color):
@@ -447,85 +563,6 @@ def setColor(color):
     green.pull = dictGreen[color]
     blue.pull = dictBlue[color]
 
-#------------------------------------------------------------------------------------------------------#
-#
-# keypad code
-#
-#------------------------------------------------------------------------------------------------------#
-
-# Setting up input pins
-# Board D13 to keypad pin 1
-row0 = digitalio.DigitalInOut(board.A4)
-row0.direction = digitalio.Direction.INPUT
-row0.pull = digitalio.Pull.UP
-
-row1 = digitalio.DigitalInOut(board.A5)
-row1.direction = digitalio.Direction.INPUT
-row1.pull = digitalio.Pull.UP
-
-out1 = digitalio.DigitalInOut(board.A2)
-out1.direction = digitalio.Direction.OUTPUT
-out1.value = False
-
-out2 = digitalio.DigitalInOut(board.A3)
-out2.direction = digitalio.Direction.OUTPUT
-out2.value = False
-
-keys = ((1, 2, 3),
-        (4, 5, 6))
-
-def keypadDecode():
-    key = 0
-    for i in range(1,4):
-        time.sleep(.1)
-        if i == 1:
-            out2.value = True
-            out1.value = False
-        if i == 2:
-            out1.value = True
-            out2.value = False
-        if i == 3:
-            out1.value = True
-            out2.value = True
-        key = keypadHelper(i)
-        if key != 0:
-            setColor('white')
-            setColor('blue')
-            setColor('white')
-            setColor('off')
-            return key
-    return key
-
-def keypadHelper(col):
-    if not row0.value:
-        return col
-    if not row1.value:
-        return col+3
-    return 0
-
-def checkPass():
-    seq = []
-    pwd = [1, 1, 1, 1]
-    i = 0
-
-    while True: 
-        keys = keypadDecode()
-        if keys: 
-            seq.append(keys)
-            i = i + 1
-            time.sleep(0.4)
-
-        if i >= 4: 
-            if seq == pwd: 
-                seq = []
-                i = 0
-                return True
-            else: 
-                seq = []
-                return False
-
-        time.sleep(0.1)
-               
 #------------------------------------------------------------------------------------------------------#
 # 
 # gui code
@@ -640,15 +677,16 @@ while True:
             reset()
         elif keys == 3:
             reset()
-            textout("Moonwalk", 0x000000, 37, 64)
+            textout("Moonwalk", 0x000000, 45, 64)
             setColor('green')
             dance3()
             setColor('off')
+            textout("Moonwalk", 0x000000, 45, 64)
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
-            textout("Squat", 0x000000, 37, 64)
+            textout("Squat", 0x000000, 45, 64)
             setColor('green')
             dance4()
             setColor('off')
@@ -656,7 +694,7 @@ while True:
             reset()
         elif keys == 5:
             reset()
-            textout("Wobble", 0x000000, 37, 64)
+            textout("Wobble", 0x000000, 45, 64)
             setColor('green')
             dance5()
             setColor('off')
@@ -664,7 +702,7 @@ while True:
             reset()
         elif keys == 6:
             reset()
-            textout("Spin", 0x000000, 37, 64)
+            textout("Spin", 0x000000, 45, 64)
             setColor('green')
             dance6()
             setColor('off')
@@ -721,7 +759,7 @@ while True:
 
     # if the state is request it goes to corresponding state according to keypad number pressed
     elif state ==  REQUEST:
-        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 15, 60)
         
         keys = 0
         while keys == 0:
@@ -749,48 +787,60 @@ while True:
 
         if keys == 1:
             reset()
-            textout("Playing Anthem", 0x000000, 27, 64)
             setColor('cyan')
+            textout("Playing Anthem", 0x000000, 20, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             song1()
             setColor('off')
             state =  REQUEST
             reset()
         elif keys == 2:
             reset()
-            textout("Playing Mario", 0x000000, 27, 64)
             setColor('cyan')
+            textout("Playing Mario", 0x000000, 20, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             song2()
             setColor('off')
             state =  REQUEST
             reset()
         elif keys == 3:
             reset()
-            textout("Playing Crimson", 0x000000, 27, 64)
             setColor('cyan')
+            textout("Playing Crimson", 0x000000, 20, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             song3()
             setColor('off')
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
-            textout("Playing Canon", 0x000000, 27, 64)
             setColor('cyan')
+            textout("Playing Canon", 0x000000, 20, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             song4()
             setColor('off')
             state =  REQUEST
             reset()
         elif keys == 5:
             reset()
-            textout("Playing Tetris", 0x000000, 27, 64)
             setColor('cyan')
+            textout("Playing Tetris", 0x000000, 20, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             song5()
             setColor('off')
             state =  REQUEST
             reset()
         elif keys == 6:
             reset()
-            textout("Playing Fortnite", 0x000000, 27, 64)
             setColor('cyan')
+            textout("Playing Fornite", 0x000000, 20, 48)
+            textout("Press any Button", 0x000000, 17, 64)
+            textout("to return", 0x000000, 35, 80)
             song6()
             setColor('off')
             state =  REQUEST
