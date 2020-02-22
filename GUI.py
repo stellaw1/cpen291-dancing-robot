@@ -166,11 +166,11 @@ def play_note(freq):
 
 #1: slide to intro to All I Want for Christmas is You - Mariah Carey
 def dance1():
-    reset()
+    #reset()
     for i in range(0, 12, 1):
         play_note(CRIMSON[i])
         wiggle()
-    reset()
+    #reset()
 
 
 #2: line dance to the MARIO THEME song
@@ -244,7 +244,7 @@ def dance6():
 # USSR anthem
 def song1():
 
-    timeout = time.time() + 15 
+    timeout = time.time() + 10 
     while True:
 
         if time.time() > timeout:
@@ -264,7 +264,7 @@ def song1():
 # mario theme song
 def song2():
     
-    timeout = time.time() + 15 
+    timeout = time.time() + 10 
     while True:
         
         if time.time() > timeout:
@@ -282,7 +282,7 @@ def song2():
 # crimson
 def song3():
 
-    timeout = time.time() + 15 
+    timeout = time.time() + 10 
     while True:
         
         if time.time() > timeout:
@@ -299,7 +299,7 @@ def song3():
 # canon
 def song4():
 
-    timeout = time.time() + 15 
+    timeout = time.time() + 10 
     while True:
         
         if time.time() > timeout:
@@ -317,38 +317,28 @@ def song4():
 # tetris
 def song5():
 
-    timeout = time.time() + 15 
+    timeout = time.time() + 10 
     while True:
         
         if time.time() > timeout:
             break
-        delay = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
-                 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
-                 222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
-                 222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
-                 222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
-        duration = [444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111, 222, 444,
-                    444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444, 111, 111,
-                    222, 444, 444, 444, 444, 888, 444, 222, 222, 222, 111, 111, 222, 222, 444, 222, 222, 444, 222,
-                    222, 444, 222, 222, 444, 444, 444, 444, 888, 444, 222, 222, 444, 222, 222, 444, 222, 222, 444,
-                    222, 222, 444, 222, 222, 444, 444, 444, 444, 888]
         freq = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 659,
                 523, 494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659,
                 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440,
                 523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
                 523, 659, 587, 523, 587, 659, 523, 440, 440]
-        for f in range(0, len(freq)):
+        for f in range(0, len(freq) - 1):
             piezo.frequency = freq[f]
             piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(duration[f] / 1000)  # On for 1/4 second
+            time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
-            time.sleep(delay[f] / 1000)  # Pause between notes
+            time.sleep(0.05)  # Pause between notes
         time.sleep(0.5) 
 
 # fortnite
 def song6():
 
-    timeout = time.time() + 15 
+    timeout = time.time() + 10 
     while True:
         
         if time.time() > timeout:
@@ -537,7 +527,8 @@ while True:
             textshow(string2[i], 0x000000, x, 64, 0.0001)
             i+=1
             x+=6
-        ShowPic("\logo.bmp", 2)
+        ShowPic("\Robot.bmp", 3)
+        time.sleep(2)
         reset()
         textshow("Welcome", 0x000000, 45, 64, 0.1)
         reset()
@@ -587,32 +578,43 @@ while True:
 
     # if state is dance, plays the dance move coressponding to the keypad number pressed    
     elif state ==  DANCE:
-        textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 5) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 4) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
         keys = 0
         while keys == 0:
             keys = keypadDecode()
 
         if keys == 1:
+            reset()
+            textout("Shuffling", 0x000000, 37, 64)
             dance1()
             state =  REQUEST
             reset()
         elif keys == 2:
+            reset()
+            textout("Kick", 0x000000, 37, 64)
             dance2()
             state =  REQUEST
             reset()
         elif keys == 3:
             dance3()
+            textout("Moonwalk", 0x000000, 37, 64)
             state =  REQUEST
             reset()
         elif keys == 4:
+            reset()
+            textout("Squat", 0x000000, 37, 64)
             dance4()
             state =  REQUEST
             reset()
         elif keys == 5:
+            reset()
+            textout("Wobble", 0x000000, 37, 64)
             dance5()
             state =  REQUEST
             reset()
         elif keys == 6:
+            reset()
+            textout("Spin", 0x000000, 37, 64)
             dance6()
             state =  REQUEST
             reset()
@@ -687,33 +689,45 @@ while True:
 
     # if state is music it goes to the song according to the keypad pressed
     elif state ==  MUSIC:
-        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 5) Canon \n 5) Tetris \n 6) Fortnite", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000, 10, 60)
 
         keys = 0
         while keys == 0:
             keys = keypadDecode()
 
         if keys == 1:
+            reset()
+            textout("Playing Anthem", 0x000000, 27, 64)
             song1()
             state =  REQUEST
             reset()
         elif keys == 2:
+            reset()
+            textout("Playing Mario", 0x000000, 27, 64)
             song2()
             state =  REQUEST
             reset()
         elif keys == 3:
+            reset()
+            textout("Playing Crimson", 0x000000, 27, 64)
             song3()
             state =  REQUEST
             reset()
         elif keys == 4:
+            reset()
+            textout("Playing Canon", 0x000000, 27, 64)
             song4()
             state =  REQUEST
             reset()
         elif keys == 5:
+            reset()
+            textout("Playing Tetris", 0x000000, 27, 64)
             song5()
             state =  REQUEST
             reset()
         elif keys == 6:
+            reset()
+            textout("Playing Fortnite", 0x000000, 27, 64)
             song6()
             state =  REQUEST
             reset()

@@ -3,6 +3,7 @@ import board
 import pulseio
 import servo
 
+from analogio import AnalogIn
 import adafruit_hcsr04
 
 class RobotDance:
@@ -158,7 +159,7 @@ class RobotDance:
             angle = angle - 0.1
         
         self.legR.throttle = -0.8
-
+1
 
     # moves left leg forward and back down
     def leftKick(self):
@@ -313,8 +314,16 @@ class RobotDance:
     # function for checking if robot is close to an object
     def check_distance(self):
         try:
-            if self.sonar.distance < self.THRESHOLD:
-                return 0
+            # reads value 4 times as to guarentee no false readings
+            num_detected = 0
+            for x in range(0, 3):
+                print("Distance: " + str(sonar.distance))
+                if sonar.distance < threshold:
+                    print("Detected!")
+                    num_detected += 1
+                time.sleep(0.01)
+            return num_detected < 3
         except RuntimeError:
-            return 0
-        return 1
+            print("Retrying!")
+        return False
+
