@@ -671,30 +671,30 @@ while True:
             reset()
         elif keys == 2:
             reset()
-            textout("Kick", 0x000000, 37, 64)
+            textout("Kick", 0x000000, 45, 64)
             dance2()
             state =  REQUEST
             reset()
         elif keys == 3:
             dance3()
-            textout("Moonwalk", 0x000000, 37, 64)
+            textout("Moonwalk", 0x000000, 45, 64)
             state =  REQUEST
             reset()
         elif keys == 4:
             reset()
-            textout("Squat", 0x000000, 37, 64)
+            textout("Squat", 0x000000, 45, 64)
             dance4()
             state =  REQUEST
             reset()
         elif keys == 5:
             reset()
-            textout("Wobble", 0x000000, 37, 64)
+            textout("Wobble", 0x000000, 45, 64)
             dance5()
             state =  REQUEST
             reset()
         elif keys == 6:
             reset()
-            textout("Spin", 0x000000, 37, 64)
+            textout("Spin", 0x000000, 45, 64)
             dance6()
             state =  REQUEST
             reset()
@@ -749,7 +749,7 @@ while True:
 
     # if the state is request it goes to corresponding state according to keypad number pressed
     elif state ==  REQUEST:
-        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 15, 60)
         
         keys = 0
         while keys == 0:
@@ -779,7 +779,7 @@ while True:
             reset()
             textout("Playing Anthem", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 39, 80)
+            textout("to return", 0x000000, 35, 80)
             song1()
             state =  REQUEST
             reset()
@@ -787,7 +787,7 @@ while True:
             reset()
             textout("Playing Mario", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 39, 80)
+            textout("to return", 0x000000, 35, 80)
             song2()
             state =  REQUEST
             reset()
@@ -795,7 +795,7 @@ while True:
             reset()
             textout("Playing Crimson", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 39, 80)
+            textout("to return", 0x000000, 35, 80)
             song3()
             state =  REQUEST
             reset()
@@ -803,7 +803,7 @@ while True:
             reset()
             textout("Playing Canon", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 39, 80)
+            textout("to return", 0x000000, 35, 80)
             song4()
             state =  REQUEST
             reset()
@@ -811,7 +811,7 @@ while True:
             reset()
             textout("Playing Tetris", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 39, 80)
+            textout("to return", 0x000000, 35, 80)
             song5()
             state =  REQUEST
             reset()
@@ -819,7 +819,7 @@ while True:
             reset()
             textout("Playing Fornite", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 39, 80)
+            textout("to return", 0x000000, 35, 80)
             song6()
             state =  REQUEST
             reset()
