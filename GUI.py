@@ -390,7 +390,7 @@ def reset():
     bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
     splash.append(bg_white)
     
-def ShowPic(string, timein):
+def ShowPic(string):
     with open(string, "rb") as bitmap_file:
         # Setup the file as the bitmap data source
         bitmap = displayio.OnDiskBitmap(bitmap_file)
@@ -403,9 +403,9 @@ def ShowPic(string, timein):
         # Add the Group to the Display
         display.show(group)
         # Loop forever so you can enjoy your image
-        for i in range(timein):
-            pass
-            time.sleep(1)        
+        #for i in range(timein):
+         #   pass
+          #  time.sleep(1)        
 
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
@@ -537,7 +537,8 @@ while True:
             textshow(string2[i], 0x000000, x, 64, 0.0001)
             i+=1
             x+=6
-        ShowPic("\logo.bmp", 2)
+        ShowPic("\Robot.bmp")
+        time.sleep(2)
         reset()
         textshow("Welcome", 0x000000, 45, 64, 0.1)
         reset()
@@ -593,6 +594,8 @@ while True:
             keys = keypadDecode()
 
         if keys == 1:
+            reset()
+            ShowPic("\Robot.bmp")
             dance1()
             state =  REQUEST
             reset()
