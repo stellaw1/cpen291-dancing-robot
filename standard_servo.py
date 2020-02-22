@@ -19,14 +19,15 @@ footL = servo.Servo(pwm3)
 
 pwm4 = pulseio.PWMOut(board.D13, frequency=50)
 footR = servo.Servo(pwm4)
-
-def rotate(limb, angle, delay, min, max, song):
-    i = 0
+'''
+def rotate(limb, angle, delay, min, max, song, start):
+    i = start
     for x in range(min, max, angle):
         dance(limb, x)
         play_note(song[i % (len(song) - 1)])
         i += 1
-
+    return start
+'''
 
 def dance(limb, angle):
     limb.angle = angle
@@ -74,11 +75,69 @@ def rightShuffle():
         rotate(legR, -5, 0.05, 180, 90, 0.01, TETRIS[i+1])
 
 def playMusic(song, delay):
-    for i in range(len(song) - 1)
+    for i in range(len(song) - 1):
         piezo.frequency = song[i]
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
         piezo.duty_cycle = 0  # Off
+
+def reset(): 
+    legR.angle = 94
+    legL.angle = 90
+    footR.angle = 90
+    footL.angle = 91
+
+def rotate(limb, min, max, step, start, song):
+    i = start
+    for x in range(min, max, step):
+        play_note(song[i % (len(song) - 1)], 0.3)
+        limb.angle = x
+        i += 1
+    return i
+
+# define single dance move functions 
+def leftFootOut(start):
+    start = rotate(legL, 90, 180, 10, start, TETRIS)
+    start = rotate(legL, 180, 90, -10, start, TETRIS)
+    return start
+
+def rightFootOut(start):
+    start = rotate(legR, 90, 10, -10, start, TETRIS)
+    start = rotate(legR, 10, 90, 10, start, TETRIS)
+    return start
+    
+def leftFootIn(start):
+    start = rotate(legL, 90, 20, -10, start, TETRIS)
+    start = rotate(legL, 20, 90, 10, start, TETRIS)
+    return start
+
+def rightFootIn(start):
+    start = rotate(legR, 90, 160, 10, start, TETRIS)
+    start = rotate(legR, 160, 90, -10, start, TETRIS)
+    return start
+
+def wiggle(start):
+    rotate(footL, 90, 130, 5, start, CRIMSON)
+    rotate(footR, 90, 60, -5, start, CRIMSON)
+    rotate(footL, 130, 90, -5, start, CRIMSON)
+    rotate(footR, 60, 90, 5, start, CRIMSON)
+    return start
+
+def dance1():
+    start = 0
+    reset()
+    for i in range(0, 12, 1):
+        start = wiggle(start)
+    reset()
+
+def dance2():
+    start = 0
+    for i in range(0, 12):
+        start = leftFootOut(start)
+        start = leftFootIn(start)
+        start = rightFootOut(start)
+        start = rightFootIn(start)
+
 
 '''
 # rotates left foot outwards and back in
@@ -315,4 +374,4 @@ def check_distance():
         return 0
     return 1
 '''
-rotate(legL, 1, 0.05, 0, 90, TETRIS)
+dance2()
