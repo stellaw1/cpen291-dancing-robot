@@ -66,7 +66,7 @@ keys = ((1, 2, 3),
  
 # keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
 
-def kypadDecode():
+def keypad_decode():
     key = 0
     for i in range(1,4):
         time.sleep(.1)
@@ -79,12 +79,12 @@ def kypadDecode():
         if i == 3:
             out1.value = True
             out2.value = True
-        key = keypadHelper(i)
+        key = keypad_helper(i)
         if key != 0:
             return key
     return key
 
-def keypadHelper(col):
+def keypad_helper(col):
     count = 0
     for x in (rows):
         if not x.value:
@@ -105,9 +105,10 @@ def key2Func():
 def printPressed():
     while True:
         # keys = keypad.pressed_keys
-        keys = keypadDecode()
+        keys = keypad_decode()
         if keys:
             print("Pressed: ", keys)
+            return
         time.sleep(0.1)
 
 # function that checks if input matches passcode every 4 input
@@ -118,7 +119,7 @@ def checkPass():
 
     while True: 
         # keys = keypad.pressed_keys
-        keys = keypadDecode()
+        keys = keypad_decode()
         if keys: 
             seq.append(keys)
             i = i + 1
@@ -134,38 +135,8 @@ def checkPass():
                 print("password incorrect")
 
         time.sleep(0.1)
-
-# main function loop
 def main():
-    checkPass()
-    while True: 
-        # keys = keypad.pressed_keys
-        keys = keypadDecode()
-        if keys: 
-            if keys == [1]: 
-                key1Func()
-            elif keys == [2]: 
-                key2Func()
-            elif keys == [3]: 
-                key3Func()
-            elif keys == [4]: 
-                key4Func()
-            elif keys == [5]: 
-                key5Func()
-            elif keys == [6]: 
-                key6Func()
-            # elif keys == [7]:
-            #     key7Func()
-            # elif keys == [8]:
-            #     key8Func()
-            # elif keys == [9]:
-            #     key9Func()
-            # elif keys == [0]:
-            #     key0Func()
-            # elif keys == ['*']:
-            #     keyStarFunc()
-            # elif keys == ['#']:
-            #     keyPoundFunc()
-            else: 
-                print("Error. ")
+    for x in range(8):
+        printPressed()
+
             

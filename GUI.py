@@ -415,9 +415,43 @@ def textout(textin, bgcolor, xc, yc):
 
 #------------------------------------------------------------------------------------------------------#
 # 
-# keypad code   
+# rgb module code
 #  
 #------------------------------------------------------------------------------------------------------#    
+
+# reverse logic on the rgb pins so that a pull up resistor turns the led off and the pull down turns it on
+red = digitalio.DigitalInOut(board.D2)
+red.direction = digitalio.Direction.INPUT
+red.pull = digitalio.Pull.UP
+
+green = digitalio.DigitalInOut(board.D1)
+green.direction = digitalio.Direction.INPUT
+green.pull = digitalio.Pull.UP
+
+blue = digitalio.DigitalInOut(board.D0)
+blue.direction = digitalio.Direction.INPUT
+blue.pull = digitalio.Pull.UP
+
+# dictRed = {"red": 0xFF, 'orange': 0xFF, "yellow": 0xFF, "green": 0, 'blue': 0, 'purple': 0xFF, 'white': 0xFF}
+# dictGreen = {"red": 0, 'orange': 0xA5, "yellow": 0xFF, "green": 0xFF, 'blue': 0, 'purple': 0, 'white': 0xFF}
+# dictBlue = {"red": 0, 'orange': 0, "yellow": 0, "green": 0, 'blue': 0xFF, 'purple': 0xFF, 'white': 0xFF}
+
+# set of basic digital colour values to be set on demand in 3 dictionaries, one for each pin
+dictRed = {  "red": digitalio.Pull.DOWN, 'cyan': digitalio.Pull.UP,   "yellow": digitalio.Pull.DOWN, "green": digitalio.Pull.UP,   'blue': digitalio.Pull.UP,   'magenta': digitalio.Pull.DOWN, 'white': digitalio.Pull.DOWN, 'off': digitalio.Pull.UP}
+dictGreen = {"red": digitalio.Pull.UP,   'cyan': digitalio.Pull.DOWN, "yellow": digitalio.Pull.DOWN, "green": digitalio.Pull.DOWN, 'blue': digitalio.Pull.UP,   'magenta': digitalio.Pull.UP,   'white': digitalio.Pull.DOWN, 'off': digitalio.Pull.UP}
+dictBlue = { "red": digitalio.Pull.UP,   'cyan': digitalio.Pull.DOWN, "yellow": digitalio.Pull.UP,   "green": digitalio.Pull.UP,   'blue': digitalio.Pull.DOWN, 'magenta': digitalio.Pull.DOWN, 'white': digitalio.Pull.DOWN, 'off': digitalio.Pull.UP}
+
+# changes the led color to one defined in the dictionary
+def setColor(color):
+    red.pull = dictRed[color]
+    green.pull = dictGreen[color]
+    blue.pull = dictBlue[color]
+
+#------------------------------------------------------------------------------------------------------#
+#
+# keypad code
+#
+#------------------------------------------------------------------------------------------------------#
 
 # Setting up input pins
 # Board D13 to keypad pin 1
