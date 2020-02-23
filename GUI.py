@@ -920,6 +920,12 @@ while True:
     # default state required for the project.
     elif state == DEFAULT:
         # display not set but can be change only after each song
+        ShowPic("\Robot.bmp", 3)
+        time.sleep(2)
+        reset()
+        textout("Default Mode", 0x000000, 27, 48)
+        textout("Press any Button", 0x000000, 17, 64)
+        textout("to skip", 0x000000, 35, 80)
         setColor('green')
         dance1()
         setColor('cyan')
@@ -933,4 +939,5 @@ while True:
         setColor('yellow')
         dance6()
         setColor('white')
+        reset()
         state = HOME
