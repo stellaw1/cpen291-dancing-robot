@@ -168,7 +168,7 @@ piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequenc
 
 
 # define basic functions
-def reset(): 
+def resetServo(): 
     legR.angle = 94
     legL.angle = 90
     footR.angle = 90
@@ -196,26 +196,26 @@ def rightFootIn():
     rotate(legR, 160, 90, -5)
 
 def jump():
-    reset()
+    resetServo()
     for angle in range(90, 130, 5):  # 0 - 180 degrees, 5 degrees at a time.
         footL.angle = angle
         footR.angle = 90 - (angle - 90)
     for angle in range(130, 90, -5): # 180 - 0 degrees, 5 degrees at a time.
         footL.angle = angle
         footR.angle = 90 - (angle - 90)
-    reset()
+    resetServo()
 
 def rightKick():
     legR.angle = 20
     rotate(footR, 90, 130, 4)
     rotate(footR, 130, 90, -4)
-    reset()
+    resetServo()
 
 def leftKick():
     legL.angle = 160
     rotate(footL, 90, 60, -3)
     rotate(footL, 60, 90, 3)
-    reset()
+    resetServo()
 
 def shuffle():
     for angle in range(90, 60, -5):  # 0 - 180 degrees, 5 degrees at a time.
@@ -224,7 +224,7 @@ def shuffle():
     for angle in range(60, 90, 5): # 180 - 0 degrees, 5 degrees at a time.
         legL.angle = angle
         legR.angle = 90 + (angle - 60)
-    reset()    
+    resetServo()    
 
 def wiggle():
     rotate(footL, 90, 130, 5)
@@ -234,26 +234,26 @@ def wiggle():
 
 
 def tapLeftFoot():
-    reset()
+    resetServo()
     rotate(footL, 90, 60, -3)
     rotate(footL, 60, 90, 3)
-    reset()
+    resetServo()
     
 def tapRightFoot():
-    reset()
+    resetServo()
     rotate(footR, 90, 120, 3)
     rotate(footR, 120, 90, -3)
-    reset()
+    resetServo()
  
 def tapBothFeet():
-    reset()
+    resetServo()
     for angle in range(90, 130, 8):  # 0 - 180 degrees, 5 degrees at a time.
         footL.angle = 90 - (angle - 90)
         footR.angle = angle
     for angle in range(130, 90, -8): # 180 - 0 degrees, 5 degrees at a time.
         footL.angle = 90 - (angle - 90)
         footR.angle = angle
-    reset()
+    resetServo()
 
 
 # song frequency arrays
@@ -622,7 +622,6 @@ DEFAULT = 8
 
 # initial default state is loading
 state = LOADING
-
 while True:
 
     # if state is loading, it goes to passcode
@@ -694,14 +693,14 @@ while True:
 
     # if state is dance, plays the dance move coressponding to the keypad number pressed    
     elif state ==  DANCE:
-        textout("Press a key: \n 1) Shuffle \n 2) Kick \n 3) Moonwalk \n 4) Wobble \n 5) Squat \n 6) Spin", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Walk \n 2) Shuffle \n 3) Ballerina \n 4) Pigeon \n 5) Excite \n 6) Karate", 0x000000, 10, 60)
         keys = 0
         while keys == 0 and not checkSonar():
             keys = keypadDecode()
 
         if keys == 1:
             reset()
-            textout("Shuffling", 0x000000, 43, 48)
+            textout("Walking", 0x000000, 43, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -711,7 +710,7 @@ while True:
             reset()
         elif keys == 2:
             reset()
-            textout("Kick", 0x000000, 45, 48)
+            textout("Shuffling", 0x000000, 43, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -721,7 +720,7 @@ while True:
             reset()
         elif keys == 3:
             reset()
-            textout("Moonwalk", 0x000000, 44, 48)
+            textout("Ballerina", 0x000000, 43, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -731,7 +730,7 @@ while True:
             reset()
         elif keys == 4:
             reset()
-            textout("Wobble", 0x000000, 45, 48)
+            textout("Pigeon", 0x000000, 45, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -741,7 +740,7 @@ while True:
             reset()
         elif keys == 5:
             reset()
-            textout("Squat", 0x000000, 45, 48)
+            textout("Excite", 0x000000, 45, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -751,7 +750,7 @@ while True:
             reset()
         elif keys == 6:
             reset()
-            textout("Spin", 0x000000, 45, 48)
+            textout("Karate", 0x000000, 45, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -760,7 +759,10 @@ while True:
             state =  REQUEST
             reset()
         elif checkSonar():
+            setColor('red')
+            time.sleep(0.1)
             state = HOME
+            setColor('off')
             reset()
         else:
             state =  DANCE
@@ -771,7 +773,7 @@ while True:
         textshow("press any button \n to return", 0x000000, 20, 64, 5)
        
         keys =0
-        while keys == 0:
+        while keys == 0 and not checkSonar():
             keys = keypadDecode()
 
         if keys == 1:
@@ -797,7 +799,14 @@ while True:
         elif keys == 6:
             state =  HOME
             reset()
-            
+
+        elif checkSonar():
+            setColor('red')
+            time.sleep(0.1)
+            state = HOME
+            setColor('off')
+            reset()
+
         else:
             state = ABOUT
             reset()
@@ -836,7 +845,7 @@ while True:
         textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000, 10, 60)
 
         keys = 0
-        while keys == 0:
+        while keys == 0 and not checkSonar():
             keys = keypadDecode()
 
         if keys == 1:
@@ -898,6 +907,12 @@ while True:
             song6()
             setColor('off')
             state =  REQUEST
+            reset()
+        elif checkSonar():
+            setColor('red')
+            time.sleep(0.1)
+            state = HOME
+            setColor('off')
             reset()
         else:
             state =  MUSIC
