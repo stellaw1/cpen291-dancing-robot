@@ -6,6 +6,7 @@
 # Date: 10/02/2020    
 #------------------------------------------------------------------------------------------------------#    
 
+# import all the libraries that we need
 import time
 import sys
 import board
@@ -20,25 +21,18 @@ import servo
 from analogio import AnalogIn
 import adafruit_hcsr04
 
-
 #------------------------------------------------------------------------------------------------------#
-# 
-# sonar code
-#     
-#------------------------------------------------------------------------------------------------------#    
+#
+# Sonar code
+#
+#------------------------------------------------------------------------------------------------------#
+# initialize sonar with adafruit_hcsr04 library
+# trigger pin at D4 and echo pin at D3 
 sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
-threshold = 5
 
-# while True:
-#     try:
-#         print((sonar.distance,))
-#         if sonar.distance < threshold:
-#             print("Detected")
-#     except RuntimeError:
-#         print("Retrying!")
-#     time.sleep(0.1)
-
-def checkSonar():
+# define the checkSonar functions that takes in threshold value
+# funciton returns true if distance detected by sonar is less than threshold
+def checkSonar(threshold):
     try:
         distance = sonar.distance
         return distance < threshold
@@ -47,31 +41,36 @@ def checkSonar():
 
 #------------------------------------------------------------------------------------------------------#
 #
-# keypad code
+# Keypad code
 #
 #------------------------------------------------------------------------------------------------------#
-
-# Setting up input pins
-# Board D13 to keypad pin 1
+# setting up rows and cols of keypad output to its corresponding pins on the itsybitsy
+# board A4 to keypad row 0 (1, 2, 3)
 row0 = digitalio.DigitalInOut(board.A4)
 row0.direction = digitalio.Direction.INPUT
 row0.pull = digitalio.Pull.UP
 
+# board A5 to keypad row 1 (4, 5, 6)
 row1 = digitalio.DigitalInOut(board.A5)
 row1.direction = digitalio.Direction.INPUT
 row1.pull = digitalio.Pull.UP
 
+# board A2 to keypad output 1 (2:3 decoder)
 out1 = digitalio.DigitalInOut(board.A2)
 out1.direction = digitalio.Direction.OUTPUT
 out1.value = False
 
+# board A2 to keypad output 2 (2:3 decoder)
 out2 = digitalio.DigitalInOut(board.A3)
 out2.direction = digitalio.Direction.OUTPUT
 out2.value = False
 
+# create a 2D array representing the keys
 keys = ((1, 2, 3),
         (4, 5, 6))
 
+# define keypadDecode function that iterates through the different combination of output 1,2
+# function returns the key pressed (1 - 6), if no key is pressed, function returns 0
 def keypadDecode():
     key = 0
     for i in range(1,4):
@@ -93,6 +92,8 @@ def keypadDecode():
             return key
     return key
 
+# define helper function to help decode which row the key pressed is at
+# function takes column number as parameter and returns the key pressed, returns 0 if no key is pressed 
 def keypadHelper(col):
     if not row0.value:
         return col
@@ -100,6 +101,8 @@ def keypadHelper(col):
         return col+3
     return 0
 
+# define checkPass function to read the input from the keypad
+# blocks indefinitely until a password is entered, returns true if password entered is matched, false otherwise
 def checkPass():
     seq = []
     pwd = [1, 1, 1, 1]
@@ -111,7 +114,6 @@ def checkPass():
             seq.append(keys)
             i = i + 1
             time.sleep(0.4)
-
         if i >= 4:
             if seq == pwd:
                 seq = []
@@ -123,10 +125,13 @@ def checkPass():
 
         time.sleep(0.1)
 
+# define the interrupt function that checks both the keypad for user input and sonar for distance
+# function returns true and flashes RBG red 3 times if any key is pressed or the distance detected by sonar is less than 5cm
+# otherwise, function returns false
 def interrupt():
     keys = 0
     keys = keypadDecode()
-    if keys != 0 or checkSonar():
+    if keys != 0 or checkSonar(5):
         setColor("red")
         time.sleep(0.1)
         setColor("off")
@@ -150,47 +155,59 @@ def interrupt():
 #     
 #------------------------------------------------------------------------------------------------------#        
 
-# pin assignments and initial setup
+# pwm pin assignments and initial setup of the servo motors that controls the legs of the robot
+# board D10 to right leg servo 
 pwm1 = pulseio.PWMOut(board.D10, duty_cycle=2 ** 15, frequency=50)
 legR = servo.Servo(pwm1)
 
+# board D11 to left leg servo 
 pwm2 = pulseio.PWMOut(board.D11, duty_cycle=2 ** 15, frequency=50) #leg2
 legL = servo.Servo(pwm2)
 
+# board D12 to left foot servo 
 pwm3 = pulseio.PWMOut(board.D12, duty_cycle=2 ** 15, frequency=50)
 footL = servo.Servo(pwm3)
 
+# board D13 to right foot servo
 pwm4 = pulseio.PWMOut(board.D13, duty_cycle=2 ** 15, frequency=50)
 footR = servo.Servo(pwm4)
 
-#buzzer setup
+# piezo buzzer setup
+# board A1 to buzzer
 piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
 
 
 # define basic functions
+# define resetServo function that moves the leg servos to their default position
 def resetServo(): 
     legR.angle = 94
     legL.angle = 90
     footR.angle = 90
     footL.angle = 91
 
+# define rotate function that takes limb, min, max and step as parameter
+# function then rotates the 'limb' from 'min' angle to 'max' angle with 'step' increments
 def rotate(limb, min, max, step):
     for x in range(min, max, step):
         limb.angle = x
 
 # define single dance move functions 
+# define leftFootOut function that rotates the whole left leg outwards 90 degrees then back 
 def leftFootOut():
     rotate(legL, 90, 180, 5)
     rotate(legL, 180, 90, -5)
 
+# define rightFootOut function that rotates the whole right leg outwards 90 degrees then back 
 def rightFootOut():
     rotate(legR, 90, 10, -5)
     rotate(legR, 10, 90, 5)
-    
+
+# define leftFootOut function that rotates the whole left leg inwards 70 degrees then back 
 def leftFootIn():
     rotate(legL, 90, 20, -5)
     rotate(legL, 20, 90, 5)
 
+# define leftFootOut function that rotates the whole right leg inwards 70 degrees then back 
 def rightFootIn():
     rotate(legR, 90, 160, 5)
     rotate(legR, 160, 90, -5)
@@ -360,8 +377,6 @@ def dance6():
 #     
 #------------------------------------------------------------------------------------------------------#    
 
-# setting up the piezo buzzer
-#piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
 
 # define 6 songs
 
@@ -528,7 +543,7 @@ def song6():
 #    
 #------------------------------------------------------------------------------------------------------# 
 
-# resets the display when we want to change the state
+# define reset function that resets the display when we want to change the state of the FSM
 def reset():
     displayio.release_displays()
     spi = board.SPI()
@@ -704,7 +719,7 @@ while True:
     elif state ==  DANCE:
         textout("Press a key: \n 1) Walk \n 2) Shuffle \n 3) Ballerina \n 4) Pigeon \n 5) Excite \n 6) Karate", 0x000000, 10, 60)
         keys = 0
-        while keys == 0 and not checkSonar():
+        while keys == 0 and not checkSonar(5):
             keys = keypadDecode()
 
         if keys == 1:
@@ -767,7 +782,7 @@ while True:
             setColor('off')
             state =  REQUEST
             reset()
-        elif checkSonar():
+        elif checkSonar(5):
             setColor('red')
             time.sleep(0.1)
             state = HOME
@@ -782,7 +797,7 @@ while True:
         textshow("press any button \n to return", 0x000000, 20, 64, 5)
        
         keys =0
-        while keys == 0 and not checkSonar():
+        while keys == 0 and not checkSonar(5):
             keys = keypadDecode()
 
         temp = False
@@ -818,7 +833,7 @@ while True:
             state =  HOME
             reset()
 
-        elif checkSonar():
+        elif checkSonar(5):
             setColor('red')
             time.sleep(0.1)
             state = DANCE
@@ -863,7 +878,7 @@ while True:
         textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000, 10, 60)
 
         keys = 0
-        while keys == 0 and not checkSonar():
+        while keys == 0 and not checkSonar(5):
             keys = keypadDecode()
 
         if keys == 1:
@@ -926,7 +941,7 @@ while True:
             setColor('off')
             state =  REQUEST
             reset()
-        elif checkSonar():
+        elif checkSonar(5):
             setColor('red')
             time.sleep(0.1)
             state = HOME
