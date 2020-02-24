@@ -183,3 +183,4 @@ def dance6():
     start = 0
     for i in range(3):
         start = shuffle(start, DEFAULT)
+        

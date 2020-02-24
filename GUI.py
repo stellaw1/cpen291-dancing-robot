@@ -821,7 +821,7 @@ while True:
         elif checkSonar():
             setColor('red')
             time.sleep(0.1)
-            state = HOME
+            state = DANCE
             setColor('off')
             reset()
 
