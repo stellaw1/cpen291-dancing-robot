@@ -108,26 +108,26 @@ def rotate(limb, min, max, step, start, song):
     return i
 
 def tapLeftFoot(start, song):
-    start = rotate(footL, 90, 70, -10, start, song)
-    start = rotate(footL, 70, 90, 10, start, song)
+    start = rotate(footL, 90, 60, -10, start, song)
+    start = rotate(footL, 60, 90, 10, start, song)
     return start
     
 def tapRightFoot(start, song):
-    start = rotate(footR, 100, 120, 10, start, song)
-    start = rotate(footR, 120, 100, -10, start, song)
+    start = rotate(footR, 100, 130, 10, start, song)
+    start = rotate(footR, 130, 100, -10, start, song)
     return start
 
 def rightKick(start, song):
     legR.angle = 160
-    start = rotate(footR, 100, 60, 10, start, song)
-    start = rotate(footR, 60, 100, -10, start, song)
+    start = rotate(footR, 100, 60, -10, start, song)
+    start = rotate(footR, 60, 100, 10, start, song)
     legR.angle = 90
     return start
 
 def leftKick(start, song):
     legL.angle = 20
-    start = rotate(footL, 90, 130, -10, start, song)
-    start = rotate(footL, 130, 90, 10, start, song)
+    start = rotate(footL, 90, 130, 10, start, song)
+    start = rotate(footL, 130, 90, -10, start, song)
     legL.angle = 90
     return start
 
@@ -183,6 +183,20 @@ def dance3():
     start = rightFootOut(start, ANTHEM)
     start = tapRightFoot(start, ANTHEM)
     start = rightKick(start, ANTHEM)
+
+def dance4():
+    start = 0
+    for j in range(3):
+        start = tapLeftFoot(start, TETRIS)
+    for j in range(3):
+        start = tapRightFoot(start, TETRIS)
+
+def dance5():
+    start = 0
+    for i in range(3):
+        start = leftKick(start, CANON)
+        start = rightKick(start, CANON)
+
 
 
 '''
@@ -420,4 +434,4 @@ def check_distance():
         return 0
     return 1
 '''
-dance2()
+dance5()
