@@ -21,6 +21,8 @@ footR = servo.Servo(pwm3)
 pwm4 = pulseio.PWMOut(board.D13, frequency=50)
 footL = servo.Servo(pwm4)
 
+music = 1
+
 
 ###################################
 # frequency lists for the six songs
@@ -54,6 +56,11 @@ def playSong(song, delay):
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
 
+def playNote(freq, delay):
+    piezo.frequency = freq
+    piezo.duty_cycle = 65536 // 2  # On 50%
+    time.sleep(delay)  # On
+
 
 ############################
 # basic dance move functions
@@ -62,7 +69,10 @@ def rotate(limb, min, max, step, start, song):
     i = start
     for x in range(min, max + step, step):
         limb.angle = x
-        play_note(song[i % len(song)], 0.3)
+        if music == 1:
+            playNote(song[i % len(song)], 0.3)
+        else:
+            time.sleep(0.3)
         i += 1
     return i
 
@@ -71,10 +81,10 @@ def double_rotate(limb1, limb2, min, max, step, start, song):
     for x in range(min, max + step, step):
         limb1.angle = x
         limb2.angle = x
-        play_note(song[i % len(song)], 0.3)
+        playNote(song[i % len(song)], 0.3)
         i += 1
     return i
-
+'''
 def tapLeftFoot(start, song):
     start = rotate(footL, 90, 60, -10, start, song)
     start = rotate(footL, 60, 90, 10, start, song)
@@ -83,6 +93,15 @@ def tapLeftFoot(start, song):
 def tapRightFoot(start, song):
     start = rotate(footR, 100, 130, 10, start, song)
     start = rotate(footR, 130, 100, -10, start, song)
+    return start
+'''
+def tapFoot(start, song, limb):
+    if limb == footL:
+        start = rotate(footL, 90, 60, -10, start, song)
+        start = rotate(footL, 60, 90, 10, start, song)
+    else:
+        start = rotate(footR, 100, 130, 10, start, song)
+        start = rotate(footR, 130, 100, -10, start, song)
     return start
 
 def rightKick(start, song):
@@ -136,17 +155,21 @@ def shuffle(start, song):
     for angle in range(120, 90, -15): # 180 - 0 degrees, 5 degrees at a time.
         start = double_rotate(legL, legR, angle, angle, 15, start, song)
     return start
-
+    
+def reset():
+    footR.angle = 97
+    footL.angle = 92
+    legR.angle = 90
+    legL.angle = 90
+    time.sleep(0.1)
 
 ###################################################################
 # 6 dance moves created as a combination of the smaller moves above
 
 def dance1():
     start = 0
-    reset()
     for i in range(3):
         start = wiggle(start, STRANGER)
-    reset()
 
 def dance2():
     start = 0
@@ -159,19 +182,20 @@ def dance2():
 def dance3():
     start = 0
     start = leftFootOut(start, ANTHEM)
-    start = tapLeftFoot(start, ANTHEM)
+    start = tapFoot(start, ANTHEM, footL)
     start = leftKick(start, ANTHEM)
 
     start = rightFootOut(start, ANTHEM)
-    start = tapRightFoot(start, ANTHEM)
+    start = tapFoot(start, ANTHEM, footR)
     start = rightKick(start, ANTHEM)
+    reset()
 
 def dance4():
     start = 0
     for j in range(3):
-        start = tapLeftFoot(start, TETRIS)
+        start = tapFoot(start, TETRIS, footL)
     for j in range(3):
-        start = tapRightFoot(start, TETRIS)
+        start = tapFoot(start, TETRIS, footR)
 
 def dance5():
     start = 0
@@ -183,4 +207,3 @@ def dance6():
     start = 0
     for i in range(3):
         start = shuffle(start, DEFAULT)
-        
