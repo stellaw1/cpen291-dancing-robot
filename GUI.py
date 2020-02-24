@@ -789,6 +789,7 @@ while True:
 
         while True:
             distance = sonar.distance
+            reset()
             textout(str(distance), 0x000000, 50, 50)
             if interrupt():
                 temp = True
