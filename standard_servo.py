@@ -106,48 +106,71 @@ def rotate(limb, min, max, step, start, song):
         i += 1
     return i
 
-# define single dance move functions 
-def leftFootOut(start):
-    start = rotate(legL, 90, 180, 10, start, TETRIS)
-    start = rotate(legL, 180, 90, -10, start, TETRIS)
+def rightKick(start, song):
+    legR.angle = 20
+    start = rotate(footR, 90, 130, 4, start, song)
+    start = rotate(footR, 130, 90, -4, start, song)
     return start
 
-def rightFootOut(start):
-    start = rotate(legR, 90, 10, -10, start, TETRIS)
-    start = rotate(legR, 10, 90, 10, start, TETRIS)
+def leftKick(start, song):
+    legL.angle = 160
+    start = rotate(footL, 90, 60, -3, start, song)
+    start = rotate(footL, 60, 90, 3, start, song)
+    return start
+
+# define single dance move functions 
+def leftFootOut(start, song):
+    start = rotate(legL, 90, 180, 10, start, song)
+    start = rotate(legL, 180, 90, -10, start, song)
+    return start
+
+def rightFootOut(start, song):
+    start = rotate(legR, 90, 10, -10, start, song)
+    start = rotate(legR, 10, 90, 10, start, song)
     return start
     
-def leftFootIn(start):
-    start = rotate(legL, 90, 20, -10, start, TETRIS)
-    start = rotate(legL, 20, 90, 10, start, TETRIS)
+def leftFootIn(start, song):
+    start = rotate(legL, 90, 20, -10, start, song)
+    start = rotate(legL, 20, 90, 10, start, song)
     return start
 
-def rightFootIn(start):
-    start = rotate(legR, 90, 160, 10, start, TETRIS)
-    start = rotate(legR, 160, 90, -10, start, TETRIS)
+def rightFootIn(start, song):
+    start = rotate(legR, 90, 160, 10, start, song)
+    start = rotate(legR, 160, 90, -10, start, song)
     return start
 
-def wiggle(start):
-    rotate(footL, 90, 130, 5, start, CRIMSON)
-    rotate(footR, 90, 60, -5, start, CRIMSON)
-    rotate(footL, 130, 90, -5, start, CRIMSON)
-    rotate(footR, 60, 90, 5, start, CRIMSON)
+def wiggle(start, song):
+    rotate(footL, 90, 130, 5, start, song)
+    rotate(footR, 90, 60, -5, start, song)
+    rotate(footL, 130, 90, -5, start, song)
+    rotate(footR, 60, 90, 5, start, song)
     return start
 
 def dance1():
     start = 0
     reset()
-    for i in range(0, 12, 1):
-        start = wiggle(start)
+    for i in range(12):
+        start = wiggle(start, TETRIS)
     reset()
 
 def dance2():
     start = 0
-    for i in range(0, 12):
-        start = leftFootOut(start)
-        start = leftFootIn(start)
-        start = rightFootOut(start)
-        start = rightFootIn(start)
+    for i in range(12):
+        start = leftFootOut(start, STRANGER)
+        start = leftFootIn(start, STRANGER)
+        start = rightFootOut(start, STRANGER)
+        start = rightFootIn(start, STRANGER)
+
+def dance3():
+    start = 0
+    for i in range(12):
+        start = leftFootOut(start, ANTHEM)
+        start = tapLeftFoot(start, ANTHEM)
+        start = leftKick(start, ANTHEM)
+
+        start = rightFootOut(start, ANTHEM)
+        start = tapRightFoot(start, ANTHEM)
+        start = rightKick(start, ANTHEM)
 
 
 '''
