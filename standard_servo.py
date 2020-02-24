@@ -15,10 +15,11 @@ pwm2 = pulseio.PWMOut(board.D11, frequency=50) #leg2
 legR = servo.Servo(pwm2)
 
 pwm3 = pulseio.PWMOut(board.D12, frequency=50)
-footL = servo.Servo(pwm3)
+footR = servo.Servo(pwm3)
 
 pwm4 = pulseio.PWMOut(board.D13, frequency=50)
-footR = servo.Servo(pwm4)
+footL = servo.Servo(pwm4)
+
 '''
 def rotate(limb, angle, delay, min, max, song, start):
     i = start
@@ -71,6 +72,7 @@ TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 
 
 DEFAULT = [149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931]
 
+
 def playSong(song, delay):
     for i in range (len(song)):
         piezo.frequency = song[i]
@@ -92,70 +94,81 @@ def playMusic(song, delay):
         time.sleep(delay)  # On
         piezo.duty_cycle = 0  # Off
 
-def reset(): 
-    legR.angle = 94
-    legL.angle = 90
-    footR.angle = 90
-    footL.angle = 91
+def reset():
+    footR.angle = 100
+    footL.angle = 92
+    time.sleep(1)
 
 def rotate(limb, min, max, step, start, song):
     i = start
-    for x in range(min, max, step):
-        play_note(song[i % len(song)], 0.3)
+    for x in range(min, max + step, step):
         limb.angle = x
+        play_note(song[i % len(song)], 0.3)
         i += 1
     return i
 
+def tapLeftFoot(start, song):
+    start = rotate(footL, 90, 70, -10, start, song)
+    start = rotate(footL, 70, 90, 10, start, song)
+    return start
+    
+def tapRightFoot(start, song):
+    start = rotate(footR, 100, 120, 10, start, song)
+    start = rotate(footR, 120, 100, -10, start, song)
+    return start
+
 def rightKick(start, song):
-    legR.angle = 20
-    start = rotate(footR, 90, 130, 4, start, song)
-    start = rotate(footR, 130, 90, -4, start, song)
+    legR.angle = 160
+    start = rotate(footR, 100, 60, 10, start, song)
+    start = rotate(footR, 60, 100, -10, start, song)
+    legR.angle = 90
     return start
 
 def leftKick(start, song):
-    legL.angle = 160
-    start = rotate(footL, 90, 60, -3, start, song)
-    start = rotate(footL, 60, 90, 3, start, song)
+    legL.angle = 20
+    start = rotate(footL, 90, 130, -10, start, song)
+    start = rotate(footL, 130, 90, 10, start, song)
+    legL.angle = 90
     return start
 
 # define single dance move functions 
-def leftFootOut(start, song):
-    start = rotate(legL, 90, 180, 10, start, song)
-    start = rotate(legL, 180, 90, -10, start, song)
+def leftFootIn(start, song):
+    start = rotate(legL, 90, 170, 10, start, song)
+    start = rotate(legL, 170, 90, -10, start, song)
     return start
 
-def rightFootOut(start, song):
+def rightFootIn(start, song):
     start = rotate(legR, 90, 10, -10, start, song)
     start = rotate(legR, 10, 90, 10, start, song)
     return start
     
-def leftFootIn(start, song):
+def leftFootOut(start, song):
     start = rotate(legL, 90, 20, -10, start, song)
     start = rotate(legL, 20, 90, 10, start, song)
     return start
 
-def rightFootIn(start, song):
+def rightFootOut(start, song):
     start = rotate(legR, 90, 160, 10, start, song)
     start = rotate(legR, 160, 90, -10, start, song)
     return start
 
 def wiggle(start, song):
-    rotate(footL, 90, 130, 5, start, song)
-    rotate(footR, 90, 60, -5, start, song)
-    rotate(footL, 130, 90, -5, start, song)
-    rotate(footR, 60, 90, 5, start, song)
+    start = rotate(footL, 90, 130, 10, start, song)
+    start = rotate(footR, 100, 60, -10, start, song)
+    start = rotate(footL, 130, 90, -10, start, song)
+    start = rotate(footR, 60, 100, 10, start, song)
     return start
 
 def dance1():
     start = 0
     reset()
-    for i in range(12):
+    for i in range(3):
         start = wiggle(start, TETRIS)
     reset()
 
 def dance2():
     start = 0
-    for i in range(12):
+    for i in range(2):
         start = leftFootOut(start, STRANGER)
         start = leftFootIn(start, STRANGER)
         start = rightFootOut(start, STRANGER)
@@ -163,14 +176,13 @@ def dance2():
 
 def dance3():
     start = 0
-    for i in range(12):
-        start = leftFootOut(start, ANTHEM)
-        start = tapLeftFoot(start, ANTHEM)
-        start = leftKick(start, ANTHEM)
+    start = leftFootOut(start, ANTHEM)
+    start = tapLeftFoot(start, ANTHEM)
+    start = leftKick(start, ANTHEM)
 
-        start = rightFootOut(start, ANTHEM)
-        start = tapRightFoot(start, ANTHEM)
-        start = rightKick(start, ANTHEM)
+    start = rightFootOut(start, ANTHEM)
+    start = tapRightFoot(start, ANTHEM)
+    start = rightKick(start, ANTHEM)
 
 
 '''
@@ -408,4 +420,4 @@ def check_distance():
         return 0
     return 1
 '''
-playSong(MARIO2, 0.25)
+dance1()
