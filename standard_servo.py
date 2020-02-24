@@ -94,20 +94,6 @@ def double_rotate(limb1, limb2, min, max, step, start, song):
         i += 1
     return i
 
-
-'''
-def tapLeftFoot(start, song):
-    start = rotate(footL, 90, 60, -10, start, song)
-    start = rotate(footL, 60, 90, 10, start, song)
-    return start
-    
-def tapRightFoot(start, song):
-    start = rotate(footR, 100, 130, 10, start, song)
-    start = rotate(footR, 130, 100, -10, start, song)
-    return start
-'''
-
-
 def tapFoot(start, song, limb):
     if limb == footL:
         start = rotate(footL, 90, 60, -10, start, song)
@@ -117,44 +103,35 @@ def tapFoot(start, song, limb):
         start = rotate(footR, 130, 100, -10, start, song)
     return start
 
-
-def rightKick(start, song):
-    legR.angle = 160
-    start = rotate(footR, 100, 60, -10, start, song)
-    start = rotate(footR, 60, 100, 10, start, song)
-    legR.angle = 90
+def kick(start, song, limb):
+    if limb == legR:
+        limb.angle = 160
+        start = rotate(footR, 100, 60, -10, start, song)
+        start = rotate(footR, 60, 100, 10, start, song)
+        limb.angle = 90
+    else:
+        limb.angle = 20
+        start = rotate(footL, 90, 130, 10, start, song)
+        start = rotate(footL, 130, 90, -10, start, song)
+        limb.angle = 90
     return start
 
-
-def leftKick(start, song):
-    legL.angle = 20
-    start = rotate(footL, 90, 130, 10, start, song)
-    start = rotate(footL, 130, 90, -10, start, song)
-    legL.angle = 90
+def footIn(start, song, limb):
+    if limb == legR:
+        start = rotate(limb, 90, 10, -10, start, song)
+        start = rotate(limb, 10, 90, 10, start, song)
+    else:
+        start = rotate(limb, 90, 170, 10, start, song)
+        start = rotate(limb, 170, 90, -10, start, song)
     return start
 
-
-def leftFootIn(start, song):
-    start = rotate(legL, 90, 170, 10, start, song)
-    start = rotate(legL, 170, 90, -10, start, song)
-    return start
-
-
-def rightFootIn(start, song):
-    start = rotate(legR, 90, 10, -10, start, song)
-    start = rotate(legR, 10, 90, 10, start, song)
-    return start
-
-
-def leftFootOut(start, song):
-    start = rotate(legL, 90, 20, -10, start, song)
-    start = rotate(legL, 20, 90, 10, start, song)
-    return start
-
-
-def rightFootOut(start, song):
-    start = rotate(legR, 90, 160, 10, start, song)
-    start = rotate(legR, 160, 90, -10, start, song)
+def footOut(start, song, limb):
+    if limb == legR:
+        start = rotate(limb, 90, 160, 10, start, song)
+        start = rotate(limb, 160, 90, -10, start, song)
+    else:
+        start = rotate(legL, 90, 20, -10, start, song)
+        start = rotate(legL, 20, 90, 10, start, song)
     return start
 
 
@@ -198,21 +175,21 @@ def dance1():
 def dance2():
     start = 0
     for i in range(2):
-        start = leftFootOut(start, MARIO)
-        start = leftFootIn(start, MARIO)
-        start = rightFootOut(start, MARIO)
-        start = rightFootIn(start, MARIO)
+        start = footOut(start, MARIO, legL)
+        start = footIn(start, MARIO, legL)
+        start = footOut(start, MARIO, legR)
+        start = footIn(start, MARIO, legR)
 
 
 def dance3():
     start = 0
-    start = leftFootOut(start, ANTHEM)
+    start = footOut(start, ANTHEM, legL)
     start = tapFoot(start, ANTHEM, footL)
-    start = leftKick(start, ANTHEM)
+    start = kick(start, ANTHEM, legL)
 
-    start = rightFootOut(start, ANTHEM)
+    start = footOut(start, ANTHEM, legR)
     start = tapFoot(start, ANTHEM, footR)
-    start = rightKick(start, ANTHEM)
+    start = kick(start, ANTHEM, legR)
     reset()
 
 
@@ -227,8 +204,8 @@ def dance4():
 def dance5():
     start = 0
     for i in range(3):
-        start = leftKick(start, CANON)
-        start = rightKick(start, CANON)
+        start = kick(start, CANON, legL)
+        start = kick(start, CANON, legR)
 
 
 def dance6():
