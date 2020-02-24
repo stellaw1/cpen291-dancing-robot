@@ -54,7 +54,7 @@ MARIO = [2637, 2637, 0, 2637, 0, 2093, 2637, 0, 3136, 0, 0,  0, 1568, 0, 0, 0,
             2093, 0, 0, 1568, 0, 0, 1319, 0, 0, 1760, 0, 1976, 0, 1865, 1760, 0,
             1568, 2637, 3136, 3520, 0, 2794, 3136, 0, 2637, 0, 2093, 2349, 1976, 0, 0]
 
-MARIO2 = [659, 659, 659, 523, 659, 784, 392, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 0, 659, 
+MARIO2 = [659, 659, 659, 523, 659, 784, 392, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659, 
             523, 587, 494, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659, 523, 587, 494]
 
 STRANGER = [131, 165, 196, 247, 262, 247, 196, 165]
@@ -169,10 +169,10 @@ def dance1():
 def dance2():
     start = 0
     for i in range(2):
-        start = leftFootOut(start, STRANGER)
-        start = leftFootIn(start, STRANGER)
-        start = rightFootOut(start, STRANGER)
-        start = rightFootIn(start, STRANGER)
+        start = leftFootOut(start, MARIO2)
+        start = leftFootIn(start, MARIO2)
+        start = rightFootOut(start, MARIO2)
+        start = rightFootIn(start, MARIO2)
 
 def dance3():
     start = 0
@@ -420,4 +420,4 @@ def check_distance():
         return 0
     return 1
 '''
-dance1()
+dance2()
