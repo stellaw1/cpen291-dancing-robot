@@ -6,7 +6,7 @@ import servo
 import adafruit_hcsr04
 
 # piezo buzzer setup
-piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
+piezo = pulseio.PWMOut(board.A1, duty_cycle=0, frequency=440, variable_frequency=True)
 
 # servo setup
 pwm1 = pulseio.PWMOut(board.D10, frequency=50)
@@ -22,7 +22,6 @@ pwm4 = pulseio.PWMOut(board.D13, frequency=50)
 footL = servo.Servo(pwm4)
 
 music = 1
-
 
 ###################################
 # frequency lists for the six songs
@@ -41,28 +40,29 @@ ANTHEM = [392, 523, 392, 440, 494, 330, 330,
           587, 523, 494, 440, 494, 523, 440, 440,
           523, 494, 440, 392, 262, 392, 440, 494, 523]
 
-MARIO = [659, 659, 659, 523, 659, 784, 392, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659, 
-            523, 587, 494, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659, 523, 587, 494]
+MARIO = [659, 659, 659, 523, 659, 784, 392, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659,
+         523, 587, 494, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659, 523, 587, 494]
 
 STRANGER = [131, 165, 196, 247, 262, 247, 196, 165]
 
 CANON = [131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175,
-            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110]
+         131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110]
 
 TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 523,
-            494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587,
-            523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523,
-            659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
-            659, 587, 523, 587, 659, 523, 440, 440]
+          494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587,
+          523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523,
+          659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
+          659, 587, 523, 587, 659, 523, 440, 440]
 
 DEFAULT = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
 
 
 def playSong(song, delay):
-    for i in range (len(song)):
+    for i in range(len(song)):
         piezo.frequency = song[i]
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
+
 
 def playNote(freq, delay):
     piezo.frequency = freq
@@ -83,6 +83,7 @@ def rotate(limb, min, max, step, start, song):
             time.sleep(0.3)
         i += 1
     return i
+
 
 def double_rotate(limb1, limb2, min, max, step, start, song):
     i = start
@@ -133,6 +134,7 @@ def footOut(start, song, limb):
         start = rotate(legL, 20, 90, 10, start, song)
     return start
 
+
 def wiggle(start, song):
     start = rotate(footL, 90, 130, 10, start, song)
     start = rotate(footR, 100, 60, -10, start, song)
@@ -140,23 +142,26 @@ def wiggle(start, song):
     start = rotate(footR, 60, 100, 10, start, song)
     return start
 
+
 def shuffle(start, song):
     for angle in range(90, 30, -15):  # 0 - 180 degrees, 5 degrees at a time.
         start = double_rotate(legL, legR, angle, angle, -15, start, song)
-    for angle in range(30, 90, 15): # 180 - 0 degrees, 5 degrees at a time.
+    for angle in range(30, 90, 15):  # 180 - 0 degrees, 5 degrees at a time.
         start = double_rotate(legL, legR, angle, angle, 15, start, song)
     for angle in range(90, 120, 15):  # 0 - 180 degrees, 5 degrees at a time.
         start = double_rotate(legL, legR, angle, angle, -15, start, song)
-    for angle in range(120, 90, -15): # 180 - 0 degrees, 5 degrees at a time.
+    for angle in range(120, 90, -15):  # 180 - 0 degrees, 5 degrees at a time.
         start = double_rotate(legL, legR, angle, angle, 15, start, song)
     return start
-    
+
+
 def reset():
     footR.angle = 97
     footL.angle = 92
     legR.angle = 90
     legL.angle = 90
     time.sleep(0.1)
+
 
 ###################################################################
 # 6 dance moves created as a combination of the smaller moves above
@@ -166,6 +171,7 @@ def dance1():
     for i in range(3):
         start = wiggle(start, STRANGER)
 
+
 def dance2():
     start = 0
     for i in range(2):
@@ -173,6 +179,7 @@ def dance2():
         start = footIn(start, MARIO, legL)
         start = footOut(start, MARIO, legR)
         start = footIn(start, MARIO, legR)
+
 
 def dance3():
     start = 0
@@ -185,6 +192,7 @@ def dance3():
     start = kick(start, ANTHEM, legR)
     reset()
 
+
 def dance4():
     start = 0
     for j in range(3):
@@ -192,11 +200,13 @@ def dance4():
     for j in range(3):
         start = tapFoot(start, TETRIS, footR)
 
+
 def dance5():
     start = 0
     for i in range(3):
         start = kick(start, CANON, legL)
         start = kick(start, CANON, legR)
+
 
 def dance6():
     start = 0
