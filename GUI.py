@@ -401,6 +401,8 @@ def song2():
         if time.time() > timeout:
             break
 
+        temp = False
+
         for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
             262, 294, 247):
             if interrupt():
@@ -424,6 +426,8 @@ def song3():
         if time.time() > timeout:
             break
 
+        temp = False
+
         for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):
             if interrupt():
                 temp = True
@@ -446,6 +450,8 @@ def song4():
         if time.time() > timeout:
             break
 
+        temp = False
+
         for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
             131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
             if interrupt():
@@ -466,6 +472,8 @@ def song5():
     timeout = time.time() + 10 
     while True:
         
+        temp = False
+
         if time.time() > timeout:
             break
         freq = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 659,
@@ -492,6 +500,8 @@ def song6():
     timeout = time.time() + 10 
     while True:
         
+        temp = False
+
         if time.time() > timeout:
             break
 
@@ -518,7 +528,7 @@ def song6():
 #    
 #------------------------------------------------------------------------------------------------------# 
 
-
+# resets the display when we want to change the state
 def reset():
     displayio.release_displays()
     spi = board.SPI()
@@ -535,7 +545,8 @@ def reset():
     color_palette[0] = 0xFFFFFF # White
     bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
     splash.append(bg_white)
-    
+
+# method to upload picture onto the LCD    
 def ShowPic(string, timein):
     with open(string, "rb") as bitmap_file:
         # Setup the file as the bitmap data source
@@ -553,6 +564,7 @@ def ShowPic(string, timein):
             pass
             time.sleep(1)        
 
+# time dependent text
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -562,6 +574,7 @@ def textshow(textin, bgcolor, xc, yc, timein):
         pass
         time.sleep(1)
 
+# time indeoendent text
 def textout(textin, bgcolor, xc, yc):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -628,10 +641,6 @@ while True:
     if state ==  LOADING:
         splash = displayio.Group(max_size=100)
         reset()
-        #time.sleep(1)
-        #reset()
-        #textshow("Welcome", 0x000000, 45, 64, 0.1)
-        #reset()
         string1 = "Loading"
         textshow(string1, 0x000000, 30, 64, 0.0001)
         string2 = "..."
@@ -775,6 +784,15 @@ while True:
         keys =0
         while keys == 0 and not checkSonar():
             keys = keypadDecode()
+
+        temp = False
+
+        while True:
+            distance = sonar.distance
+            textout(str(distance), 0x000000, 50, 50)
+            if interrupt():
+                temp = True
+                break
 
         if keys == 1:
             state =  HOME
