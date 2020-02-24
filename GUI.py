@@ -579,7 +579,7 @@ def ShowPic(string, timein):
             pass
             time.sleep(1)        
 
-# time dependent text
+# define textshow function that shows time dependent text (shows for 'timein' seconds)
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -589,7 +589,7 @@ def textshow(textin, bgcolor, xc, yc, timein):
         pass
         time.sleep(1)
 
-# time indeoendent text
+# define textout function that shows time independent text 
 def textout(textin, bgcolor, xc, yc):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -604,28 +604,28 @@ def textout(textin, bgcolor, xc, yc):
 #------------------------------------------------------------------------------------------------------#    
 
 # reverse logic on the rgb pins so that a pull up resistor turns the led off and the pull down turns it on
+# board D2 to red color
 red = digitalio.DigitalInOut(board.D2)
 red.direction = digitalio.Direction.INPUT
 red.pull = digitalio.Pull.DOWN
 
+# board D1 to green color
 green = digitalio.DigitalInOut(board.D1)
 green.direction = digitalio.Direction.INPUT
 green.pull = digitalio.Pull.DOWN
 
+# board D0 to blue color
 blue = digitalio.DigitalInOut(board.D0)
 blue.direction = digitalio.Direction.INPUT
 blue.pull = digitalio.Pull.DOWN
-
-# dictRed = {"red": 0xFF, 'orange': 0xFF, "yellow": 0xFF, "green": 0, 'blue': 0, 'purple': 0xFF, 'white': 0xFF}
-# dictGreen = {"red": 0, 'orange': 0xA5, "yellow": 0xFF, "green": 0xFF, 'blue': 0, 'purple': 0, 'white': 0xFF}
-# dictBlue = {"red": 0, 'orange': 0, "yellow": 0, "green": 0, 'blue': 0xFF, 'purple': 0xFF, 'white': 0xFF}
 
 # set of basic digital colour values to be set on demand in 3 dictionaries, one for each pin
 dictRed = {  "red": digitalio.Pull.UP, 'cyan': digitalio.Pull.DOWN,   "yellow": digitalio.Pull.UP, "green": digitalio.Pull.DOWN,   'blue': digitalio.Pull.DOWN,   'magenta': digitalio.Pull.UP, 'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
 dictGreen = {"red": digitalio.Pull.DOWN,   'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.UP, "green": digitalio.Pull.UP, 'blue': digitalio.Pull.DOWN,   'magenta': digitalio.Pull.DOWN,   'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
 dictBlue = { "red": digitalio.Pull.DOWN,   'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.DOWN,   "green": digitalio.Pull.DOWN,   'blue': digitalio.Pull.UP, 'magenta': digitalio.Pull.UP, 'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
 
-# changes the led color to one defined in the dictionary
+# define function setColor that takes an input string and changes the RBG to the specified color
+# if the string color is defined in the dictionary declared above changes the led color to one defined in the dictionary
 def setColor(color):
     red.pull = dictRed[color]
     green.pull = dictGreen[color]
@@ -637,7 +637,7 @@ def setColor(color):
 #     
 #------------------------------------------------------------------------------------------------------#    
 
-# setting up the states of the GUI
+# define the states of the GUI
 LOADING = 0
 PASSCODE = 1
 HOME = 2
@@ -650,12 +650,15 @@ DEFAULT = 8
 
 # initial default state is loading
 state = LOADING
+
+# keeps checking the FSM state and update the current state according to the inputs
 while True:
 
     # if state is loading, it goes to passcode
-    if state ==  LOADING:
+    if state == LOADING:
         splash = displayio.Group(max_size=100)
         reset()
+        # display "Loading..." meassage on the LCD
         string1 = "Loading"
         textshow(string1, 0x000000, 30, 64, 0.0001)
         string2 = "..."
@@ -665,22 +668,28 @@ while True:
             textshow(string2[i], 0x000000, x, 64, 0.0001)
             i+=1
             x+=6
+        # display the robot picture on the LCD
         ShowPic("\Robot.bmp", 3)
         time.sleep(2)
         reset()
+        # display the "Welcome" text on the LCD
         textshow("Welcome", 0x000000, 45, 64, 0.1)
         reset()
-        state =  PASSCODE
+        # proceed to passcode state for the FSM to request for passcode
+        state = PASSCODE
 
     # if state is passcode, checks the passcode, if correct goes to home, else back to passcode
     if state ==  PASSCODE:
+        # display "enter the passcode", runs checkPass function
         textout("enter the passcode", 0x000000, 10, 60)
         boolean = False
         boolean = checkPass()
+        # if passcode is correct the FSM proceed to the home state
         if boolean:
             boolean = False
-            state =  HOME
+            state = HOME
             reset()
+        # if passcode is incorrect display "wrong passcode" and then keeps fetching passcode
         else:
             reset()
             textshow("wrong passcode", 0x000000, 10, 60, 2)
@@ -691,11 +700,14 @@ while True:
     # if state is home, checks keypad and goes to coressponding state     
     elif state ==  HOME:
         setColor('off')
+        # display the home menu on the screen
         textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
         keys = 0
+        # keeps checking the keypad for a input, blocks indefinitely until user inputs
         while keys == 0:
             keys = keypadDecode()
 
+        # set the next state of the FSM according to the user input
         if keys == 1:
             state = DEFAULT
             reset()
@@ -717,11 +729,16 @@ while True:
 
     # if state is dance, plays the dance move coressponding to the keypad number pressed    
     elif state ==  DANCE:
+        # display the dance menu on the screen
         textout("Press a key: \n 1) Walk \n 2) Shuffle \n 3) Ballerina \n 4) Pigeon \n 5) Excite \n 6) Karate", 0x000000, 10, 60)
         keys = 0
+        # keeps checking the keypad for a input,
+        # blocks indefinitely until user inputs or until sonar detects an object less than 5cm
         while keys == 0 and not checkSonar(5):
             keys = keypadDecode()
 
+        # call the corresponding dance function depending on user input then move the FSM to request state
+        # if no user input, check sonar for distance less than 5, if such, return FSM to home state.
         if keys == 1:
             reset()
             textout("Walking", 0x000000, 43, 48)
@@ -788,6 +805,7 @@ while True:
             state = HOME
             setColor('off')
             reset()
+        # if no user input / sonar detection, stay in dance state
         else:
             state =  DANCE
 
@@ -797,6 +815,8 @@ while True:
         textshow("press any button \n to return", 0x000000, 20, 64, 5)
        
         keys =0
+        # keeps checking the keypad for a input,
+        # blocks indefinitely until user inputs or until sonar detects an object less than 5cm
         while keys == 0 and not checkSonar(5):
             keys = keypadDecode()
 
