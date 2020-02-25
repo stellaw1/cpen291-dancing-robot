@@ -183,6 +183,8 @@ footL = servo.Servo(pwm4)
 
 music = 1
 
+demo = 0
+
 ###################################
 # frequency lists for the six songs
 
@@ -236,7 +238,7 @@ def playNote(freq, delay):
 # basic dance move functions
 
 def rotate(limb, min, max, step, start, song):
-    if checkSonar(5):
+    if checkSonar(5) and (not demo):
         raise TooCloseError
         return start
 
@@ -246,7 +248,7 @@ def rotate(limb, min, max, step, start, song):
         if music == 1:
             playNote(song[i % len(song)], 0.3)
         else:
-            time.sleep(0.3)
+            time.sleep(0.15)
         i += 1
     return i
 
@@ -260,7 +262,10 @@ def double_rotate(limb1, limb2, min, max, step, start, song):
     for x in range(min, max + step, step):
         limb1.angle = x
         limb2.angle = x
-        playNote(song[i % len(song)], 0.3)
+        if music == 1:
+            playNote(song[i % len(song)], 0.3)
+        else:
+            time.sleep(0.15)
         i += 1
     return i
 
@@ -752,6 +757,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance1
             reset()
         elif keys == 2:
             reset()
@@ -766,6 +772,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance2
             reset()
         elif keys == 3:
             reset()
@@ -780,6 +787,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance3
             reset()
         elif keys == 4:
             reset()
@@ -794,6 +802,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance4
             reset()
         elif keys == 5:
             reset()
@@ -808,6 +817,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance5
             reset()
         elif keys == 6:
             reset()
@@ -822,6 +832,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance6
             reset()
         elif checkSonar(5):
             setColor('red')
@@ -940,8 +951,8 @@ while True:
             play_song(ANTHEM)
             setColor('off')
             state = REQUEST
+            test = lambda: play_song(ANTHEM)
             reset()
-            test = song1
         elif keys == 2:
             reset()
             setColor('cyan')
@@ -951,26 +962,29 @@ while True:
             play_song(MARIO)
             setColor('off')
             state = REQUEST
+            test = lambda: play_song(MARIO)
             reset()
         elif keys == 3:
             reset()
             setColor('cyan')
-            textout("Playing Crimson", 0x000000, 20, 48)
+            textout("Playing Stranger Things", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             play_song(STRANGER)
             setColor('off')
             state = REQUEST
+            test = lambda: play_song(STRANGER)
             reset()
         elif keys == 4:
             reset()
             setColor('cyan')
-            textout("Playing Canon", 0x000000, 20, 48)
+            textout("Playing All-Star", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            play_song(CANON)
+            play_song(ALLSTAR)
             setColor('off')
             state = REQUEST
+            test = lambda: play_song(ALLSTAR)
             reset()
         elif keys == 5:
             reset()
@@ -981,6 +995,7 @@ while True:
             play_song(TETRIS)
             setColor('off')
             state = REQUEST
+            test = lambda: play_song(TETRIS)
             reset()
         elif keys == 6:
             reset()
@@ -991,6 +1006,7 @@ while True:
             play_song(FNITE)
             setColor('off')
             state = REQUEST
+            test = lambda: play_song(FNITE)
             reset()
         elif checkSonar(5):
             setColor('red')
@@ -1005,6 +1021,7 @@ while True:
     elif state == DEFAULT:
         # display not set but can be change only after each song
         music = 0
+        demo = 1
         time.sleep(0.5)
         reset()
         textout("Demo Mode", 0x000000, 27, 48)
@@ -1035,7 +1052,8 @@ while True:
         textout("Karate", 0x000000, 43, 48)
         dance6()
         setColor('white')
+        music = 1
+        demo = 0
         state = HOME
         animRev(2)
         reset()
-        music = 1
