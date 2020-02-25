@@ -40,6 +40,9 @@ def checkSonar(threshold):
     except RuntimeError:
         return False
 
+# custom error for checking if robot is too close to object during dance
+class TooCloseError(Exception):
+    pass
 
 # ------------------------------------------------------------------------------------------------------#
 #
@@ -232,11 +235,14 @@ def playNote(freq, delay):
     piezo.duty_cycle = 65536 // 2  # On 50%
     time.sleep(delay)  # On
 
-
 ############################
 # basic dance move functions
 
 def rotate(limb, min, max, step, start, song):
+    if checkSonar(5):
+        raise TooCloseError
+        return start
+
     i = start
     for x in range(min, max + step, step):
         limb.angle = x
@@ -339,7 +345,10 @@ def dance1():
         buzzer_on()
     start = 0
     for i in range(3):
-        start = wiggle(start, STRANGER)
+        try:
+            start = wiggle(start, STRANGER)
+        except TooCloseError:
+            break
     buzzer_off()
     reset_servo()
 
@@ -350,10 +359,13 @@ def dance2():
         buzzer_on()
     start = 0
     for i in range(2):
-        start = footOut(start, MARIO, legL)
-        start = footIn(start, MARIO, legL)
-        start = footOut(start, MARIO, legR)
-        start = footIn(start, MARIO, legR)
+        try:
+            start = footOut(start, MARIO, legL)
+            start = footIn(start, MARIO, legL)
+            start = footOut(start, MARIO, legR)
+            start = footIn(start, MARIO, legR)
+        except TooCloseError:
+            break
     buzzer_off()
     reset_servo()
 
@@ -364,13 +376,16 @@ def dance3():
         buzzer_on()
     start = 0
     for i in range(2):
-        start = footOut(start, ANTHEM, legL)
-        start = tapFoot(start, ANTHEM, footL)
-        start = kick(start, ANTHEM, legL)
-
-        start = footOut(start, ANTHEM, legR)
-        start = tapFoot(start, ANTHEM, footR)
-        start = kick(start, ANTHEM, legR)
+        try:
+            start = footOut(start, ANTHEM, legL)
+            start = tapFoot(start, ANTHEM, footL)
+            start = kick(start, ANTHEM, legL)
+        
+            start = footOut(start, ANTHEM, legR)
+            start = tapFoot(start, ANTHEM, footR)
+            start = kick(start, ANTHEM, legR)
+        except TooCloseError:
+            break
     buzzer_off()
     reset_servo()
 
@@ -382,9 +397,15 @@ def dance4():
         buzzer_on()
     start = 0
     for j in range(3):
-        start = tapFoot(start, TETRIS, footL)
+        try:
+            start = tapFoot(start, TETRIS, footL)
+        except TooCloseError:
+            break
     for j in range(3):
-        start = tapFoot(start, TETRIS, footR)
+        try:
+            start = tapFoot(start, TETRIS, footR)
+        except TooCloseError:
+            break
     buzzer_off()
     reset_servo()
 
@@ -395,8 +416,11 @@ def dance5():
         buzzer_on()
     start = 0
     for i in range(3):
-        start = kick(start, ALLSTAR, legL)
-        start = kick(start, ALLSTAR, legR)
+        try:
+            start = kick(start, ALLSTAR, legL)
+            start = kick(start, ALLSTAR, legR)
+        except TooCloseError:
+            break
     buzzer_off()
     reset_servo()
 
@@ -407,7 +431,10 @@ def dance6():
         buzzer_on()
     start = 0
     for i in range(3):
-        start = shuffle(start, FNITE)
+        try:
+            start = shuffle(start, FNITE)
+        except TooCloseError:
+            break
     buzzer_off()
     reset_servo()
 
