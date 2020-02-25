@@ -470,12 +470,11 @@ def play_song(song):
                 break
             piezo.frequency = f
             piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
+            time.sleep(0.3)  # On for 1/4 second
+        piezo.duty_cycle = 0  # Off
         if temp != False:
             break
-        time.sleep(0.5)
+        time.sleep(0.3)
 
 
 # ------------------------------------------------------------------------------------------------------#
@@ -734,7 +733,7 @@ while True:
     # if state is dance, plays the dance move coressponding to the keypad number pressed
     elif state == DANCE:
         # display the dance menu on the screen
-        textout("Press a key: \n 1) Walk \n 2) Shuffle \n 3) Ballerina \n 4) Pigeon \n 5) Excite \n 6) Karate",
+        textout("Press a key: \n 1) Waddle \n 2) Pop Step \n 3) Ballerina \n 4) High Knees \n 5) Excite \n 6) Shuffle",
                 0x000000, 10, 60)
         keys = 0
         # keeps checking the keypad for a input,
@@ -746,7 +745,7 @@ while True:
         # if no user input, check sonar for distance less than 5, if such, return FSM to home state.
         if keys == 1:
             reset()
-            textout("Walking", 0x000000, 43, 48)
+            textout("Waddling", 0x000000, 43, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -761,7 +760,7 @@ while True:
             reset()
         elif keys == 2:
             reset()
-            textout("Shuffling", 0x000000, 43, 48)
+            textout("Pop-stepping", 0x000000, 43, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -776,7 +775,7 @@ while True:
             reset()
         elif keys == 3:
             reset()
-            textout("Ballerina", 0x000000, 43, 48)
+            textout("Balleting", 0x000000, 43, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -791,7 +790,7 @@ while True:
             reset()
         elif keys == 4:
             reset()
-            textout("Pigeon", 0x000000, 45, 48)
+            textout("High knees", 0x000000, 45, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -806,7 +805,7 @@ while True:
             reset()
         elif keys == 5:
             reset()
-            textout("Excite", 0x000000, 45, 48)
+            textout("I'm Excited!", 0x000000, 45, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -821,7 +820,7 @@ while True:
             reset()
         elif keys == 6:
             reset()
-            textout("Karate", 0x000000, 45, 48)
+            textout("Everyday I'm Shuffling", 0x000000, 45, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -925,7 +924,7 @@ while True:
 
     # if state is music it goes to the song according to the keypad pressed
     elif state == MUSIC:
-        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000,
+        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Stranger \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000,
                 10, 60)
 
         keys = 0
@@ -957,7 +956,7 @@ while True:
         elif keys == 3:
             reset()
             setColor('cyan')
-            textout("Playing Stranger Things", 0x000000, 20, 48)
+            textout("Playing Stranger", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             play_song(STRANGER)
@@ -990,7 +989,7 @@ while True:
         elif keys == 6:
             reset()
             setColor('cyan')
-            textout("Playing Fornite", 0x000000, 20, 48)
+            textout("Playing Fortnite", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             play_song(FNITE)
@@ -1019,19 +1018,19 @@ while True:
         time.sleep(2)
         anim(2)
         reset()
-        textout("Walking", 0x000000, 43, 48)
+        textout("Waddle", 0x000000, 43, 48)
         dance1()
         setColor('cyan')
         reset()
-        textout("Shuffling", 0x000000, 43, 48)
+        textout("Pop Step", 0x000000, 43, 48)
         dance2()
         setColor('blue')
         reset()
-        textout("Balerina", 0x000000, 43, 48)
+        textout("Ballerina", 0x000000, 43, 48)
         dance3()
         setColor('magenta')
         reset()
-        textout("Piegon", 0x000000, 43, 48)
+        textout("High Knees", 0x000000, 43, 48)
         dance4()
         setColor('red')
         reset()
@@ -1039,7 +1038,7 @@ while True:
         dance5()
         setColor('yellow')
         reset()
-        textout("Karate", 0x000000, 43, 48)
+        textout("Shuffle", 0x000000, 43, 48)
         dance6()
         setColor('white')
         music = 1
