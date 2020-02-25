@@ -30,7 +30,6 @@ import adafruit_hcsr04
 # trigger pin at D4 and echo pin at D3
 sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
 
-
 # define the checkSonar functions that takes in threshold value
 # funciton returns true if distance detected by sonar is less than threshold
 def checkSonar(threshold):
@@ -40,11 +39,9 @@ def checkSonar(threshold):
     except RuntimeError:
         return False
 
-
 # custom error for checking if robot is too close to object during dance
 class TooCloseError(Exception):
     pass
-
 
 # ------------------------------------------------------------------------------------------------------#
 #
@@ -100,7 +97,6 @@ def keypadDecode():
             return key
     return key
 
-
 # define helper function to help decode which row the key pressed is at
 # function takes column number as parameter and returns the key pressed, returns 0 if no key is pressed
 def keypadHelper(col):
@@ -109,7 +105,6 @@ def keypadHelper(col):
     if not row1.value:
         return col + 3
     return 0
-
 
 # define checkPass function to read the input from the keypad
 # blocks indefinitely until a password is entered, returns true if password entered is matched, false otherwise
@@ -164,6 +159,7 @@ def flashRed():
     time.sleep(0.1)
     setColor("off")
     time.sleep(0.1)
+
 # ------------------------------------------------------------------------------------------------------#
 #
 # dance code
@@ -192,11 +188,13 @@ footL = servo.Servo(pwm4)
 
 # music variable to control whether the robot dance move plays music or not
 music = 1
+<<<<<<< HEAD
 
 # demo variable to control whether we check sonar distance during the dance moves
+=======
+>>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 demo = 0
 
-###################################
 # frequency lists for the six songs
 
 ANTHEM = [392, 523, 392, 440, 494, 330, 330,
@@ -245,12 +243,16 @@ def playNote(freq, delay):
     piezo.duty_cycle = 65536 // 2  # On 50%
     time.sleep(delay)  # On
 
+<<<<<<< HEAD
 
 ############################
 # basic move functions
 
 # define rotate function, rotates 'limb' according to the input parameters
 # rotates the selected 'limb' fro 'min' angle to 'max' angle with 'step' increments
+=======
+# basic dance move functions
+>>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 def rotate(limb, min, max, step, start, song):
 
     # the function raises an exception and returns premptively if:
@@ -381,15 +383,16 @@ def reset_servo():
     legL.angle = 90
     time.sleep(0.1)
 
-
-###################################################################
 # 6 dance moves created as a combination of the smaller moves above
+<<<<<<< HEAD
 #   - each dance calls reset_servo before and after the dance moves
 #   - they also turn the piezo buzzer on if the music is set to 1 
 #   - the dance functions also checks for the exception raised in the 
 #     rotate/double_rotate functions, stops and calls flashRed functions once exception raised.
 
 # the Waddle dance
+=======
+>>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 def dance1():
     reset_servo()
     if music:
@@ -573,8 +576,11 @@ def ShowPic(string, timein):
             time.sleep(0.1)
 
 # define textshow function that shows time dependent text (shows for 'timein' seconds)
+<<<<<<< HEAD
 # functions prints "textin" to the LCD and sets the background color of the LCD to "bgcolor"
 # the position of the text is determined by xc, yc and the function blocks for 'timein' seconds
+=======
+>>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
