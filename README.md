@@ -25,3 +25,7 @@ Additional Functionalities:
 7)Added group logo
 8)Made animation/gif for dances
 9)RGB module used for user friendly inteface: indicates when a key is pressed and when FSM is in a particular state
+
+Attatchments:
+1)The file includes 20 images of a robot dance for animation
+2)A robot logo for CPEN 291 for the starting of our GUI
