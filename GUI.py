@@ -218,6 +218,7 @@ def playSong(song, delay):
         piezo.frequency = song[i]
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
+    piezo.duty_cycle = 0 # Off
 
 
 def playNote(freq, delay):
