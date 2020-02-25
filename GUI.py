@@ -148,6 +148,9 @@ def interrupt():
     else:
         return False
 
+# define the flashRed helper function
+# it calls the setColor function 6 times to flash the RBG on and off 3 times
+# 0.2 second delay between flashes
 def flashRed():
     setColor("red")
     time.sleep(0.1)
@@ -167,23 +170,30 @@ def flashRed():
 #
 # ------------------------------------------------------------------------------------------------------#
 # piezo buzzer setup
+# board A1 to piezo buzzer
 piezo = pulseio.PWMOut(board.A1, duty_cycle=0, frequency=440, variable_frequency=True)
 
 # servo setup
+# board D10 to left leg servo motor
 pwm1 = pulseio.PWMOut(board.D10, frequency=50)
 legL = servo.Servo(pwm1)
 
+# board D11 to right leg servo motor
 pwm2 = pulseio.PWMOut(board.D11, frequency=50)
 legR = servo.Servo(pwm2)
 
+# board D12 to right foot servo motor
 pwm3 = pulseio.PWMOut(board.D12, frequency=50)
 footR = servo.Servo(pwm3)
 
+# board D13 to left foot servo motor
 pwm4 = pulseio.PWMOut(board.D13, frequency=50)
 footL = servo.Servo(pwm4)
 
+# music variable to control whether the robot dance move plays music or not
 music = 1
 
+# demo variable to control whether we check sonar distance during the dance moves
 demo = 0
 
 ###################################
@@ -220,15 +230,16 @@ TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 
 
 FNITE = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
 
-
+# define buzzer_off function, takes no input and turns piezo buzzer off (duty cycle 0)
 def buzzer_off():
     piezo.duty_cycle = 0  # Off
 
-
+# define buzzer_on function, takes no input and turns piezo buzzer on (duty cycle 50%)
 def buzzer_on():
     piezo.duty_cycle = 65536 // 2  # On 50%
 
-
+# define playNote helper function, plays a notes according to the input parameters
+# it makes the piezo buzzer play a note at 'freq' frequency and sleeps for 'delay' seconds
 def playNote(freq, delay):
     piezo.frequency = freq
     piezo.duty_cycle = 65536 // 2  # On 50%
@@ -236,16 +247,24 @@ def playNote(freq, delay):
 
 
 ############################
-# basic dance move functions
+# basic move functions
 
+# define rotate function, rotates 'limb' according to the input parameters
+# rotates the selected 'limb' fro 'min' angle to 'max' angle with 'step' increments
 def rotate(limb, min, max, step, start, song):
+
+    # the function raises an exception and returns premptively if:
+    #   - the sonar is detecting objects less than 5 cm AND
+    #   - the demo variable is set to false (not demoing)
     if checkSonar(5) and (not demo):
         raise TooCloseError
         return start
 
+    # start variable is to adjust the offset to the song that we are playing along with the movement
     i = start
     for x in range(min, max + step, step):
         limb.angle = x
+        # function plays 'song' if the music variable is set to 1
         if music == 1:
             playNote(song[i % len(song)], 0.3)
         else:
@@ -253,8 +272,11 @@ def rotate(limb, min, max, step, start, song):
         i += 1
     return i
 
-
+# define double_rotate function, rotates two limbs 'limb1' and 'limb2' according to the input parameters
+# similar to rotate's functionality but moves two limbs at once
 def double_rotate(limb1, limb2, min, max, step, start, song):
+    # the function raises an exception and returns premptively if:
+    #   - the sonar is detecting objects less than 5 cm 
     if checkSonar(5):
         raise TooCloseError
         return start
@@ -270,7 +292,11 @@ def double_rotate(limb1, limb2, min, max, step, start, song):
         i += 1
     return i
 
-
+############################
+# basic dance functions
+ 
+# define tapFoot function, moves the left or right ankle up and down, plays the input song if music is set to 1
+# calls the rotate function twice
 def tapFoot(start, song, limb):
     if limb == footL:
         start = rotate(footL, 90, 60, -10, start, song)
@@ -280,7 +306,9 @@ def tapFoot(start, song, limb):
         start = rotate(footR, 130, 100, -10, start, song)
     return start
 
-
+# define kick function, moves the left or right leg outwards, then moves the left or right ankle up and down, 
+# then moves the left or right leg back inwards, plays the input song while moving if music is set to 1
+# calls the rotate function twice, directly modifies left or right legs angle
 def kick(start, song, limb):
     if limb == legR:
         limb.angle = 160
@@ -294,7 +322,8 @@ def kick(start, song, limb):
         limb.angle = 90
     return start
 
-
+# define footIn function, moves the left or right leg inwards then back outwards, plays the input song while moving if music is set to 1
+# calls the rotate function twice
 def footIn(start, song, limb):
     if limb == legR:
         start = rotate(limb, 90, 10, -10, start, song)
@@ -305,6 +334,8 @@ def footIn(start, song, limb):
     return start
 
 
+# define footOut function, moves the left or right leg outwards then back inwards, plays the input song while moving if music is set to 1
+# calls the rotate function twice
 def footOut(start, song, limb):
     if limb == legR:
         start = rotate(limb, 90, 160, 10, start, song)
@@ -314,7 +345,9 @@ def footOut(start, song, limb):
         start = rotate(legL, 20, 90, 10, start, song)
     return start
 
-
+# define wiggle function, moves the left foot up, then right foot up, then left foot down, then right food down,
+# plays the input song while moving if music is set to 1
+# calls the rotate function four times
 def wiggle(start, song):
     start = rotate(footL, 90, 130, 10, start, song)
     start = rotate(footR, 100, 60, -10, start, song)
@@ -322,7 +355,9 @@ def wiggle(start, song):
     start = rotate(footR, 60, 100, 10, start, song)
     return start
 
-
+# define shuffle function, moves the left and right leg at the same time left and right fully
+# plays the input song while moving if music is set to 1
+# calls the double_rotate function 12 times
 def shuffle(start, song):
     for angle in range(90, 30, -15):  # 0 - 180 degrees, 5 degrees at a time.
         start = double_rotate(legL, legR, angle, angle, -15, start, song)
@@ -334,7 +369,8 @@ def shuffle(start, song):
         start = double_rotate(legL, legR, angle, angle, 15, start, song)
     return start
 
-
+# define reset_servo function, resets all the limb servo motors back to its default position
+# sleeps 0.1 second after each reset to give the motor time to move 
 def reset_servo():
     footR.angle = 97
     time.sleep(0.1)
@@ -348,7 +384,12 @@ def reset_servo():
 
 ###################################################################
 # 6 dance moves created as a combination of the smaller moves above
+#   - each dance calls reset_servo before and after the dance moves
+#   - they also turn the piezo buzzer on if the music is set to 1 
+#   - the dance functions also checks for the exception raised in the 
+#     rotate/double_rotate functions, stops and calls flashRed functions once exception raised.
 
+# the Waddle dance
 def dance1():
     reset_servo()
     if music:
@@ -363,7 +404,7 @@ def dance1():
     buzzer_off()
     reset_servo()
 
-
+# the Pop-Step dance
 def dance2():
     reset_servo()
     if music:
@@ -381,7 +422,7 @@ def dance2():
     buzzer_off()
     reset_servo()
 
-
+# the Ballerina dance
 def dance3():
     reset_servo()
     if music:
@@ -402,7 +443,7 @@ def dance3():
     buzzer_off()
     reset_servo()
 
-
+# the High-Knees dance
 def dance4():
     reset_servo()
     if music:
@@ -423,7 +464,7 @@ def dance4():
     buzzer_off()
     reset_servo()
 
-
+# the Excite dance
 def dance5():
     reset_servo()
     if music:
@@ -439,7 +480,7 @@ def dance5():
     buzzer_off()
     reset_servo()
 
-
+# the Shuffle dance
 def dance6():
     reset_servo()
     if music:
@@ -462,17 +503,20 @@ def dance6():
 # ------------------------------------------------------------------------------------------------------#
 
 
-# function for playing song when given song frequencies as input
+# define play_song function for playing song when given song frequencies as input
 def play_song(song):
     timeout = time.time() + 10
     while True:
 
+        # function exits if the song is longer than 10 seconds
         if time.time() > timeout:
             break
 
         temp = False
 
         for f in song:
+            # calls the interrupt function to see if anything 
+            # has called for an interrupt
             if interrupt():
                 temp = True
                 break
@@ -528,9 +572,9 @@ def ShowPic(string, timein):
             pass
             time.sleep(0.1)
 
-        # define textshow function that shows time dependent text (shows for 'timein' seconds)
-
-
+# define textshow function that shows time dependent text (shows for 'timein' seconds)
+# functions prints "textin" to the LCD and sets the background color of the LCD to "bgcolor"
+# the position of the text is determined by xc, yc and the function blocks for 'timein' seconds
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -540,8 +584,8 @@ def textshow(textin, bgcolor, xc, yc, timein):
         pass
         time.sleep(1)
 
-
 # define textout function that shows time independent text
+# same implementation to textshow but does not block after displaying text
 def textout(textin, bgcolor, xc, yc):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -551,7 +595,7 @@ def textout(textin, bgcolor, xc, yc):
 
 # ------------------------------------------------------------------------------------------------------#
 #
-# rgb module code
+# RGB module code
 #
 # ------------------------------------------------------------------------------------------------------#
 
@@ -590,7 +634,8 @@ def setColor(color):
     green.pull = dictGreen[color]
     blue.pull = dictBlue[color]
 
-
+# define the anim to play the animation on the LCD 
+# calls the ShowPic function
 def anim(time):
     for i in range(time):
         ShowPic("\dance-0.bmp", 0.1)
@@ -615,7 +660,8 @@ def anim(time):
         ShowPic("\dance-19.bmp", 0.1)
         ShowPic("\dance-20.bmp", 0.1)
 
-
+# define the animRev to play the animation in reverse on the LCD 
+# calls the ShowPic function
 def animRev(time):
     for i in range(time):
         ShowPic("\dance-20.bmp", 0.1)
