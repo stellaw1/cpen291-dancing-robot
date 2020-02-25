@@ -1,10 +1,10 @@
-#------------------------------------------------------------------------------------------------------#  
+# ------------------------------------------------------------------------------------------------------#
 # Authors: Manek, Sanjeev, Parsa, Amir, Stella, Arnold, Rain
 #
 # Function: Dancing Robot
 # 
 # Date: 10/02/2020    
-#------------------------------------------------------------------------------------------------------#    
+# ------------------------------------------------------------------------------------------------------#
 
 # import all the libraries that we need
 import time
@@ -21,14 +21,15 @@ import servo
 from analogio import AnalogIn
 import adafruit_hcsr04
 
-#------------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------------#
 #
 # Sonar code
 #
-#------------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------------#
 # initialize sonar with adafruit_hcsr04 library
 # trigger pin at D4 and echo pin at D3 
 sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
+
 
 # define the checkSonar functions that takes in threshold value
 # funciton returns true if distance detected by sonar is less than threshold
@@ -39,11 +40,12 @@ def checkSonar(threshold):
     except RuntimeError:
         return False
 
-#------------------------------------------------------------------------------------------------------#
+
+# ------------------------------------------------------------------------------------------------------#
 #
 # Keypad code
 #
-#------------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------------#
 # setting up rows and cols of keypad output to its corresponding pins on the itsybitsy
 # board A4 to keypad row 0 (1, 2, 3)
 row0 = digitalio.DigitalInOut(board.A4)
@@ -69,11 +71,12 @@ out2.value = False
 keys = ((1, 2, 3),
         (4, 5, 6))
 
+
 # define keypadDecode function that iterates through the different combination of output 1,2
 # function returns the key pressed (1 - 6), if no key is pressed, function returns 0
 def keypadDecode():
     key = 0
-    for i in range(1,4):
+    for i in range(1, 4):
         time.sleep(.1)
         if i == 1:
             out2.value = True
@@ -92,14 +95,16 @@ def keypadDecode():
             return key
     return key
 
+
 # define helper function to help decode which row the key pressed is at
 # function takes column number as parameter and returns the key pressed, returns 0 if no key is pressed 
 def keypadHelper(col):
     if not row0.value:
         return col
     if not row1.value:
-        return col+3
+        return col + 3
     return 0
+
 
 # define checkPass function to read the input from the keypad
 # blocks indefinitely until a password is entered, returns true if password entered is matched, false otherwise
@@ -125,6 +130,7 @@ def checkPass():
 
         time.sleep(0.1)
 
+
 # define the interrupt function that checks both the keypad for user input and sonar for distance
 # function returns true and flashes RBG red 3 times if any key is pressed or the distance detected by sonar is less than 5cm
 # otherwise, function returns false
@@ -147,243 +153,238 @@ def interrupt():
         return True
     else:
         return False
-               
 
-#------------------------------------------------------------------------------------------------------#
-# 
+
+# ------------------------------------------------------------------------------------------------------#
+#
 # dance code
-#     
-#------------------------------------------------------------------------------------------------------#        
-
-# pwm pin assignments and initial setup of the servo motors that controls the legs of the robot
-# board D10 to right leg servo 
-pwm1 = pulseio.PWMOut(board.D10, duty_cycle=2 ** 15, frequency=50)
-legR = servo.Servo(pwm1)
-
-# board D11 to left leg servo 
-pwm2 = pulseio.PWMOut(board.D11, duty_cycle=2 ** 15, frequency=50) #leg2
-legL = servo.Servo(pwm2)
-
-# board D12 to left foot servo 
-pwm3 = pulseio.PWMOut(board.D12, duty_cycle=2 ** 15, frequency=50)
-footL = servo.Servo(pwm3)
-
-# board D13 to right foot servo
-pwm4 = pulseio.PWMOut(board.D13, duty_cycle=2 ** 15, frequency=50)
-footR = servo.Servo(pwm4)
-
+#
+# ------------------------------------------------------------------------------------------------------#
 # piezo buzzer setup
-# board A1 to buzzer
-piezo = pulseio.PWMOut(board.A1 , duty_cycle=0, frequency=440, variable_frequency=True)
+piezo = pulseio.PWMOut(board.A1, duty_cycle=0, frequency=440, variable_frequency=True)
 
+# servo setup
+pwm1 = pulseio.PWMOut(board.D10, frequency=50)
+legL = servo.Servo(pwm1)
 
-# define basic functions
-# define resetServo function that moves the leg servos to their default position
-def resetServo(): 
-    legR.angle = 94
-    legL.angle = 90
-    footR.angle = 90
-    footL.angle = 91
+pwm2 = pulseio.PWMOut(board.D11, frequency=50)
+legR = servo.Servo(pwm2)
 
-# define rotate function that takes limb, min, max and step as parameter
-# function then rotates the 'limb' from 'min' angle to 'max' angle with 'step' increments
-def rotate(limb, min, max, step):
-    for x in range(min, max, step):
-        limb.angle = x
+pwm3 = pulseio.PWMOut(board.D12, frequency=50)
+footR = servo.Servo(pwm3)
 
-# define single dance move functions 
-# define leftFootOut function that rotates the whole left leg outwards 90 degrees then back 
-def leftFootOut():
-    rotate(legL, 90, 180, 5)
-    rotate(legL, 180, 90, -5)
+pwm4 = pulseio.PWMOut(board.D13, frequency=50)
+footL = servo.Servo(pwm4)
 
-# define rightFootOut function that rotates the whole right leg outwards 90 degrees then back 
-def rightFootOut():
-    rotate(legR, 90, 10, -5)
-    rotate(legR, 10, 90, 5)
+music = 1
 
-# define leftFootOut function that rotates the whole left leg inwards 70 degrees then back 
-def leftFootIn():
-    rotate(legL, 90, 20, -5)
-    rotate(legL, 20, 90, 5)
+###################################
+# frequency lists for the six songs
 
-# define leftFootOut function that rotates the whole right leg inwards 70 degrees then back 
-def rightFootIn():
-    rotate(legR, 90, 160, 5)
-    rotate(legR, 160, 90, -5)
+ANTHEM = [392, 523, 392, 440, 494, 330, 330,
+          440, 392, 349, 392, 262, 262,
+          294, 294, 330, 349, 349, 392, 440, 494, 523, 587,
+          659, 587, 523, 587, 494, 392,
+          523, 494, 440, 494, 330, 330,
+          440, 392, 349, 392, 262, 262,
+          523, 494, 440, 392, 494, 523, 587,
+          659, 587, 523, 494, 523, 587, 392, 392, 494, 523, 587,
+          523, 494, 440, 392, 440, 494, 330, 330, 392, 440, 494,
+          523, 440, 494, 523, 440, 494, 523, 440, 523, 698,
+          698, 659, 587, 523, 587, 659, 523, 523,
+          587, 523, 494, 440, 494, 523, 440, 440,
+          523, 494, 440, 392, 262, 392, 440, 494, 523]
 
-def jump():
-    resetServo()
-    for angle in range(90, 130, 5):  # 0 - 180 degrees, 5 degrees at a time.
-        footL.angle = angle
-        footR.angle = 90 - (angle - 90)
-    for angle in range(130, 90, -5): # 180 - 0 degrees, 5 degrees at a time.
-        footL.angle = angle
-        footR.angle = 90 - (angle - 90)
-    resetServo()
+MARIO = [659, 659, 659, 523, 659, 784, 392, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659,
+         523, 587, 494, 523, 392, 330, 440, 494, 466, 440, 392, 659, 784, 880, 698, 784, 659, 523, 587, 494]
 
-def rightKick():
-    legR.angle = 20
-    rotate(footR, 90, 130, 4)
-    rotate(footR, 130, 90, -4)
-    resetServo()
+STRANGER = [131, 165, 196, 247, 262, 247, 196, 165]
 
-def leftKick():
-    legL.angle = 160
-    rotate(footL, 90, 60, -3)
-    rotate(footL, 60, 90, 3)
-    resetServo()
-
-def shuffle():
-    for angle in range(90, 60, -5):  # 0 - 180 degrees, 5 degrees at a time.
-        legL.angle = angle
-        legR.angle = 90 + (angle - 60)
-    for angle in range(60, 90, 5): # 180 - 0 degrees, 5 degrees at a time.
-        legL.angle = angle
-        legR.angle = 90 + (angle - 60)
-    resetServo()    
-
-def wiggle():
-    rotate(footL, 90, 130, 5)
-    rotate(footR, 90, 60, -5)
-    rotate(footL, 130, 90, -5)
-    rotate(footR, 60, 90, 5)
-
-
-def tapLeftFoot():
-    resetServo()
-    rotate(footL, 90, 60, -3)
-    rotate(footL, 60, 90, 3)
-    resetServo()
-    
-def tapRightFoot():
-    resetServo()
-    rotate(footR, 90, 120, 3)
-    rotate(footR, 120, 90, -3)
-    resetServo()
- 
-def tapBothFeet():
-    resetServo()
-    for angle in range(90, 130, 8):  # 0 - 180 degrees, 5 degrees at a time.
-        footL.angle = 90 - (angle - 90)
-        footR.angle = angle
-    for angle in range(130, 90, -8): # 180 - 0 degrees, 5 degrees at a time.
-        footL.angle = 90 - (angle - 90)
-        footR.angle = angle
-    resetServo()
-
-
-# song frequency arrays
-ANTHEM = [196, 277, 196, 220, 247, 165, 165, 233, 196, 174, 208, 131, 131, 156, 147, 165, 185, 174, 196, 233, 123,
-            262, 311, 311, 196, 330, 294, 261, 311, 247, 196, 277, 247, 220, 247, 165, 165, 233, 196, 131, 131, 277,
-            247, 220, 207, 207, 207]
-
-MARIO = [330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
-            262, 294, 247]
-
-CRIMSON = [196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294]
-
-CANON = [131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
-            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110]
+ALLSTAR = [466, 369, 369, 311, 369, 369, 369, 311, 369, 369, 369, 466, 466, 369, 369, 311, 369, 369, 369, 311,
+         369, 369, 369, 466, 369, 466, 554, 494, 554, 622, 740, 831, 740, 369, 369, 415, 369, 466, 415, 415,
+         369, 415, 311]
 
 TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 523,
-            494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587, 
-            523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 
-            659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
-            659, 587, 523, 587, 659, 523, 440, 440]
+          494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587,
+          523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523,
+          659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
+          659, 587, 523, 587, 659, 523, 440, 440]
 
 DEFAULT = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
 
 
-# define buzzer song functions
-def play_note(freq):
+def playSong(song, delay):
+    for i in range(len(song)):
+        piezo.frequency = song[i]
+        piezo.duty_cycle = 65536 // 2  # On 50%
+        time.sleep(delay)  # On
+
+
+def playNote(freq, delay):
     piezo.frequency = freq
     piezo.duty_cycle = 65536 // 2  # On 50%
-    time.sleep(0.3) # On for 1/4 second
-    piezo.duty_cycle = 0 # Off
+    time.sleep(delay)  # On
 
 
-# define 6 main dance moves
+############################
+# basic dance move functions
 
-#1: slide to intro to All I Want for Christmas is You - Mariah Carey
+def rotate(limb, min, max, step, start, song):
+    i = start
+    for x in range(min, max + step, step):
+        limb.angle = x
+        if music == 1:
+            playNote(song[i % len(song)], 0.3)
+        else:
+            time.sleep(0.3)
+        i += 1
+    return i
+
+
+def double_rotate(limb1, limb2, min, max, step, start, song):
+    i = start
+    for x in range(min, max + step, step):
+        limb1.angle = x
+        limb2.angle = x
+        playNote(song[i % len(song)], 0.3)
+        i += 1
+    return i
+
+def tapFoot(start, song, limb):
+    if limb == footL:
+        start = rotate(footL, 90, 60, -10, start, song)
+        start = rotate(footL, 60, 90, 10, start, song)
+    else:
+        start = rotate(footR, 100, 130, 10, start, song)
+        start = rotate(footR, 130, 100, -10, start, song)
+    return start
+
+def kick(start, song, limb):
+    if limb == legR:
+        limb.angle = 160
+        start = rotate(footR, 100, 60, -10, start, song)
+        start = rotate(footR, 60, 100, 10, start, song)
+        limb.angle = 90
+    else:
+        limb.angle = 20
+        start = rotate(footL, 90, 130, 10, start, song)
+        start = rotate(footL, 130, 90, -10, start, song)
+        limb.angle = 90
+    return start
+
+def footIn(start, song, limb):
+    if limb == legR:
+        start = rotate(limb, 90, 10, -10, start, song)
+        start = rotate(limb, 10, 90, 10, start, song)
+    else:
+        start = rotate(limb, 90, 170, 10, start, song)
+        start = rotate(limb, 170, 90, -10, start, song)
+    return start
+
+def footOut(start, song, limb):
+    if limb == legR:
+        start = rotate(limb, 90, 160, 10, start, song)
+        start = rotate(limb, 160, 90, -10, start, song)
+    else:
+        start = rotate(legL, 90, 20, -10, start, song)
+        start = rotate(legL, 20, 90, 10, start, song)
+    return start
+
+
+def wiggle(start, song):
+    start = rotate(footL, 90, 130, 10, start, song)
+    start = rotate(footR, 100, 60, -10, start, song)
+    start = rotate(footL, 130, 90, -10, start, song)
+    start = rotate(footR, 60, 100, 10, start, song)
+    return start
+
+
+def shuffle(start, song):
+    for angle in range(90, 30, -15):  # 0 - 180 degrees, 5 degrees at a time.
+        start = double_rotate(legL, legR, angle, angle, -15, start, song)
+    for angle in range(30, 90, 15):  # 180 - 0 degrees, 5 degrees at a time.
+        start = double_rotate(legL, legR, angle, angle, 15, start, song)
+    for angle in range(90, 120, 15):  # 0 - 180 degrees, 5 degrees at a time.
+        start = double_rotate(legL, legR, angle, angle, -15, start, song)
+    for angle in range(120, 90, -15):  # 180 - 0 degrees, 5 degrees at a time.
+        start = double_rotate(legL, legR, angle, angle, 15, start, song)
+    return start
+
+
+def reset():
+    footR.angle = 97
+    footL.angle = 92
+    legR.angle = 90
+    legL.angle = 90
+    time.sleep(0.1)
+
+
+###################################################################
+# 6 dance moves created as a combination of the smaller moves above
+
 def dance1():
-    #reset()
-    for i in range(0, 12, 1):
-        play_note(CRIMSON[i])
-        wiggle()
-    #reset()
+    start = 0
+    for i in range(3):
+        start = wiggle(start, STRANGER)
 
 
-#2: line dance to the MARIO THEME song
 def dance2():
-    for i in range(0, len(MARIO) - 4, 4):
-        play_note(MARIO[i])
-        leftFootOut()
-        play_note(MARIO[i+1])
-        leftFootIn()
-        play_note(MARIO[i+2])
-        rightFootOut()
-        play_note(MARIO[i+3])
-        rightFootIn()
+    start = 0
+    for i in range(2):
+        start = footOut(start, MARIO, legL)
+        start = footIn(start, MARIO, legL)
+        start = footOut(start, MARIO, legR)
+        start = footIn(start, MARIO, legR)
 
 
-#3: karate kick to the USSR ANTHEM
 def dance3():
-    for i in range(0, len(ANTHEM) - 6, 6):
-        play_note(ANTHEM[i])
-        leftFootOut()
-        play_note(ANTHEM[i+1])
-        tapLeftFoot()
-        play_note(ANTHEM[i + 2])
-        leftKick()
+    start = 0
+    start = footOut(start, ANTHEM, legL)
+    start = tapFoot(start, ANTHEM, footL)
+    start = kick(start, ANTHEM, legL)
 
-        play_note(ANTHEM[i + 3])
-        rightFootOut()
-        play_note(ANTHEM[i + 4])
-        tapRightFoot()
-        play_note(ANTHEM[i + 5])
-        rightKick()
+    start = footOut(start, ANTHEM, legR)
+    start = tapFoot(start, ANTHEM, footR)
+    start = kick(start, ANTHEM, legR)
+    reset()
 
-#4: tap feet to the beat of Tetris background music
+
 def dance4():
-    for i in range(0, len(TETRIS) - 12, 12):
-        for j in range(0, 3, 1):
-            play_note(TETRIS[i + j])
-            tapLeftFoot()
-        for j in range(0, 3, 1):  
-            play_note(TETRIS[i + 4 + j])
-            tapRightFoot()
-        for j in range(0, 3, 1):
-            play_note(TETRIS[i + 8 + j])
-            tapBothFeet()
+    start = 0
+    for j in range(3):
+        start = tapFoot(start, TETRIS, footL)
+    for j in range(3):
+        start = tapFoot(start, TETRIS, footR)
 
-#5: walk to Pachebel Canon in C
+
 def dance5():
-    for i in range(0, len(CANON) - 2, 2):
-        play_note(CANON[i])
-        leftKick()
-        play_note(CANON[i + 1])
-        rightKick()
+    start = 0
+    for i in range(3):
+        start = kick(start, ALLSTAR, legL)
+        start = kick(start, ALLSTAR, legR)
 
-#6: wiggle to the fortnite default song
+
 def dance6():
-    for i in range(0, len(DEFAULT) - 2, 2):
-        play_note(DEFAULT[i])
-        shuffle()
+    start = 0
+    for i in range(3):
+        start = shuffle(start, DEFAULT)
 
-#------------------------------------------------------------------------------------------------------#
+
+
+
+
+# ------------------------------------------------------------------------------------------------------#
 #
-# songs code 
-#     
-#------------------------------------------------------------------------------------------------------#    
+# songs code
+#
+# ------------------------------------------------------------------------------------------------------#
 
 
 # define 6 songs
 
 # USSR anthem
 def song1():
-
-    timeout = time.time() + 10 
+    timeout = time.time() + 10
     while True:
 
         if time.time() > timeout:
@@ -419,17 +420,17 @@ def song1():
 
 # mario theme song
 def song2():
-    
-    timeout = time.time() + 10 
+    timeout = time.time() + 10
     while True:
-        
+
         if time.time() > timeout:
             break
 
         temp = False
 
-        for f in (330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330, 
-            262, 294, 247):
+        for f in (
+        330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330,
+        262, 294, 247):
             if interrupt():
                 temp = True
                 break
@@ -442,12 +443,12 @@ def song2():
             break
         time.sleep(0.5)
 
+
 # crimson
 def song3():
-
-    timeout = time.time() + 10 
+    timeout = time.time() + 10
     while True:
-        
+
         if time.time() > timeout:
             break
 
@@ -466,19 +467,19 @@ def song3():
             break
         time.sleep(0.5)
 
+
 # canon
 def song4():
-
-    timeout = time.time() + 10 
+    timeout = time.time() + 10
     while True:
-        
+
         if time.time() > timeout:
             break
 
         temp = False
 
-        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175, 
-            131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
+        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175,
+                  131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
             if interrupt():
                 temp = True
                 break
@@ -491,12 +492,12 @@ def song4():
             break
         time.sleep(0.5)
 
+
 # tetris
 def song5():
-
-    timeout = time.time() + 10 
+    timeout = time.time() + 10
     while True:
-        
+
         temp = False
 
         if time.time() > timeout:
@@ -519,12 +520,12 @@ def song5():
             break
         time.sleep(0.5)
 
+
 # fortnite
 def song6():
-
-    timeout = time.time() + 10 
+    timeout = time.time() + 10
     while True:
-        
+
         temp = False
 
         if time.time() > timeout:
@@ -545,13 +546,13 @@ def song6():
         if temp != False:
             break
         time.sleep(0.5)
-        
 
-#------------------------------------------------------------------------------------------------------#
-# 
-# display code  
-#    
-#------------------------------------------------------------------------------------------------------# 
+
+# ------------------------------------------------------------------------------------------------------#
+#
+# display code
+#
+# ------------------------------------------------------------------------------------------------------#
 
 # define reset function that resets the display when we want to change the state of the FSM
 def reset():
@@ -567,11 +568,12 @@ def reset():
     display.show(splash)
     color_bitmap = displayio.Bitmap(128, 128, 1)
     color_palette = displayio.Palette(1)
-    color_palette[0] = 0xFFFFFF # White
+    color_palette[0] = 0xFFFFFF  # White
     bg_white = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
     splash.append(bg_white)
 
-# method to upload picture onto the LCD    
+
+# method to upload picture onto the LCD
 def ShowPic(string, timein):
     with open(string, "rb") as bitmap_file:
         # Setup the file as the bitmap data source
@@ -587,9 +589,11 @@ def ShowPic(string, timein):
         # Loop forever so you can enjoy your image
         for i in range(timein):
             pass
-            time.sleep(1)        
+            time.sleep(0.1)
 
-# define textshow function that shows time dependent text (shows for 'timein' seconds)
+        # define textshow function that shows time dependent text (shows for 'timein' seconds)
+
+
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -599,7 +603,8 @@ def textshow(textin, bgcolor, xc, yc, timein):
         pass
         time.sleep(1)
 
-# define textout function that shows time independent text 
+
+# define textout function that shows time independent text
 def textout(textin, bgcolor, xc, yc):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
@@ -607,11 +612,11 @@ def textout(textin, bgcolor, xc, yc):
     splash.append(text_area)
 
 
-#------------------------------------------------------------------------------------------------------#
-# 
+# ------------------------------------------------------------------------------------------------------#
+#
 # rgb module code
-#  
-#------------------------------------------------------------------------------------------------------#    
+#
+# ------------------------------------------------------------------------------------------------------#
 
 # reverse logic on the rgb pins so that a pull up resistor turns the led off and the pull down turns it on
 # board D2 to red color
@@ -630,9 +635,16 @@ blue.direction = digitalio.Direction.INPUT
 blue.pull = digitalio.Pull.DOWN
 
 # set of basic digital colour values to be set on demand in 3 dictionaries, one for each pin
-dictRed = {  "red": digitalio.Pull.UP, 'cyan': digitalio.Pull.DOWN,   "yellow": digitalio.Pull.UP, "green": digitalio.Pull.DOWN,   'blue': digitalio.Pull.DOWN,   'magenta': digitalio.Pull.UP, 'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
-dictGreen = {"red": digitalio.Pull.DOWN,   'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.UP, "green": digitalio.Pull.UP, 'blue': digitalio.Pull.DOWN,   'magenta': digitalio.Pull.DOWN,   'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
-dictBlue = { "red": digitalio.Pull.DOWN,   'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.DOWN,   "green": digitalio.Pull.DOWN,   'blue': digitalio.Pull.UP, 'magenta': digitalio.Pull.UP, 'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
+dictRed = {"red": digitalio.Pull.UP, 'cyan': digitalio.Pull.DOWN, "yellow": digitalio.Pull.UP,
+           "green": digitalio.Pull.DOWN, 'blue': digitalio.Pull.DOWN, 'magenta': digitalio.Pull.UP,
+           'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
+dictGreen = {"red": digitalio.Pull.DOWN, 'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.UP,
+             "green": digitalio.Pull.UP, 'blue': digitalio.Pull.DOWN, 'magenta': digitalio.Pull.DOWN,
+             'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
+dictBlue = {"red": digitalio.Pull.DOWN, 'cyan': digitalio.Pull.UP, "yellow": digitalio.Pull.DOWN,
+            "green": digitalio.Pull.DOWN, 'blue': digitalio.Pull.UP, 'magenta': digitalio.Pull.UP,
+            'white': digitalio.Pull.UP, 'off': digitalio.Pull.DOWN}
+
 
 # define function setColor that takes an input string and changes the RBG to the specified color
 # if the string color is defined in the dictionary declared above changes the led color to one defined in the dictionary
@@ -641,11 +653,62 @@ def setColor(color):
     green.pull = dictGreen[color]
     blue.pull = dictBlue[color]
 
-#------------------------------------------------------------------------------------------------------#
-# 
+
+def anim(time):
+    for i in range(time):
+        ShowPic("\dance-0.bmp", 0.1)
+        ShowPic("\dance-1.bmp", 0.1)
+        ShowPic("\dance-2.bmp", 0.1)
+        ShowPic("\dance-3.bmp", 0.1)
+        ShowPic("\dance-4.bmp", 0.1)
+        ShowPic("\dance-5.bmp", 0.1)
+        ShowPic("\dance-6.bmp", 0.1)
+        ShowPic("\dance-7.bmp", 0.1)
+        ShowPic("\dance-8.bmp", 0.1)
+        ShowPic("\dance-9.bmp", 0.1)
+        ShowPic("\dance-10.bmp", 0.1)
+        ShowPic("\dance-11.bmp", 0.1)
+        ShowPic("\dance-12.bmp", 0.1)
+        ShowPic("\dance-13.bmp", 0.1)
+        ShowPic("\dance-14.bmp", 0.1)
+        ShowPic("\dance-15.bmp", 0.1)
+        ShowPic("\dance-16.bmp", 0.1)
+        ShowPic("\dance-17.bmp", 0.1)
+        ShowPic("\dance-18.bmp", 0.1)
+        ShowPic("\dance-19.bmp", 0.1)
+        ShowPic("\dance-20.bmp", 0.1)
+
+
+def animRev(time):
+    for i in range(time):
+        ShowPic("\dance-20.bmp", 0.1)
+        ShowPic("\dance-19.bmp", 0.1)
+        ShowPic("\dance-18.bmp", 0.1)
+        ShowPic("\dance-17.bmp", 0.1)
+        ShowPic("\dance-16.bmp", 0.1)
+        ShowPic("\dance-15.bmp", 0.1)
+        ShowPic("\dance-14.bmp", 0.1)
+        ShowPic("\dance-13.bmp", 0.1)
+        ShowPic("\dance-12.bmp", 0.1)
+        ShowPic("\dance-11.bmp", 0.1)
+        ShowPic("\dance-10.bmp", 0.1)
+        ShowPic("\dance-9.bmp", 0.1)
+        ShowPic("\dance-8.bmp", 0.1)
+        ShowPic("\dance-7.bmp", 0.1)
+        ShowPic("\dance-6.bmp", 0.1)
+        ShowPic("\dance-5.bmp", 0.1)
+        ShowPic("\dance-4.bmp", 0.1)
+        ShowPic("\dance-3.bmp", 0.1)
+        ShowPic("\dance-2.bmp", 0.1)
+        ShowPic("\dance-1.bmp", 0.1)
+        ShowPic("\dance-0.bmp", 0.1)
+
+
+# ------------------------------------------------------------------------------------------------------#
+#
 # gui code
-#     
-#------------------------------------------------------------------------------------------------------#    
+#
+# ------------------------------------------------------------------------------------------------------#
 
 # define the states of the GUI
 LOADING = 0
@@ -663,23 +726,23 @@ state = LOADING
 
 # keeps checking the FSM state and update the current state according to the inputs
 while True:
-
     # if state is loading, it goes to passcode
     if state == LOADING:
         splash = displayio.Group(max_size=100)
         reset()
+        ShowPic("\Robot.bmp", 2)
         # display "Loading..." meassage on the LCD
         string1 = "Loading"
         textshow(string1, 0x000000, 30, 64, 0.0001)
         string2 = "..."
         i = 0
         x = 72
-        while(i<3):
+        while (i < 3):
             textshow(string2[i], 0x000000, x, 64, 0.0001)
-            i+=1
-            x+=6
+            i += 1
+            x += 6
         # display the robot picture on the LCD
-        ShowPic("\Robot.bmp", 3)
+
         time.sleep(2)
         reset()
         # display the "Welcome" text on the LCD
@@ -689,7 +752,7 @@ while True:
         state = PASSCODE
 
     # if state is passcode, checks the passcode, if correct goes to home, else back to passcode
-    if state ==  PASSCODE:
+    if state == PASSCODE:
         # display "enter the passcode", runs checkPass function
         textout("enter the passcode", 0x000000, 10, 60)
         boolean = False
@@ -703,12 +766,12 @@ while True:
         else:
             reset()
             textshow("wrong passcode", 0x000000, 10, 60, 2)
-            #time.sleep(1)
+            # time.sleep(1)
             state = PASSCODE
             reset()
 
-    # if state is home, checks keypad and goes to coressponding state     
-    elif state ==  HOME:
+    # if state is home, checks keypad and goes to coressponding state
+    elif state == HOME:
         setColor('off')
         # display the home menu on the screen
         textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
@@ -722,25 +785,26 @@ while True:
             state = DEFAULT
             reset()
         elif keys == 2:
-            state =  DANCE
+            state = DANCE
             reset()
         elif keys == 3:
-            state =  MUSIC
+            state = MUSIC
             reset()
         elif keys == 4:
-            state =  ABOUT
+            state = ABOUT
             reset()
         elif keys == 5:
-            state =  EXIT
+            state = EXIT
             reset()
         else:
-            state =  HOME
+            state = HOME
             reset()
 
-    # if state is dance, plays the dance move coressponding to the keypad number pressed    
-    elif state ==  DANCE:
+    # if state is dance, plays the dance move coressponding to the keypad number pressed
+    elif state == DANCE:
         # display the dance menu on the screen
-        textout("Press a key: \n 1) Walk \n 2) Shuffle \n 3) Ballerina \n 4) Pigeon \n 5) Excite \n 6) Karate", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Walk \n 2) Shuffle \n 3) Ballerina \n 4) Pigeon \n 5) Excite \n 6) Karate",
+                0x000000, 10, 60)
         keys = 0
         # keeps checking the keypad for a input,
         # blocks indefinitely until user inputs or until sonar detects an object less than 5cm
@@ -755,9 +819,13 @@ while True:
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
+            time.sleep(2)
+            reset()
+            anim(1)
             dance1()
+            animRev(1)
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 2:
             reset()
@@ -767,7 +835,7 @@ while True:
             setColor('green')
             dance2()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 3:
             reset()
@@ -777,7 +845,7 @@ while True:
             setColor('green')
             dance3()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 4:
             reset()
@@ -787,7 +855,7 @@ while True:
             setColor('green')
             dance4()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 5:
             reset()
@@ -797,7 +865,7 @@ while True:
             setColor('green')
             dance5()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 6:
             reset()
@@ -807,7 +875,7 @@ while True:
             setColor('green')
             dance6()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif checkSonar(5):
             setColor('red')
@@ -817,14 +885,14 @@ while True:
             reset()
         # if no user input / sonar detection, stay in dance state
         else:
-            state =  DANCE
+            state = DANCE
 
     # if state is about it displays info about robot and returns
-    elif state ==  ABOUT:
+    elif state == ABOUT:
         textshow("About: \n Dancing Robot GUI", 0x000000, 10, 24, 5)
         textshow("press any button \n to return", 0x000000, 20, 64, 5)
-       
-        keys =0
+
+        keys = 0
         # keeps checking the keypad for a input,
         # blocks indefinitely until user inputs or until sonar detects an object less than 5cm
         while keys == 0 and not checkSonar(5):
@@ -841,27 +909,27 @@ while True:
                 break
 
         if keys == 1:
-            state =  HOME
+            state = HOME
             reset()
-            
+
         elif keys == 2:
-            state =  HOME
+            state = HOME
             reset()
 
         elif keys == 3:
-            state =  HOME
+            state = HOME
             reset()
 
         elif keys == 4:
-            state =  HOME
+            state = HOME
             reset()
-   
+
         elif keys == 5:
-            state =  HOME
+            state = HOME
             reset()
 
         elif keys == 6:
-            state =  HOME
+            state = HOME
             reset()
 
         elif checkSonar(5):
@@ -874,39 +942,40 @@ while True:
         else:
             state = ABOUT
             reset()
-        
-    
+
+
     # if state is exit it quits the program
-    elif state ==  EXIT:
+    elif state == EXIT:
         textshow("Exiting.....", 0x000000, 30, 64, 3)
         time.sleep(0.5)
-        #state =  PASSCODE
+        # state =  PASSCODE
         sys.exit()
-        #reset()
+        # reset()
 
     # if the state is request it goes to corresponding state according to keypad number pressed
-    elif state ==  REQUEST:
+    elif state == REQUEST:
         textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 15, 60)
-        
+
         keys = 0
         while keys == 0:
             keys = keypadDecode()
 
         if keys == 1:
-            state =  DANCE
+            state = DANCE
             reset()
         elif keys == 2:
-            state =  MUSIC
+            state = MUSIC
             reset()
         elif keys == 3:
-            state =  HOME
+            state = HOME
             reset()
         else:
-            state =  REQUEST
+            state = REQUEST
 
     # if state is music it goes to the song according to the keypad pressed
-    elif state ==  MUSIC:
-        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000, 10, 60)
+    elif state == MUSIC:
+        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Crimson \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000,
+                10, 60)
 
         keys = 0
         while keys == 0 and not checkSonar(5):
@@ -920,7 +989,7 @@ while True:
             textout("to return", 0x000000, 35, 80)
             song1()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 2:
             reset()
@@ -930,7 +999,7 @@ while True:
             textout("to return", 0x000000, 35, 80)
             song2()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 3:
             reset()
@@ -940,7 +1009,7 @@ while True:
             textout("to return", 0x000000, 35, 80)
             song3()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 4:
             reset()
@@ -950,7 +1019,7 @@ while True:
             textout("to return", 0x000000, 35, 80)
             song4()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 5:
             reset()
@@ -960,7 +1029,7 @@ while True:
             textout("to return", 0x000000, 35, 80)
             song5()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif keys == 6:
             reset()
@@ -970,7 +1039,7 @@ while True:
             textout("to return", 0x000000, 35, 80)
             song6()
             setColor('off')
-            state =  REQUEST
+            state = REQUEST
             reset()
         elif checkSonar(5):
             setColor('red')
@@ -979,12 +1048,11 @@ while True:
             setColor('off')
             reset()
         else:
-            state =  MUSIC
-    
+            state = MUSIC
+
     # default state required for the project.
     elif state == DEFAULT:
         # display not set but can be change only after each song
-        ShowPic("\Robot.bmp", 3)
         time.sleep(2)
         reset()
         textout("Default Mode", 0x000000, 27, 48)
