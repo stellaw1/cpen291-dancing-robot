@@ -691,7 +691,7 @@ while True:
         # if passcode is incorrect display "wrong passcode" and then keeps fetching passcode
         else:
             reset()
-            textshow("wrong passcode", 0x000000, 10, 60, 2)
+            textshow("wrong passcode", 0x000000, 20, 60, 2)
             # time.sleep(1)
             state = PASSCODE
             reset()
@@ -849,16 +849,6 @@ while True:
         # blocks indefinitely until user inputs or until sonar detects an object less than 5cm
         while keys == 0 and not checkSonar(5):
             keys = keypadDecode()
-
-        temp = False
-
-        while True:
-            distance = sonar.distance
-            reset()
-            textout(str(distance), 0x000000, 50, 50)
-            if interrupt():
-                temp = True
-                break
 
         if keys == 1:
             state = HOME
