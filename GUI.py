@@ -1116,7 +1116,7 @@ while True:
     elif state == DEFAULT:
         # display not set but can be change only after each song
         music = 0
-        time.sleep(2)
+        time.sleep(0.5)
         reset()
         textout("Default Mode", 0x000000, 27, 48)
         setColor('green')
