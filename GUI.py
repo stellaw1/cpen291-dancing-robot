@@ -218,14 +218,6 @@ TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 
 FNITE = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
 
 
-def playSong(song, delay):
-    for i in range(len(song)):
-        piezo.frequency = song[i]
-        piezo.duty_cycle = 65536 // 2  # On 50%
-        time.sleep(delay)  # On
-    piezo.duty_cycle = 0  # Off
-
-
 def buzzer_off():
     piezo.duty_cycle = 0  # Off
 
@@ -457,10 +449,8 @@ def dance6():
 # ------------------------------------------------------------------------------------------------------#
 
 
-# define 6 songs
-
-# USSR anthem
-def song1():
+# function for playing song when given song frequencies as input
+def play_song(song):
     timeout = time.time() + 10
     while True:
 
@@ -469,19 +459,7 @@ def song1():
 
         temp = False
 
-        for f in (392, 523, 392, 440, 494, 330, 330,
-                  440, 392, 349, 392, 262, 262,
-                  294, 294, 330, 349, 349, 392, 440, 494, 523, 587,
-                  659, 587, 523, 587, 494, 392,
-                  523, 494, 440, 494, 330, 330,
-                  440, 392, 349, 392, 262, 262,
-                  523, 494, 440, 392, 494, 523, 587,
-                  659, 587, 523, 494, 523, 587, 392, 392, 494, 523, 587,
-                  523, 494, 440, 392, 440, 494, 330, 330, 392, 440, 494,
-                  523, 440, 494, 523, 440, 494, 523, 440, 523, 698,
-                  698, 659, 587, 523, 587, 659, 523, 523,
-                  587, 523, 494, 440, 494, 523, 440, 440,
-                  523, 494, 440, 392, 262, 392, 440, 494, 523):
+        for f in song:
             if interrupt():
                 temp = True
                 break
@@ -490,136 +468,6 @@ def song1():
             time.sleep(0.25)  # On for 1/4 second
             piezo.duty_cycle = 0  # Off
             time.sleep(0.05)  # Pause between notes
-        if temp != False:
-            break
-        time.sleep(0.5)
-
-
-# mario theme song
-def song2():
-    timeout = time.time() + 10
-    while True:
-
-        if time.time() > timeout:
-            break
-
-        temp = False
-
-        for f in (
-                330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330,
-                262, 294, 247):
-            if interrupt():
-                temp = True
-                break
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        if temp != False:
-            break
-        time.sleep(0.5)
-
-
-# crimson
-def song3():
-    timeout = time.time() + 10
-    while True:
-
-        if time.time() > timeout:
-            break
-
-        temp = False
-
-        for f in (196, 247, 294, 370, 392, 370, 294, 247, 196, 262, 294, 392, 294):
-            if interrupt():
-                temp = True
-                break
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        if temp != False:
-            break
-        time.sleep(0.5)
-
-
-# canon
-def song4():
-    timeout = time.time() + 10
-    while True:
-
-        if time.time() > timeout:
-            break
-
-        temp = False
-
-        for f in (131, 165, 196, 262, 98, 123, 147, 196, 110, 131, 165, 220, 82, 98, 123, 165, 87, 110, 131, 175,
-                  131, 165, 196, 262, 87, 110, 131, 175, 98, 123, 147, 196, 110):
-            if interrupt():
-                temp = True
-                break
-            piezo.frequency = f
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        if temp != False:
-            break
-        time.sleep(0.5)
-
-
-# tetris
-def song5():
-    timeout = time.time() + 10
-    while True:
-
-        temp = False
-
-        if time.time() > timeout:
-            break
-        freq = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 659,
-                523, 494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659,
-                587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 659, 494, 523, 587, 659, 587, 523, 494, 440, 440,
-                523, 659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659,
-                523, 659, 587, 523, 587, 659, 523, 440, 440]
-        for f in range(0, len(freq) - 1):
-            if interrupt():
-                temp = True
-                break
-            piezo.frequency = freq[f]
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(0.25)  # On for 1/4 second
-            piezo.duty_cycle = 0  # Off
-            time.sleep(0.05)  # Pause between notes
-        if temp != False:
-            break
-        time.sleep(0.5)
-
-
-# fortnite
-def song6():
-    timeout = time.time() + 10
-    while True:
-
-        temp = False
-
-        if time.time() > timeout:
-            break
-
-        delay = [149, 149, 149, 446, 1485, 149, 149, 149, 446, 297, 297, 149, 595, 149, 149, 149, 149, 1931]
-        duration = [149, 149, 149, 446, 297, 149, 149, 149, 446, 297, 297, 149, 149, 149, 149, 149, 149, 149]
-        freq = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
-        for f in range(0, len(freq)):
-            if interrupt():
-                temp = True
-                break
-            piezo.frequency = freq[f]
-            piezo.duty_cycle = 65536 // 2  # On 50%
-            time.sleep(duration[f] / 1000)  # On
-            piezo.duty_cycle = 0  # Off
-            time.sleep(delay[f] / 1000)  # Pause between notes
         if temp != False:
             break
         time.sleep(0.5)
@@ -1085,7 +933,7 @@ while True:
             textout("Playing Anthem", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            song1()
+            play_song(ANTHEM)
             setColor('off')
             state = REQUEST
             reset()
@@ -1095,7 +943,7 @@ while True:
             textout("Playing Mario", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            song2()
+            play_song(MARIO)
             setColor('off')
             state = REQUEST
             reset()
@@ -1105,7 +953,7 @@ while True:
             textout("Playing Crimson", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            song3()
+            play_song(STRANGER)
             setColor('off')
             state = REQUEST
             reset()
@@ -1115,7 +963,7 @@ while True:
             textout("Playing Canon", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            song4()
+            play_song(CANON)
             setColor('off')
             state = REQUEST
             reset()
@@ -1125,7 +973,7 @@ while True:
             textout("Playing Tetris", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            song5()
+            play_song(TETRIS)
             setColor('off')
             state = REQUEST
             reset()
@@ -1135,7 +983,7 @@ while True:
             textout("Playing Fornite", 0x000000, 20, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
-            song6()
+            play_song(FNITE)
             setColor('off')
             state = REQUEST
             reset()
