@@ -210,7 +210,7 @@ TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 
           659, 587, 523, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523,
           659, 587, 523, 587, 659, 523, 440, 440]
 
-DEFAULT = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
+FNITE = [349, 415, 466, 466, 415, 349, 415, 466, 466, 415, 349, 311, 349, 466, 415, 349, 311, 349]
 
 
 def playSong(song, delay):
@@ -218,7 +218,7 @@ def playSong(song, delay):
         piezo.frequency = song[i]
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
-
+    piezo.duty_cycle = 0 # Off
 
 def buzzer_off():
     piezo.duty_cycle = 0 # Off
@@ -226,7 +226,6 @@ def buzzer_off():
 
 def buzzer_on():
     piezo.duty_cycle = 65536 // 2  # On 50%
-
 
 def playNote(freq, delay):
     piezo.frequency = freq
@@ -250,6 +249,7 @@ def rotate(limb, min, max, step, start, song):
 
 
 def double_rotate(limb1, limb2, min, max, step, start, song):
+    print(song)
     i = start
     for x in range(min, max + step, step):
         limb1.angle = x
@@ -319,10 +319,13 @@ def shuffle(start, song):
     return start
 
 
-def reset():
+def reset_servo():
     footR.angle = 97
+    time.sleep(0.1)
     footL.angle = 92
+    time.sleep(0.1)
     legR.angle = 90
+    time.sleep(0.1)
     legL.angle = 90
     time.sleep(0.1)
 
@@ -331,15 +334,20 @@ def reset():
 # 6 dance moves created as a combination of the smaller moves above
 
 def dance1():
-    buzzer_on()
+    reset_servo()
+    if music:
+        buzzer_on()
     start = 0
     for i in range(3):
         start = wiggle(start, STRANGER)
     buzzer_off()
+    reset_servo()
 
 
 def dance2():
-    buzzer_on()
+    reset_servo()
+    if music:
+        buzzer_on()
     start = 0
     for i in range(2):
         start = footOut(start, MARIO, legL)
@@ -347,10 +355,13 @@ def dance2():
         start = footOut(start, MARIO, legR)
         start = footIn(start, MARIO, legR)
     buzzer_off()
+    reset_servo()
 
 
 def dance3():
-    buzzer_on()
+    reset_servo()
+    if music:
+        buzzer_on()
     start = 0
     for i in range(2):
         start = footOut(start, ANTHEM, legL)
@@ -361,34 +372,44 @@ def dance3():
         start = tapFoot(start, ANTHEM, footR)
         start = kick(start, ANTHEM, legR)
     buzzer_off()
+    reset_servo()
 
 
 
 def dance4():
-    buzzer_on()
+    reset_servo()
+    if music:
+        buzzer_on()
     start = 0
     for j in range(3):
         start = tapFoot(start, TETRIS, footL)
     for j in range(3):
         start = tapFoot(start, TETRIS, footR)
     buzzer_off()
+    reset_servo()
 
 
 def dance5():
-    buzzer_on()
+    reset_servo()
+    if music:
+        buzzer_on()
     start = 0
     for i in range(3):
         start = kick(start, ALLSTAR, legL)
         start = kick(start, ALLSTAR, legR)
     buzzer_off()
+    reset_servo()
 
 
 def dance6():
-    buzzer_on()
+    reset_servo()
+    if music:
+        buzzer_on()
     start = 0
     for i in range(3):
-        start = shuffle(start, DEFAULT)
+        start = shuffle(start, FNITE)
     buzzer_off()
+    reset_servo()
 
 
 
@@ -854,7 +875,11 @@ while True:
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
+            time.sleep(2)
+            reset()
+            anim(1)
             dance2()
+            animRev(1)
             setColor('off')
             state = REQUEST
             reset()
@@ -864,7 +889,11 @@ while True:
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
+            time.sleep(2)
+            reset()
+            anim(1)
             dance3()
+            animRev(1)
             setColor('off')
             state = REQUEST
             reset()
@@ -874,7 +903,11 @@ while True:
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
+            time.sleep(2)
+            reset()
+            anim(1)
             dance4()
+            animRev(1)
             setColor('off')
             state = REQUEST
             reset()
@@ -884,7 +917,11 @@ while True:
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
+            time.sleep(2)
+            reset()
+            anim(1)
             dance5()
+            animRev(1)
             setColor('off')
             state = REQUEST
             reset()
@@ -894,7 +931,11 @@ while True:
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
+            time.sleep(2)
+            reset()
+            anim(1)
             dance6()
+            animRev(1)
             setColor('off')
             state = REQUEST
             reset()
@@ -1074,18 +1115,19 @@ while True:
     # default state required for the project.
     elif state == DEFAULT:
         # display not set but can be change only after each song
+        music = 0
         time.sleep(2)
         reset()
         textout("Default Mode", 0x000000, 27, 48)
-        textout("Press any Button", 0x000000, 17, 64)
-        textout("to skip", 0x000000, 35, 80)
         setColor('green')
+        time.sleep(2)
+        anim(2)
         dance1()
         setColor('cyan')
         dance2()
         setColor('blue')
         dance3()
-        setColor('purple')
+        setColor('magenta')
         dance4()
         setColor('red')
         dance5()
@@ -1093,4 +1135,6 @@ while True:
         dance6()
         setColor('white')
         reset()
+        animRev(2)
+        music = 1
         state = HOME
