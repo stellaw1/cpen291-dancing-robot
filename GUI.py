@@ -668,7 +668,6 @@ while True:
         splash = displayio.Group(max_size=100)
         reset()
         reset_servo()
-        ShowPic("\Robot.bmp", 2)
         # display "Loading..." meassage on the LCD
         string1 = "Loading"
         textshow(string1, 0x000000, 30, 64, 0.0001)
@@ -680,8 +679,9 @@ while True:
             i += 1
             x += 6
         # display the robot picture on the LCD
-
-        time.sleep(2)
+        reset()
+        ShowPic("\Robot.bmp", 2)
+        time.sleep(1)
         reset()
         # display the "Welcome" text on the LCD
         textshow("Welcome", 0x000000, 45, 64, 0.1)
