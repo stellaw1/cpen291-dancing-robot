@@ -218,7 +218,14 @@ def playSong(song, delay):
         piezo.frequency = song[i]
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
+
+
+def buzzer_off():
     piezo.duty_cycle = 0 # Off
+
+
+def buzzer_on():
+    piezo.duty_cycle = 65536 // 2  # On 50%
 
 
 def playNote(freq, delay):
@@ -324,51 +331,64 @@ def reset():
 # 6 dance moves created as a combination of the smaller moves above
 
 def dance1():
+    buzzer_on()
     start = 0
     for i in range(3):
         start = wiggle(start, STRANGER)
+    buzzer_off()
 
 
 def dance2():
+    buzzer_on()
     start = 0
     for i in range(2):
         start = footOut(start, MARIO, legL)
         start = footIn(start, MARIO, legL)
         start = footOut(start, MARIO, legR)
         start = footIn(start, MARIO, legR)
+    buzzer_off()
 
 
 def dance3():
+    buzzer_on()
     start = 0
-    start = footOut(start, ANTHEM, legL)
-    start = tapFoot(start, ANTHEM, footL)
-    start = kick(start, ANTHEM, legL)
+    for i in range(2):
+        start = footOut(start, ANTHEM, legL)
+        start = tapFoot(start, ANTHEM, footL)
+        start = kick(start, ANTHEM, legL)
 
-    start = footOut(start, ANTHEM, legR)
-    start = tapFoot(start, ANTHEM, footR)
-    start = kick(start, ANTHEM, legR)
-    reset()
+        start = footOut(start, ANTHEM, legR)
+        start = tapFoot(start, ANTHEM, footR)
+        start = kick(start, ANTHEM, legR)
+    buzzer_off()
+
 
 
 def dance4():
+    buzzer_on()
     start = 0
     for j in range(3):
         start = tapFoot(start, TETRIS, footL)
     for j in range(3):
         start = tapFoot(start, TETRIS, footR)
+    buzzer_off()
 
 
 def dance5():
+    buzzer_on()
     start = 0
     for i in range(3):
         start = kick(start, ALLSTAR, legL)
         start = kick(start, ALLSTAR, legR)
+    buzzer_off()
 
 
 def dance6():
+    buzzer_on()
     start = 0
     for i in range(3):
         start = shuffle(start, DEFAULT)
+    buzzer_off()
 
 
 
