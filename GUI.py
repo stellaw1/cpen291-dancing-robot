@@ -188,11 +188,8 @@ footL = servo.Servo(pwm4)
 
 # music variable to control whether the robot dance move plays music or not
 music = 1
-<<<<<<< HEAD
 
 # demo variable to control whether we check sonar distance during the dance moves
-=======
->>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 demo = 0
 
 # frequency lists for the six songs
@@ -243,16 +240,12 @@ def playNote(freq, delay):
     piezo.duty_cycle = 65536 // 2  # On 50%
     time.sleep(delay)  # On
 
-<<<<<<< HEAD
 
 ############################
 # basic move functions
 
 # define rotate function, rotates 'limb' according to the input parameters
 # rotates the selected 'limb' fro 'min' angle to 'max' angle with 'step' increments
-=======
-# basic dance move functions
->>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 def rotate(limb, min, max, step, start, song):
 
     # the function raises an exception and returns premptively if:
@@ -384,15 +377,12 @@ def reset_servo():
     time.sleep(0.1)
 
 # 6 dance moves created as a combination of the smaller moves above
-<<<<<<< HEAD
 #   - each dance calls reset_servo before and after the dance moves
 #   - they also turn the piezo buzzer on if the music is set to 1 
 #   - the dance functions also checks for the exception raised in the 
 #     rotate/double_rotate functions, stops and calls flashRed functions once exception raised.
 
 # the Waddle dance
-=======
->>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 def dance1():
     reset_servo()
     if music:
@@ -576,11 +566,8 @@ def ShowPic(string, timein):
             time.sleep(0.1)
 
 # define textshow function that shows time dependent text (shows for 'timein' seconds)
-<<<<<<< HEAD
 # functions prints "textin" to the LCD and sets the background color of the LCD to "bgcolor"
 # the position of the text is determined by xc, yc and the function blocks for 'timein' seconds
-=======
->>>>>>> ed807477c0ae265fe4ab434a1b1fc57d0ddb39c5
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
