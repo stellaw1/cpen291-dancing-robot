@@ -752,6 +752,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance1
             reset()
         elif keys == 2:
             reset()
@@ -766,6 +767,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance2
             reset()
         elif keys == 3:
             reset()
@@ -780,6 +782,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance3
             reset()
         elif keys == 4:
             reset()
@@ -794,6 +797,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance4
             reset()
         elif keys == 5:
             reset()
@@ -808,6 +812,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance5
             reset()
         elif keys == 6:
             reset()
@@ -822,6 +827,7 @@ while True:
             animRev(1)
             setColor('off')
             state = REQUEST
+            test = dance6
             reset()
         elif checkSonar(5):
             setColor('red')
@@ -940,8 +946,8 @@ while True:
             play_song(ANTHEM)
             setColor('off')
             state = REQUEST
-            reset()
             test = song1
+            reset()
         elif keys == 2:
             reset()
             setColor('cyan')
@@ -951,6 +957,7 @@ while True:
             play_song(MARIO)
             setColor('off')
             state = REQUEST
+            test = song2
             reset()
         elif keys == 3:
             reset()
@@ -961,6 +968,7 @@ while True:
             play_song(STRANGER)
             setColor('off')
             state = REQUEST
+            test = song3
             reset()
         elif keys == 4:
             reset()
@@ -971,6 +979,7 @@ while True:
             play_song(CANON)
             setColor('off')
             state = REQUEST
+            test = song4
             reset()
         elif keys == 5:
             reset()
@@ -981,6 +990,7 @@ while True:
             play_song(TETRIS)
             setColor('off')
             state = REQUEST
+            test = song5
             reset()
         elif keys == 6:
             reset()
@@ -991,6 +1001,7 @@ while True:
             play_song(FNITE)
             setColor('off')
             state = REQUEST
+            test = dance6
             reset()
         elif checkSonar(5):
             setColor('red')
