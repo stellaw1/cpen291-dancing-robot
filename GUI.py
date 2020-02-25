@@ -260,7 +260,10 @@ def rotate(limb, min, max, step, start, song):
 
 
 def double_rotate(limb1, limb2, min, max, step, start, song):
-    print(song)
+    if checkSonar(5):
+        raise TooCloseError
+        return start
+
     i = start
     for x in range(min, max + step, step):
         limb1.angle = x
