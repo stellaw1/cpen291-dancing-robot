@@ -30,7 +30,6 @@ import adafruit_hcsr04
 # trigger pin at D4 and echo pin at D3
 sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
 
-
 # define the checkSonar functions that takes in threshold value
 # funciton returns true if distance detected by sonar is less than threshold
 def checkSonar(threshold):
@@ -40,11 +39,9 @@ def checkSonar(threshold):
     except RuntimeError:
         return False
 
-
 # custom error for checking if robot is too close to object during dance
 class TooCloseError(Exception):
     pass
-
 
 # ------------------------------------------------------------------------------------------------------#
 #
@@ -100,7 +97,6 @@ def keypadDecode():
             return key
     return key
 
-
 # define helper function to help decode which row the key pressed is at
 # function takes column number as parameter and returns the key pressed, returns 0 if no key is pressed
 def keypadHelper(col):
@@ -109,7 +105,6 @@ def keypadHelper(col):
     if not row1.value:
         return col + 3
     return 0
-
 
 # define checkPass function to read the input from the keypad
 # blocks indefinitely until a password is entered, returns true if password entered is matched, false otherwise
@@ -161,6 +156,7 @@ def flashRed():
     time.sleep(0.1)
     setColor("off")
     time.sleep(0.1)
+
 # ------------------------------------------------------------------------------------------------------#
 #
 # dance code
@@ -183,10 +179,8 @@ pwm4 = pulseio.PWMOut(board.D13, frequency=50)
 footL = servo.Servo(pwm4)
 
 music = 1
-
 demo = 0
 
-###################################
 # frequency lists for the six songs
 
 ANTHEM = [392, 523, 392, 440, 494, 330, 330,
@@ -234,10 +228,7 @@ def playNote(freq, delay):
     piezo.duty_cycle = 65536 // 2  # On 50%
     time.sleep(delay)  # On
 
-
-############################
 # basic dance move functions
-
 def rotate(limb, min, max, step, start, song):
     if checkSonar(5) and (not demo):
         raise TooCloseError
@@ -345,10 +336,7 @@ def reset_servo():
     legL.angle = 90
     time.sleep(0.1)
 
-
-###################################################################
 # 6 dance moves created as a combination of the smaller moves above
-
 def dance1():
     reset_servo()
     if music:
@@ -528,9 +516,7 @@ def ShowPic(string, timein):
             pass
             time.sleep(0.1)
 
-        # define textshow function that shows time dependent text (shows for 'timein' seconds)
-
-
+# define textshow function that shows time dependent text (shows for 'timein' seconds)
 def textshow(textin, bgcolor, xc, yc, timein):
     text_area = label.Label(terminalio.FONT, text=textin, color=bgcolor)
     text_area.x = xc
