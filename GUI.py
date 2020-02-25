@@ -1052,19 +1052,23 @@ while True:
 
     # if the state is request it goes to corresponding state according to keypad number pressed
     elif state == REQUEST:
-        textout("Press a key: \n 1) Dance  \n 2) Play Music \n 3) Home", 0x000000, 15, 60)
+        textout("Press a key: \n 1) Play Again \n 2) Dance  \n 3) Play Music \n 4) Home", 0x000000, 15, 60)
 
         keys = 0
         while keys == 0:
             keys = keypadDecode()
 
         if keys == 1:
+            test()
+            state = REQUEST
+            reset()
+        if keys == 2:
             state = DANCE
             reset()
-        elif keys == 2:
+        elif keys == 3:
             state = MUSIC
             reset()
-        elif keys == 3:
+        elif keys == 4:
             state = HOME
             reset()
         else:
@@ -1089,6 +1093,7 @@ while True:
             setColor('off')
             state = REQUEST
             reset()
+            test = song1
         elif keys == 2:
             reset()
             setColor('cyan')
