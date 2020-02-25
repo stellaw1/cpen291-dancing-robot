@@ -40,9 +40,11 @@ def checkSonar(threshold):
     except RuntimeError:
         return False
 
+
 # custom error for checking if robot is too close to object during dance
 class TooCloseError(Exception):
     pass
+
 
 # ------------------------------------------------------------------------------------------------------#
 #
@@ -113,7 +115,7 @@ def keypadHelper(col):
 # blocks indefinitely until a password is entered, returns true if password entered is matched, false otherwise
 def checkPass():
     seq = []
-    pwd = [1, 1, 1, 1]
+    pwd = [1, 2, 3, 4]
     i = 0
 
     while True:
@@ -204,8 +206,8 @@ MARIO = [659, 659, 659, 523, 659, 784, 392, 523, 392, 330, 440, 494, 466, 440, 3
 STRANGER = [131, 165, 196, 247, 262, 247, 196, 165]
 
 ALLSTAR = [466, 369, 369, 311, 369, 369, 369, 311, 369, 369, 369, 466, 466, 369, 369, 311, 369, 369, 369, 311,
-         369, 369, 369, 466, 369, 466, 554, 494, 554, 622, 740, 831, 740, 369, 369, 415, 369, 466, 415, 415,
-         369, 415, 311]
+           369, 369, 369, 466, 369, 466, 554, 494, 554, 622, 740, 831, 740, 369, 369, 415, 369, 466, 415, 415,
+           369, 415, 311]
 
 TETRIS = [659, 494, 523, 587, 659, 587, 523, 494, 440, 440, 523, 659, 587, 523, 494, 494, 494, 523, 587, 523,
           494, 494, 494, 523, 587, 659, 523, 440, 440, 587, 587, 698, 880, 784, 698, 659, 659, 523, 659, 587,
@@ -221,19 +223,22 @@ def playSong(song, delay):
         piezo.frequency = song[i]
         piezo.duty_cycle = 65536 // 2  # On 50%
         time.sleep(delay)  # On
-    piezo.duty_cycle = 0 # Off
+    piezo.duty_cycle = 0  # Off
+
 
 def buzzer_off():
-    piezo.duty_cycle = 0 # Off
+    piezo.duty_cycle = 0  # Off
 
 
 def buzzer_on():
     piezo.duty_cycle = 65536 // 2  # On 50%
 
+
 def playNote(freq, delay):
     piezo.frequency = freq
     piezo.duty_cycle = 65536 // 2  # On 50%
     time.sleep(delay)  # On
+
 
 ############################
 # basic dance move functions
@@ -264,6 +269,7 @@ def double_rotate(limb1, limb2, min, max, step, start, song):
         i += 1
     return i
 
+
 def tapFoot(start, song, limb):
     if limb == footL:
         start = rotate(footL, 90, 60, -10, start, song)
@@ -272,6 +278,7 @@ def tapFoot(start, song, limb):
         start = rotate(footR, 100, 130, 10, start, song)
         start = rotate(footR, 130, 100, -10, start, song)
     return start
+
 
 def kick(start, song, limb):
     if limb == legR:
@@ -286,6 +293,7 @@ def kick(start, song, limb):
         limb.angle = 90
     return start
 
+
 def footIn(start, song, limb):
     if limb == legR:
         start = rotate(limb, 90, 10, -10, start, song)
@@ -294,6 +302,7 @@ def footIn(start, song, limb):
         start = rotate(limb, 90, 170, 10, start, song)
         start = rotate(limb, 170, 90, -10, start, song)
     return start
+
 
 def footOut(start, song, limb):
     if limb == legR:
@@ -380,7 +389,7 @@ def dance3():
             start = footOut(start, ANTHEM, legL)
             start = tapFoot(start, ANTHEM, footL)
             start = kick(start, ANTHEM, legL)
-        
+
             start = footOut(start, ANTHEM, legR)
             start = tapFoot(start, ANTHEM, footR)
             start = kick(start, ANTHEM, legR)
@@ -388,7 +397,6 @@ def dance3():
             break
     buzzer_off()
     reset_servo()
-
 
 
 def dance4():
@@ -437,9 +445,6 @@ def dance6():
             break
     buzzer_off()
     reset_servo()
-
-
-
 
 
 # ------------------------------------------------------------------------------------------------------#
@@ -498,8 +503,8 @@ def song2():
         temp = False
 
         for f in (
-        330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330,
-        262, 294, 247):
+                330, 330, 330, 262, 330, 392, 196, 262, 196, 165, 220, 247, 233, 220, 196, 330, 392, 440, 349, 392, 330,
+                262, 294, 247):
             if interrupt():
                 temp = True
                 break
@@ -799,6 +804,7 @@ while True:
     if state == LOADING:
         splash = displayio.Group(max_size=100)
         reset()
+        reset_servo()
         ShowPic("\Robot.bmp", 2)
         # display "Loading..." meassage on the LCD
         string1 = "Loading"
@@ -823,7 +829,7 @@ while True:
     # if state is passcode, checks the passcode, if correct goes to home, else back to passcode
     if state == PASSCODE:
         # display "enter the passcode", runs checkPass function
-        textout("enter the passcode", 0x000000, 10, 60)
+        textout("enter the passcode \n HINT: 1,2,3,4", 0x000000, 10, 60)
         boolean = False
         boolean = checkPass()
         # if passcode is correct the FSM proceed to the home state
@@ -843,7 +849,7 @@ while True:
     elif state == HOME:
         setColor('off')
         # display the home menu on the screen
-        textout("Press a key: \n 1) Default \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
+        textout("Press a key: \n 1) Demo \n 2) Dance \n 3) Music \n 4) About \n 5) Exit ", 0x000000, 10, 60)
         keys = 0
         # keeps checking the keypad for a input, blocks indefinitely until user inputs
         while keys == 0:
@@ -1145,23 +1151,35 @@ while True:
         music = 0
         time.sleep(0.5)
         reset()
-        textout("Default Mode", 0x000000, 27, 48)
+        textout("Demo Mode", 0x000000, 27, 48)
         setColor('green')
         time.sleep(2)
         anim(2)
+        reset()
+        textout("Walking", 0x000000, 43, 48)
         dance1()
         setColor('cyan')
+        reset()
+        textout("Shuffling", 0x000000, 43, 48)
         dance2()
         setColor('blue')
+        reset()
+        textout("Balerina", 0x000000, 43, 48)
         dance3()
         setColor('magenta')
+        reset()
+        textout("Piegon", 0x000000, 43, 48)
         dance4()
         setColor('red')
+        reset()
+        textout("Excite", 0x000000, 43, 48)
         dance5()
         setColor('yellow')
+        reset()
+        textout("Karate", 0x000000, 43, 48)
         dance6()
         setColor('white')
-        reset()
-        animRev(2)
-        music = 1
         state = HOME
+        animRev(2)
+        reset()
+        music = 1
