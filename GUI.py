@@ -2,8 +2,8 @@
 # Authors: Manek, Sanjeev, Parsa, Amir, Stella, Arnold, Rain
 #
 # Function: Dancing Robot
-# 
-# Date: 10/02/2020    
+#
+# Date: 10/02/2020
 # ------------------------------------------------------------------------------------------------------#
 
 # import all the libraries that we need
@@ -27,7 +27,7 @@ import adafruit_hcsr04
 #
 # ------------------------------------------------------------------------------------------------------#
 # initialize sonar with adafruit_hcsr04 library
-# trigger pin at D4 and echo pin at D3 
+# trigger pin at D4 and echo pin at D3
 sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D4, echo_pin=board.D3)
 
 
@@ -102,7 +102,7 @@ def keypadDecode():
 
 
 # define helper function to help decode which row the key pressed is at
-# function takes column number as parameter and returns the key pressed, returns 0 if no key is pressed 
+# function takes column number as parameter and returns the key pressed, returns 0 if no key is pressed
 def keypadHelper(col):
     if not row0.value:
         return col
@@ -143,23 +143,24 @@ def interrupt():
     keys = 0
     keys = keypadDecode()
     if keys != 0 or checkSonar(5):
-        setColor("red")
-        time.sleep(0.1)
-        setColor("off")
-        time.sleep(0.1)
-        setColor("red")
-        time.sleep(0.1)
-        setColor("off")
-        time.sleep(0.1)
-        setColor("red")
-        time.sleep(0.1)
-        setColor("off")
-        time.sleep(0.1)
+        flashRed()
         return True
     else:
         return False
 
-
+def flashRed():
+    setColor("red")
+    time.sleep(0.1)
+    setColor("off")
+    time.sleep(0.1)
+    setColor("red")
+    time.sleep(0.1)
+    setColor("off")
+    time.sleep(0.1)
+    setColor("red")
+    time.sleep(0.1)
+    setColor("off")
+    time.sleep(0.1)
 # ------------------------------------------------------------------------------------------------------#
 #
 # dance code
@@ -357,6 +358,7 @@ def dance1():
         try:
             start = wiggle(start, STRANGER)
         except TooCloseError:
+            flashRed()
             break
     buzzer_off()
     reset_servo()
@@ -374,6 +376,7 @@ def dance2():
             start = footOut(start, MARIO, legR)
             start = footIn(start, MARIO, legR)
         except TooCloseError:
+            flashRed()
             break
     buzzer_off()
     reset_servo()
@@ -394,6 +397,7 @@ def dance3():
             start = tapFoot(start, ANTHEM, footR)
             start = kick(start, ANTHEM, legR)
         except TooCloseError:
+            flashRed()
             break
     buzzer_off()
     reset_servo()
@@ -408,11 +412,13 @@ def dance4():
         try:
             start = tapFoot(start, TETRIS, footL)
         except TooCloseError:
+            flashRed()
             break
     for j in range(3):
         try:
             start = tapFoot(start, TETRIS, footR)
         except TooCloseError:
+            flashRed()
             break
     buzzer_off()
     reset_servo()
@@ -428,6 +434,7 @@ def dance5():
             start = kick(start, ALLSTAR, legL)
             start = kick(start, ALLSTAR, legR)
         except TooCloseError:
+            flashRed()
             break
     buzzer_off()
     reset_servo()
@@ -442,6 +449,7 @@ def dance6():
         try:
             start = shuffle(start, FNITE)
         except TooCloseError:
+            flashRed()
             break
     buzzer_off()
     reset_servo()
@@ -733,7 +741,7 @@ while True:
     # if state is dance, plays the dance move coressponding to the keypad number pressed
     elif state == DANCE:
         # display the dance menu on the screen
-        textout("Press a key: \n 1) Waddle \n 2) Pop Step \n 3) Ballerina \n 4) High Knees \n 5) Excite \n 6) Shuffle",
+        textout("Press a key: \n 1) Waddle \n 2) Pop-Step \n 3) Ballerina \n 4) High-Knees \n 5) Excite \n 6) Shuffle",
                 0x000000, 10, 60)
         keys = 0
         # keeps checking the keypad for a input,
@@ -745,7 +753,7 @@ while True:
         # if no user input, check sonar for distance less than 5, if such, return FSM to home state.
         if keys == 1:
             reset()
-            textout("Waddling", 0x000000, 43, 48)
+            textout("Waddling", 0x000000, 41, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -760,7 +768,7 @@ while True:
             reset()
         elif keys == 2:
             reset()
-            textout("Pop-stepping", 0x000000, 43, 48)
+            textout("Pop-stepping", 0x000000, 34, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -775,7 +783,7 @@ while True:
             reset()
         elif keys == 3:
             reset()
-            textout("Balleting", 0x000000, 43, 48)
+            textout("Balleting", 0x000000, 40, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -790,7 +798,7 @@ while True:
             reset()
         elif keys == 4:
             reset()
-            textout("High knees", 0x000000, 45, 48)
+            textout("High-knees", 0x000000, 36, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -805,7 +813,7 @@ while True:
             reset()
         elif keys == 5:
             reset()
-            textout("I'm Excited!", 0x000000, 45, 48)
+            textout("I'm Excited!", 0x000000, 33, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             setColor('green')
@@ -820,9 +828,9 @@ while True:
             reset()
         elif keys == 6:
             reset()
-            textout("Everyday I'm Shuffling", 0x000000, 45, 48)
-            textout("Press any Button", 0x000000, 17, 64)
-            textout("to return", 0x000000, 35, 80)
+            textout("Everyday I'm \n Shuffling", 0x000000, 30, 45)
+            textout("Press any Button", 0x000000, 17, 68)
+            textout("to return", 0x000000, 35, 82)
             setColor('green')
             time.sleep(2)
             reset()
@@ -924,7 +932,7 @@ while True:
 
     # if state is music it goes to the song according to the keypad pressed
     elif state == MUSIC:
-        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Stranger \n 4) Canon \n 5) Tetris \n 6) Fortnite", 0x000000,
+        textout("Press a key: \n 1) Anthem \n 2) Mario \n 3) Stranger \n 4) All-Star \n 5) Tetris \n 6) Fortnite", 0x000000,
                 10, 60)
 
         keys = 0
@@ -934,7 +942,7 @@ while True:
         if keys == 1:
             reset()
             setColor('cyan')
-            textout("Playing Anthem", 0x000000, 20, 48)
+            textout("Playing Anthem", 0x000000, 21, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             play_song(ANTHEM)
@@ -945,7 +953,7 @@ while True:
         elif keys == 2:
             reset()
             setColor('cyan')
-            textout("Playing Mario", 0x000000, 20, 48)
+            textout("Playing Mario", 0x000000, 22, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             play_song(MARIO)
@@ -978,7 +986,7 @@ while True:
         elif keys == 5:
             reset()
             setColor('cyan')
-            textout("Playing Tetris", 0x000000, 20, 48)
+            textout("Playing Tetris", 0x000000, 21, 48)
             textout("Press any Button", 0x000000, 17, 64)
             textout("to return", 0x000000, 35, 80)
             play_song(TETRIS)
@@ -1013,28 +1021,28 @@ while True:
         demo = 1
         time.sleep(0.5)
         reset()
-        textout("Demo Mode", 0x000000, 27, 48)
+        textout("Demo Mode", 0x000000, 35, 48)
         setColor('green')
         time.sleep(2)
         anim(2)
         reset()
-        textout("Waddle", 0x000000, 43, 48)
+        textout("Waddle", 0x000000, 42, 48)
         dance1()
         setColor('cyan')
         reset()
-        textout("Pop Step", 0x000000, 43, 48)
+        textout("Pop-Step", 0x000000, 40, 48)
         dance2()
         setColor('blue')
         reset()
-        textout("Ballerina", 0x000000, 43, 48)
+        textout("Ballerina", 0x000000, 39, 48)
         dance3()
         setColor('magenta')
         reset()
-        textout("High Knees", 0x000000, 43, 48)
+        textout("High-Knees", 0x000000, 35, 48)
         dance4()
         setColor('red')
         reset()
-        textout("Excite", 0x000000, 43, 48)
+        textout("Excite", 0x000000, 45, 48)
         dance5()
         setColor('yellow')
         reset()
