@@ -15,10 +15,8 @@ import terminalio
 import label
 from adafruit_st7735r import ST7735R
 import digitalio
-import adafruit_matrixkeypad
 import pulseio
 import servo
-from analogio import AnalogIn
 import adafruit_hcsr04
 
 # ------------------------------------------------------------------------------------------------------#
